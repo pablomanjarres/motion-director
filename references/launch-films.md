@@ -40,6 +40,15 @@ a film is listed as such.
 7. **The sound shapes the argument.** A near-silence (0.4-3.9 s, 20-30 dB down) sits right before the payoff, or the music is pulled out under the name (Opus 5.5: 28 dB in 0.84 s). The loudest moment lands on the reveal, and the end card plays in near-silence. Integrated loudness -16.4 to -11.6 LUFS (median -15.4; one social cut sits at -23.4), loudness range 2.3-18.2 LU (median 6.9).
 8. **The end holds and only the sound leaves.** No product film or brand spot fades its picture out. The final card or shot holds 3-11 s (median 4.4 s) while the sound falls 20-50 LU over the last 1.5-6 s.
 
+## Scale, density and life
+
+- **The subject is big.** A held figure fills 77-87% of the frame height (Fable 5's numeral, GPT-6 Astra's particle 6); plates and live action fill the whole frame; Haiku 5.5's three windows each take a third of the height and its line crosses 93% of the width; Atlas's window spans 78% of the width. No film leaves a small object alone on an empty ground.
+- **The frame keeps changing.** Montages bring a new image every 3-15 frames (Fable 5, Opus 5.5); Haiku 5.5 swaps all three windows every 0.5 s; a one-shot film keeps its whole field moving (GPT-6 Astra's particles gather, wind, hold turning and disperse).
+- **Moving by 0.75 s at the latest.** A 13% push-in from frame 0 (Opus 5.5), a snap-back on threes (Fable 5), windows swapping from the first frame (Haiku 5.5), particles gathering from 0.75 s (GPT-6 Astra social cut).
+- **Repeat the device, change the material.** The device holds its shape and place while its material changes every time: 37 materials under one horizon (Opus 5.5), 41 collections in one numeral (Fable 5), 12 crops on one arc (Haiku 5.5), the word "problems" on 13 surfaces (Keep thinking). The same move repeated in the same framing reads as a loop, not a device.
+- **Figures are rare.** Outside product names and dates, only the Dashboards film steps one small count up; the others show data as dots, relative bars or interface texture.
+- **The short films' end cards stay alive.** The mark holds still while something keeps moving: butterflies crossing the title (Fable 5), a line that boils and then retracts (Haiku 5.5), a final move that carries the wordmark away and lands on frame 0 (Opus 5.5). None of them freezes the whole frame for longer than about 2.3 s.
+
 ## Type
 
 | Role | Cap height | Seen in |
@@ -118,6 +127,8 @@ a film is listed as such.
 ## Before calling a launch film done
 
 - The idea reads from the frames alone, before any line appears.
+- The subject fills the frame (a figure at least half the frame height, or full-frame imagery), and the picture is moving by 0.75 s.
+- The device repeats with a new material each time, never as the same move in the same framing.
 - Count the words: a 15 s piece carries at most one line before the name.
 - Every line meant to be read sits in the bands above: statements 3.9-6.5%, readable interface at least 2.1% (magnified, never a whole window), taglines at least 3.1%.
 - One signature device, built from the brand's own material, repeated at least three times, paying off at the reveal.
