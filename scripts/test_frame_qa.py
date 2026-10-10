@@ -54,6 +54,9 @@ class FrameQaTest(unittest.TestCase):
         self.assertIn("jump", found.stdout)
         self.assertIn("1.500", found.stdout)
         self.assertClean(self.qa(jump, "--cuts", "1.5"))
+        switched = self.qa(jump, "--events", "1.5")
+        self.assertClean(switched)
+        self.assertIn("declared event", switched.stdout)
 
     def test_frozen_stretch_is_reported_but_the_final_hold_is_not(self):
         self.assertClean(self.qa(self.make("held", "min(t,1)*60", seconds=4)))

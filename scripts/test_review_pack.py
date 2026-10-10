@@ -45,6 +45,14 @@ class ReviewPackTest(unittest.TestCase):
         self.assertIn("strip-01.png", index)
         self.assertIn("1.00 s to 1.50 s", index)
 
+    def test_empty_contact_cells_are_grey_not_black(self):
+        done = self.pack("--beats", "0.2,0.6,1.0,1.4,1.8")
+        self.assertEqual(done.returncode, 0, done.stderr)
+        sys.path.insert(0, HERE)
+        from media import raw_frames
+        sheet = raw_frames(os.path.join(self.out, "contact.png"), 8, 2, "rgb24")[0]
+        self.assertTrue(all(abs(value - 128) <= 8 for value in sheet[-3:]), list(sheet[-3:]))
+
     def test_beats_past_the_end_are_reported_and_skipped(self):
         done = self.pack("--beats", "0.5,9.0")
         self.assertEqual(done.returncode, 0, done.stderr)

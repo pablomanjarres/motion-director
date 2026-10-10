@@ -7,7 +7,7 @@ import sys
 import tempfile
 import unittest
 
-from reference_study import find_shots
+from reference_study import find_shots, shot_stats
 from test_fixtures import encode, needs_ffmpeg
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -23,6 +23,11 @@ class CutRuleTest(unittest.TestCase):
         cuts, shots = find_shots(scores, 3.0, fps, 0.3, 0.2, spiking={20, 40, 50}, flashed={40, 41})
         self.assertEqual([int(round(cut * fps)) for cut in cuts], [10, 20])
         self.assertEqual(len(shots), 3)
+
+    def test_percentiles_stay_inside_the_shots_measured(self):
+        stats = shot_stats([(0.0, 1.0), (1.0, 11.0)], 11.0)
+        self.assertGreaterEqual(stats["p10"], 1.0)
+        self.assertLessEqual(stats["p90"], 10.0)
 
 
 def colour(rgb):
