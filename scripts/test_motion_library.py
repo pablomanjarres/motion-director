@@ -66,7 +66,7 @@ class MotionLibraryTest(unittest.TestCase):
     def write_manifest(self, sha, **overrides):
         source = {
             "id": "fixture", "url": "file://" + self.upstream, "sha": sha,
-            "license": "MIT", "verdict": "SAFE", "audited": "2026-10-10",
+            "license": "MIT", "verdict": "SAFE", "grade": "A", "audited": "2026-10-10",
             "sparse": ["skills"],
             "skills": [{"path": "skills/alpha", "phases": ["direction", "build"]},
                        "skills/beta"],
@@ -98,6 +98,7 @@ class MotionLibraryTest(unittest.TestCase):
         index_md = read(os.path.join(self.home, "INDEX.md"))
         self.assertIn("fixture/alpha", index_md)
         self.assertIn("timing \\| easing", index_md)
+        self.assertIn("grade A", index_md)
         self.assertOk(self.cli("verify"))
         self.assertOk(self.cli("install"))
 
