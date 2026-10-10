@@ -43,6 +43,13 @@ breaks that silence as the loudest moment. Pieces under 10 s may skip the silenc
 and land the riser straight on its hit. The busiest stretch is not the loudest.
 Sub-bass only on the thesis and the call to action.
 
+Launch films do the same, measured (`references/launch-films.md`): one sound event
+marks the turn (a near-silence, a step of about 20 dB, music entering with the first
+line); the music is pulled out under the name or the hit lands on it from near-silence;
+the end card plays as the sound falls 20 to 50 LU over the last 1.5 to 6 s while the
+picture holds. Their loudness range runs 2.3 to 18 LU, median 6.9; under 4 LU a mix
+sounds flat beside them, so read the range on the reference board.
+
 ## 6. When a song leads
 
 Find the tempo and the drop from band energy rather than trusting an automatic

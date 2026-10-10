@@ -36,10 +36,11 @@ cues stay locked to words.
 - A stagger finishes as one phrase. Organic lists can take one frame of seeded jitter.
 - Camera: two nested transforms, the outer one dollies (scale) and the inner one turns (perspective around 2200 to 2800 px). Put the transform origin on the point of interest so cursor coordinates survive a push. Pair a zoom with a slight rotation or lateral drift instead of a pure scale, end in a tiny residual drift, and give every camera move a visible cause 10 to 14 frames before it starts.
 - Cursor as a prop: larger than life (about 44x54 px on a 1920 frame), white with a dark stroke and a shadow, a curved path (different easing on x and y), a click that presses for about two frames with a ripple while the control itself depresses, and gone before the final hold.
-- Texture: grain at roughly 0.05 to 0.12 opacity reseeded every two frames (every frame bloats the file), a vignette, a slow drift. A clean flat finish is a valid choice when made on purpose.
+- Texture: grain at roughly 0.05 to 0.12 opacity reseeded every two frames (every frame bloats the file), a vignette, a slow drift. A clean flat finish is a valid choice when made on purpose, and the norm for films built on product interface: none of the four measured in `references/launch-films.md` carries grain.
 - Motion blur only on fast moves (beyond about 30 px per frame): average 4 to 8 subframes across a 180 degree shutter, never across a hard cut, never on text meant to be read.
-- Type: masked reveals (words rise about 105 to 110 percent inside a padded mask); no per-letter twinkle as the main reveal; nothing moves while it is being read.
-- Numbers change with a masked swap to the next sourced value, never by counting through figures that are not in `facts.md` (the truth gate in `phases/brief.md`).
+- Type: words switch on whole on a cut, or type on at 1 to 2 frames a character with the first word already there; a masked rise (about 105 to 110 percent inside a padded mask) is for display lockups. No per-letter twinkle; nothing moves while it is being read.
+- Interface: a typed request takes 0.9 to 1.6 s whatever its length, and an answer lands whole or finishes within 1.9 s. Elements land in 7 to 13 frames with no overshoot. Show a window whole only as texture, then magnify the line that must be read (the scale ladder in `references/launch-films.md`).
+- Numbers change with a masked swap to the next sourced value, never by counting through figures that are not in `facts.md` (the truth gate in `phases/brief.md`). Dots, relative bars and figures built from the subject usually say more than a numeral.
 
 ## 5. Drafts
 
