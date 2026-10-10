@@ -11,6 +11,7 @@ Structure comes before shots. Name the one that fits and write it down.
 | Structure | Use for | Transition habit |
 |---|---|---|
 | Problem, turn, resolution | product demo, feature film | one object carries the change (cards merge, a cursor acts) |
+| Motif montage | short launch films, social cuts | one shape held at one position across every cut (a graphic match), cuts accelerating into the name |
 | Chronology | histories, timelines | transitions grow out of the scene (morphs, draw-offs), few cuts |
 | Journey or path | maps, flows, architecture | a follow camera that never cuts |
 | List or catalogue | features, examples | cut on the beat |
@@ -37,13 +38,16 @@ cannot, fix the story; motion will not.
 - Shots shorten toward the climax. A drop to near silence comes right before the payoff, and the payoff is the single loudest moment.
 - The end echoes the opening, changed.
 - Text never moves while it has to be read. Holds follow the reading rule from the brief.
+- Words come late. In the measured launch films the message line lands at 43 to 89 percent of the runtime, after the picture has made the point; a title card or a genre word may open a film, a slogan does not.
+- The end takes 20 to 30 percent of a short piece and holds at least 3 s. The picture never fades out; the sound leaves instead.
 
-Starting templates (adjust to the clock):
+Starting templates (adjust to the clock). Launch templates come from `references/launch-films.md`:
 
 | Piece | Beats |
 |---|---|
-| 15 s product demo | 0-3 s the problem in one headline; 3-7 s the interaction (a cursor acts, elements move); 7-12 s the result settles with a second headline; 12-15 s a closing card held at least 3 s |
-| 30-45 s launch film | hook 0-4 s, proof 4-9 s, the product working 9-17 s, a quality beat, how it works, one sourced number, call to action held at least 3 s |
+| 10-20 s launch or social cut | the motif without words to about 45%; at most one line of up to four words across the accelerating cuts to about 80%; the name alone in near-silence for 1.3-3.1 s; the wordmark 0.9-1.7 s; back to frame 0 so it loops |
+| 15 s feature demo | 0-3 s the outcome or the problem as an image; 3-10 s the product doing one thing at a readable scale, at most one line; 10-12 s the result lands; 12-15 s the name or mark held while the sound falls away |
+| 30-45 s launch film | the problem as images for the first third, no interface; a hinge with the sound dipped; the product as the answer in two or three chapters with one card each; the payoff with the fastest cuts and the loudest moment; the line at about 80%; the end held 3-5 s |
 | 30 s reel | hook 0-1.5 s, context to 3 s, body to 22 s in three or four beats, payoff to 27 s, call to action to 30 s |
 | 3-5 s logo sting | mark, wordmark, tagline, a breath, a short exit |
 | 8 s loop | the move in 0-2.2 s, a living hold to 6.6 s, the return by 8.0 s; frame at 0 equals frame at 8 |

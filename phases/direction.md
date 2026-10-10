@@ -86,7 +86,7 @@ At 30 fps, frames = ms × 0.03 (300 ms is 9 frames).
 
 - Particles only when each particle is data or the subject (a number assembled from points), never as decoration.
 - At most one overshoot or elastic accent per piece, and none on financial or otherwise serious content.
-- Typing animation only inside an input field, never for headlines.
+- Words switch on: whole on a cut, or typed at 1 to 2 frames a character with the first word already on screen at the cut. Never a slow typewriter, a fade-up as the only entrance, or a letter-by-letter twinkle.
 - No gradient-filled text (`background-clip: text` also vanishes in some captures).
 - Glow only on the single hero element. No rainbow or purple-to-blue backgrounds, emoji used as icons, lorem ipsum, generic particle bursts, or a centered title on a gradient as the opening. A logo sting is never the whole ending.
 - One accent color, and it means one thing for the whole piece.
@@ -95,7 +95,7 @@ At 30 fps, frames = ms × 0.03 (300 ms is 9 frames).
 ## 5. Type, color, composition
 
 - House defaults when there is no brand: a warm off-white ground (`#F7F5F0`), near-black ink (`#17171A`) and one saturated accent chosen here for one meaning; one display grotesk (Instrument Sans, Manrope or General Sans) plus a mono for labels (JetBrains Mono), embedded locally.
-- Video is not a web page. On a 1080 px tall frame: headlines 64-140 px, body 28-42 px, labels at least 28 px in 16:9 and 32 px in 9:16, strokes 2-4 px and chart lines 4 px or more. A 16:9 film watched on a phone shows at about a fifth of its size, so interface scenes scale up 1.6 to 2 times and frame tight on the action. Specs from other skills are sized for screens seen up close; judge everything on the phone sheet.
+- Video is not a web page. Size type by cap height against frame height, in the bands measured in `references/launch-films.md`: statements 3.9-6.5%, taglines and labels at least 3.1%, interface lines meant to be read at least 2.1% (magnified, never read inside a whole window); text smaller than that is texture and carries no meaning. In 9:16, labels at least 32 px. Strokes 2-4 px, chart lines 4 px or more. A 16:9 film watched on a phone shows at about a fifth of its size, so frame tight on the action. Specs from other skills are sized for screens seen up close; judge everything on the phone sheet.
 - Check every bitmap and 3D render against the palette and the one-accent rule before it goes in: renders from a brand kit can carry extra hues (golds, gradients) that read as a second accent. A hero object also needs a bridge, something already on screen that leads the eye into it.
 - At most three families (display, UI sans, mono). Display type around 120-140 px on a 1080 px tall frame with slightly negative tracking. Small labels twice the size you first think.
 - Palette: one primary, one accent, two or three neutrals tinted toward the primary; roughly 60/30/10 by area. Build ramps and gradients in OKLCH (`linear-gradient(in oklch, ...)`); add 3 to 5 percent grain against banding.
