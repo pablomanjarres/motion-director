@@ -20,26 +20,41 @@ def change(a, b):
     return sum(abs(x - y) for x, y in zip(a, b)) / float(len(a))
 
 
+def changes(frames):
+    """The change into each frame from the one before it (0 for the first frame)."""
+    return [0.0] + [change(frames[i - 1], frames[i]) for i in range(1, len(frames))]
+
+
+def neighbours(diffs, i):
+    return max(diffs[i - 1] if i > 1 else 0.0, diffs[i + 1] if i + 1 < len(diffs) else 0.0)
+
+
+def spikes(frames, diffs, min_jump, ratio):
+    """One-frame flashes (a frame unlike both neighbours), and jumps: frames whose change is at least
+    min_jump and more than ratio times the change on either side. Returns (flashes, jumps, flashed)."""
+    flashes, flashed = [], set()
+    for i in range(1, len(diffs) - 1):
+        if (diffs[i] >= min_jump and diffs[i + 1] >= min_jump
+                and change(frames[i - 1], frames[i + 1]) < 0.5 * min(diffs[i], diffs[i + 1])):
+            flashes.append(i)
+            flashed.update((i, i + 1))
+    jumps = [i for i in range(1, len(diffs))
+             if i not in flashed and diffs[i] >= min_jump and diffs[i] > ratio * neighbours(diffs, i)]
+    return flashes, jumps, flashed
+
+
 def find_defects(frames, fps, cuts, min_jump, ratio, freeze_seconds):
     findings, notes = [], []
-    diffs = [0.0] + [change(frames[i - 1], frames[i]) for i in range(1, len(frames))]
+    diffs = changes(frames)
     stamp = lambda i: "%.3f s (frame %d)" % (i / fps, i)
-    flashed = set()
-    for i in range(1, len(frames) - 1):
-        if diffs[i] >= min_jump and diffs[i + 1] >= min_jump:
-            if change(frames[i - 1], frames[i + 1]) < 0.5 * min(diffs[i], diffs[i + 1]):
-                findings.append("flash at %s: one frame unlike both neighbours" % stamp(i))
-                flashed.update((i, i + 1))
-    for i in range(1, len(frames)):
-        before = diffs[i - 1] if i > 1 else 0.0
-        after = diffs[i + 1] if i + 1 < len(frames) else 0.0
-        if i in flashed or diffs[i] < min_jump or diffs[i] <= ratio * max(before, after):
-            continue
+    flashes, jumps, _ = spikes(frames, diffs, min_jump, ratio)
+    findings += ["flash at %s: one frame unlike both neighbours" % stamp(i) for i in flashes]
+    for i in jumps:
         if any(abs(i / fps - cut) <= 1.5 / fps for cut in cuts):
             notes.append("declared cut at %s" % stamp(i))
         else:
             findings.append("jump at %s: change %.1f vs %.1f around it (pop or undeclared cut)"
-                            % (stamp(i), diffs[i], max(before, after)))
+                            % (stamp(i), diffs[i], neighbours(diffs, i)))
     start = None
     for i in range(1, len(frames) + 1):
         still = i < len(frames) and diffs[i] < 0.1
