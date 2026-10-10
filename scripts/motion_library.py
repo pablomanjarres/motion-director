@@ -58,6 +58,11 @@ def load_manifest(path):
             raise ManifestError("%s: verdict %r is not approved" % (sid, source.get("verdict")))
         if not re.match(r"^[0-9a-f]{40}$", source.get("sha", "")):
             raise ManifestError("%s: sha must be a full 40-character commit" % sid)
+        template = source.get("template")
+        if template is not None and not (
+                all(isinstance(path, str) for path in template.get("exclude", []))
+                and all(set(edit) == {"files", "old", "new"} for edit in template.get("replace", []))):
+            raise ManifestError('%s: template takes "exclude" paths and {files, old, new} edits' % sid)
         source["skills"] = [normalize_skill(sid, entry) for entry in source.get("skills", [])]
         dirs = [skill["dir"] for skill in source["skills"]]
         if len(dirs) != len(set(dirs)):
@@ -215,6 +220,45 @@ def outdated(manifest):
     return 1 if moved else 0
 
 
+def scaffold(manifest, home, source_id, dest):
+    """Start a project from a template source: copy its pinned checkout without .git and
+    the template's excluded paths, then apply its audited edits, each matching exactly once."""
+    source = next((s for s in manifest["sources"] if s["id"] == source_id), None)
+    if not source or source.get("template") is None:
+        raise InstallError("%s is not a template source in library.json" % source_id)
+    checkout = os.path.join(home, "src", source_id)
+    if head_of(checkout) != source["sha"]:
+        raise InstallError("%s is not installed at its pin; run install first" % source_id)
+    if os.path.lexists(dest):
+        raise InstallError("%s already exists; scaffold into a new directory" % dest)
+    template = source["template"]
+    excluded = set(os.path.normpath(path) for path in template.get("exclude", []))
+
+    def ignore(directory, names):
+        rel = os.path.relpath(directory, checkout)
+        return [name for name in names
+                if name == ".git" or os.path.normpath(os.path.join(rel, name)) in excluded]
+
+    assert_contained(checkout, checkout)
+    shutil.copytree(checkout, dest, ignore=ignore)
+    try:
+        for edit in template.get("replace", []):
+            for rel in edit["files"]:
+                path = os.path.join(dest, rel)
+                with open(path, encoding="utf-8") as handle:
+                    text = handle.read()
+                if text.count(edit["old"]) != 1:
+                    raise InstallError("%s: expected exactly one %r in %s; re-audit the template"
+                                       % (source_id, edit["old"], rel))
+                with open(path, "w", encoding="utf-8") as handle:
+                    handle.write(text.replace(edit["old"], edit["new"]))
+    except Exception:
+        shutil.rmtree(dest, ignore_errors=True)
+        raise
+    print("scaffolded %s @ %s into %s" % (source_id, source["sha"][:7], dest))
+    return 0
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--manifest", default=DEFAULT_MANIFEST)
@@ -224,6 +268,9 @@ def main(argv=None):
     commands.add_parser("verify", help="exit 1 unless the library matches library.json")
     commands.add_parser("where", help="print the SKILL.md path for a skill").add_argument("query")
     commands.add_parser("outdated", help="list sources whose upstream moved past the pin")
+    start = commands.add_parser("scaffold", help="start a new project from a template source")
+    start.add_argument("source")
+    start.add_argument("dest")
     args = parser.parse_args(argv)
     home = os.path.abspath(args.home or default_home())
     try:
@@ -239,6 +286,8 @@ def main(argv=None):
             return verify(manifest, home)
         if args.command == "where":
             return where(home, args.query)
+        if args.command == "scaffold":
+            return scaffold(manifest, home, args.source, os.path.abspath(args.dest))
         return outdated(manifest)
     except (InstallError, OSError, shutil.Error) as error:
         print("install error: %s" % error, file=sys.stderr)
