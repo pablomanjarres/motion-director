@@ -83,6 +83,12 @@ class FrameQaTest(unittest.TestCase):
             "-vf", "drawbox=x=0:y=0:w=iw:h=ih:color=white:t=fill:enable='lt(mod(n,30),15)'"])
         self.assertNotIn("general flashes", self.qa(calm).stdout)
 
+    def test_a_strobe_filling_one_ninth_of_the_frame_counts_as_general_flashes(self):
+        corner = encode(os.path.join(self.tmp, "corner.mp4"), [
+            "-f", "lavfi", "-i", "color=c=black:s=192x108:r=30:d=2",
+            "-vf", "drawbox=x=0:y=0:w=64:h=36:color=white:t=fill:enable='lt(mod(n,6),3)'"])
+        self.assertIn("general flashes", self.qa(corner).stdout)
+
     def test_against_catches_a_difference_too_small_to_see_at_analysis_size(self):
         first = self.make("plain", "t*60")
         speck = self.make("speck", "t*60", ",drawbox=x=0:y=0:w=4:h=4:color=white:t=fill:enable='eq(n,20)'")

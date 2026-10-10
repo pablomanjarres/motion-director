@@ -39,6 +39,18 @@ class ProbeTest(unittest.TestCase):
         colour = media.raw_frames(self.silent, 16, 9, "rgb24", rate=5)
         self.assertEqual((len(colour), len(colour[0])), (10, 16 * 9 * 3))
 
+    def test_variable_frame_rate_files_decode_one_buffer_per_real_frame(self):
+        uneven = encode(os.path.join(self.tmp, "uneven.mp4"), [
+            "-f", "lavfi", "-i", "testsrc2=s=64x36:r=30:d=2", "-vf", "select='not(eq(mod(n,3),2))'",
+            "-fps_mode", "vfr"])
+        self.assertEqual(len(media.raw_frames(uneven, 16, 9)), len(media.frame_hashes(uneven)))
+
+    def test_video_duration_ignores_a_longer_audio_track(self):
+        long_tail = encode(os.path.join(self.tmp, "tail.mp4"), [
+            "-f", "lavfi", "-i", "testsrc2=s=64x36:r=25:d=2", "-f", "lavfi", "-i", "sine=d=3.5", "-c:a", "aac"])
+        self.assertGreater(media.duration(long_tail), 3.0)
+        self.assertAlmostEqual(media.video_duration(long_tail), 2.0, places=1)
+
     def test_unreadable_file_raises_media_error(self):
         with self.assertRaises(media.MediaError):
             media.probe_fps(os.path.join(self.tmp, "missing.mp4"))

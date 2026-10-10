@@ -102,6 +102,37 @@ class ReferenceStudyTest(unittest.TestCase):
         with open(os.path.join(out, "film", "study.json"), encoding="utf-8") as handle:
             self.assertIsNone(json.load(handle)["cut_strength"])
 
+    def test_a_cut_declared_a_frame_late_still_reads_as_a_hard_cut(self):
+        out = self.study(self.copy, "--draft", self.film, "--draft-cuts", "2.0333,4.0")
+        with open(os.path.join(out, "film", "study.json"), encoding="utf-8") as handle:
+            self.assertGreaterEqual(json.load(handle)["cut_strength"][0], 0.3)
+
+    def test_length_comes_from_the_video_not_a_longer_audio_track(self):
+        tail = encode(os.path.join(self.tmp, "tail.mp4"), [
+            "-f", "lavfi", "-i", "testsrc2=s=160x90:r=30:d=2", "-f", "lavfi", "-i", "sine=d=3.5", "-c:a", "aac"])
+        with open(os.path.join(self.study(tail), "tail", "study.json"), encoding="utf-8") as handle:
+            result = json.load(handle)
+        self.assertAlmostEqual(result["duration"], 2.0, delta=0.1)
+        self.assertLessEqual(result["shots"]["final"], 2.1)
+
+    def test_films_with_the_same_name_get_their_own_folders(self):
+        twins = [os.path.join(self.tmp, side, "film.mp4") for side in ("left", "right")]
+        for path in twins:
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+            shutil.copy(self.film, path)
+        out = self.study(*twins)
+        self.assertTrue(os.path.isfile(os.path.join(out, "film", "study.json")))
+        self.assertTrue(os.path.isfile(os.path.join(out, "film-2", "study.json")))
+
+    def test_refs_from_reuses_studies_already_measured(self):
+        measured = self.study(self.film, self.copy)
+        out = self.study("--refs-from", measured, "--draft", self.draft)
+        with open(os.path.join(out, "board.md"), encoding="utf-8") as handle:
+            board = handle.read()
+        for name in ("film.mp4", "copy.mp4", "draft.mp4 (draft)"):
+            self.assertIn(name, board)
+        self.assertFalse(os.path.exists(os.path.join(out, "film")))
+
     def test_board_marks_where_the_draft_leaves_the_references_range(self):
         out = self.study(self.film, self.copy, "--draft", self.draft)
         with open(os.path.join(out, "board.md"), encoding="utf-8") as handle:
