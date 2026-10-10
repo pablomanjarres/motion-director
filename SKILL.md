@@ -59,6 +59,14 @@ Present: check in at the story, the look and the storyboard, once each, with
 options and a recommended default. Away, or "just make it": decide, record the
 decision and the alternatives in `production.md`, and keep going.
 
+## Time
+
+A 15-second piece fits in about an hour: brief and direction by minute 10,
+toolchain and storyboard panels by 20, a rough cut by 25, sound and a gated
+version by 45, one critic round of about 10 minutes, fixes and delivery by 60.
+Short on time: deliver the master format first and keep the review round; the
+truth gate is never skipped.
+
 ## Scripts
 
 | Script | Use |
