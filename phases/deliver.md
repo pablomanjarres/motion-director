@@ -94,7 +94,7 @@ and any new trap as symptom, cause, fix and proof, so the next piece starts ahea
 
 | Need | Read |
 |---|---|
-| 9:16 export, safe zone, silent track, ffprobe gate | `launch-kit/reel-export` |
+| Encode flags, silent track and ffprobe gate for 9:16 (skip its letterbox layout: re-layout instead) | `launch-kit/reel-export` |
 | Looping GIF engineering and seam measurement | `launch-kit/loop-cover` |
 | Deliverable sets, captions from word timings, poster choice | `launch-film/product-launch-motion` |
 | One timeline laid out per format | `animate/animate` |

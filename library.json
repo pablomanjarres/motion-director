@@ -57,21 +57,14 @@
    "verdict": "SAFE-WITH-NOTES",
    "grade": "A",
    "audited": "2026-10-10",
-   "notes": "Deep Remotion craft: measured springs, reading-time arithmetic, a camera dial, a motion linter. No license: read it for technique and never copy its code or text into deliverables. Its install and model-routing instructions are removed.",
+   "notes": "Deep Remotion craft: measured springs, reading-time arithmetic, a camera dial, a motion linter. No license: read it for technique and never copy its code or text into deliverables. Its install instruction is removed; its advice on which model to run does not apply.",
    "sparse": ["klik-anim", "klik-cam", "klik-remotion-method"],
    "skills": [
     {"path": "klik-anim", "phases": ["direction", "build", "qa"], "edits": [
      {"files": ["SKILL.md"], "old": "**If the user doesn't answer, or you can't ask them, default to project-local**\n— it is scoped, reversible, and touches nothing outside the repo. A global\ninstall writes to the home directory, so confirm that one explicitly. Mention\n`npx remotion skills update` for keeping them current either way.", "new": "**If the user doesn't answer, or you can't ask them, install nothing.** The\nsame skills are already in the motion library under `remotion/`; read them there."}
     ]},
     {"path": "klik-cam", "phases": ["build"]},
-    {"path": "klik-remotion-method", "phases": ["brief", "storyboard", "qa"], "edits": [
-     {"files": ["SKILL.md"], "old": "then FROZEN; switch to Opus |", "new": "then FROZEN |"},
-     {"files": ["SKILL.md"], "old": "- **Main conversation (Fable 5):**", "new": "- **Main conversation:**"},
-     {"files": ["SKILL.md"], "old": "- **Fresh context (Opus):** execution-plan synthesis and build — inherit ONLY\n  the artifacts. The model/session switch IS the handoff.", "new": "- **Fresh context:** execution-plan synthesis and build — inherit ONLY\n  the artifacts. The session switch IS the handoff."},
-     {"files": ["SKILL.md"], "old": "- **Model split:** planning phases on **Fable 5**; build on **Opus** — say so\n  at the plan gate, with the plan's token estimate (band, excludes iterations).\n", "new": ""},
-     {"files": ["references/execution-plan.md"], "old": "At approval, tell the user: **switch to Opus for the build** (planning ran on\nFable 5); quote the token band again;", "new": "At approval, quote the token band again;"},
-     {"files": ["templates/EXECUTION_PLAN.template.md"], "old": "3. **Recommend the user runs this phase on Opus** (planning happened on\n   Fable 5). Estimated build spend:", "new": "3. Estimated build spend:"}
-    ]}
+    {"path": "klik-remotion-method", "phases": ["brief", "storyboard", "qa"]}
    ]
   },
   {
@@ -82,7 +75,7 @@
    "verdict": "SAFE-WITH-NOTES",
    "grade": "B",
    "audited": "2026-10-10",
-   "notes": "Briefs with facts discipline, brand files, effect recipes, loops, GIF and Reel export. brand-intake no longer edits CLAUDE.md. Skip its suggestions to install other skills: the library has them.",
+   "notes": "Briefs with facts discipline, brand files, effect recipes, loops, GIF and Reel export. brand-intake no longer edits CLAUDE.md. reel-export letterboxes a horizontal video: use only its encode flags, silent track and ffprobe gate. Skip its suggestions to install other skills: the library has them.",
    "sparse": ["skills"],
    "skills": [
     {"path": "skills/brand-intake", "phases": ["brief", "direction"], "edits": [
@@ -178,7 +171,7 @@
    "verdict": "SAFE-WITH-NOTES",
    "grade": "A",
    "audited": "2026-10-10",
-   "notes": "The official HyperFrames skills plus HeyGen's internal motion doctrine. Run the CLI only through scripts/hf.sh (pinned, telemetry and skill installs off, credential-reading and upload commands refused). Usage checks, skill updates and auto-upgrades are stripped. media-use is not installed: it is tied to HeyGen services, sends its own telemetry and loads .env files from parent folders.",
+   "notes": "The official HyperFrames skills plus HeyGen's internal motion doctrine. Run the CLI only through scripts/hf.sh (pinned, telemetry and skill installs off, credential-reading and upload commands refused). Usage checks, skill updates and auto-upgrades are stripped. media-use is not installed: it is tied to HeyGen services, sends its own telemetry and loads .env files from parent folders, so product-launch-video, faceless-explainer and pr-to-video serve story and visual design only.",
    "sparse": ["skills", ".claude/skills"],
    "skills": [
     {"path": "skills/hyperframes", "phases": ["engine", "brief"], "edits": [
