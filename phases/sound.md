@@ -6,7 +6,7 @@ measured on the delivered file.
 
 ## 1. Sources
 
-- **Synthesized effects (default, license-clean)**: clicks, ticks, blips, pops with a falling pitch, whooshes from filtered noise as long as the move, a riser that ends on the hit, an impact (low sine plus a noise transient so phone speakers hear it), pads for a bed. `claude-motion` ships a stdlib Python engine with generators, placement, mastering and loudness measurement; it runs inside projects scaffolded from that template.
+- **Synthesized effects (default, license-clean)**: clicks, ticks, blips, pops with a falling pitch, whooshes from filtered noise as long as the move, a riser that ends on the hit, an impact (low sine plus a noise transient so phone speakers hear it), pads for a bed. `claude-motion` ships a stdlib Python engine with generators, placement, mastering and loudness measurement; it runs inside projects scaffolded from that template. For a bed, set its `pad()` `detune` to 0: the default left/right detune beats at about 1.2 Hz when a phone folds the mix to mono.
 - **Music**: a licensed track (record the license in `production.md`), or generated music when the person accepts it and its terms cover the use (through an installed generative-media skill). No track ships without a license record.
 - **Voice**: a real take or text-to-speech; a scratch voice first. Word timings come from a transcriber (faster-whisper locally). Paid voices only with the person's own key and a stated cost before the full run.
 

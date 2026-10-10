@@ -32,7 +32,7 @@ The web track runs phases 1 and 2, then `phases/web.md`.
 
 ## Rules
 
-- **Use the library, not memory.** Each phase file names the library skills for that phase. On the film track at least two library skills shape every phase from Direction on. Log one ledger row in `production.md` per skill per phase it shaped (skill id and the decision it drove): one read may count in several phases, but a search or a skim of headings is not a read. Find any skill with `motion_library.py where <id or name>`.
+- **Use the library, not memory.** Each phase file names the library skills for that phase. On the film track at least two library skills shape every phase from Direction to Sound, and at least one shapes Review and Deliver, whose checks the skill's own scripts carry. Log one ledger row in `production.md` per skill per phase it shaped (skill id and the decision it drove): one read may count in several phases, but a search or a skim of headings is not a read. Find any skill with `motion_library.py where <id or name>`.
 - **Never ship the first idea.** Three directions, two killed, reasons written down.
 - **Truth.** No number, name, quote or claim appears on screen without a `facts.md` entry. Sample content is labeled on screen.
 - **The builder never grades its own film.** The critic is a separate subagent that sees frames and the brief, not the code.
@@ -65,6 +65,7 @@ decision and the alternatives in `production.md`, and keep going.
 A 15-second piece fits in about an hour: brief and direction by minute 10,
 toolchain and storyboard panels by 20, a rough cut by 25, sound and a gated
 version by 45, one critic round of about 10 minutes, fixes and delivery by 60.
+Each rework between critic rounds adds about 30 to 45 minutes.
 Short on time: deliver the master format first and keep the review round; the
 truth gate is never skipped.
 
