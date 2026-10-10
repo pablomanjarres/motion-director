@@ -1,0 +1,154 @@
+{
+ "version": 1,
+ "sources": [
+  {
+   "id": "claude-motion",
+   "url": "https://github.com/whaleyxbt/claude-motion",
+   "sha": "e627941543d9988b155dc610bb9cc0115a5e365e",
+   "license": "MIT",
+   "verdict": "SAFE-WITH-NOTES",
+   "grade": "A",
+   "audited": "2026-10-10",
+   "notes": "A Remotion project template with a stdlib Python sound engine, beat contact sheets, a waveform and loudness check, and frame-stepped 3D capture. Its skills assume a project scaffolded from it (timeline.json, src/lib.ts, npm scripts, sfx/). Remotion needs a company license above three employees.",
+   "template": {"exclude": ["examples", ".mcp.json.example"], "edits": [
+    {"files": ["sims/kit/runtime.js", "sims/crawlers/main.js", "sims/dossier/main.js", "sims/engine/main.js"], "old": "watermark: 'X: @whaleyxbt',", "new": "watermark: '',"},
+    {"files": ["AGENTS.md"], "old": "8. Add the piece to `examples/` with the prompt you were given.\n", "new": ""},
+    {"files": ["AGENTS.md"], "old": "examples/                gallery: prompt, process and result for each piece\n", "new": ""}
+   ]},
+   "skills": [
+    {"path": ".claude/skills/motion-design", "phases": ["direction", "build"]},
+    {"path": ".claude/skills/review-loop", "phases": ["qa"]},
+    {"path": ".claude/skills/sound-design", "phases": ["sound"]},
+    {"path": ".claude/skills/web-sims", "phases": ["engine", "build"]}
+   ]
+  },
+  {
+   "id": "launch-film",
+   "url": "https://github.com/AbubakrChan/product-launch-motion",
+   "sha": "951d6149d2748a15058f79dcf8e8c4bf00824121",
+   "license": "MIT",
+   "verdict": "SAFE-WITH-NOTES",
+   "grade": "A",
+   "audited": "2026-10-10",
+   "notes": "Launch films with voice-over, word-locked cues, a camera rig, grade and mastering scripts. Run its scripts from the film project by absolute path. Client-owned example images are left out.",
+   "skills": [
+    {"path": ".", "as": "product-launch-motion", "phases": ["brief", "direction", "storyboard", "build", "sound", "qa", "deliver"], "exclude": ["examples/still-1.jpg", "examples/film-preview.webp", "evals"]}
+   ]
+  },
+  {
+   "id": "animate",
+   "url": "https://github.com/cth9191/animate",
+   "sha": "7e5eb56feb2dd573f890e1b7b34748af43d58263",
+   "license": "MIT",
+   "verdict": "SAFE-WITH-NOTES",
+   "grade": "A",
+   "audited": "2026-10-10",
+   "notes": "Single-file canvas animations with drawn styles, a synthesized score and measured review tools. Copy a demo into the project before building it; building in place writes into the library.",
+   "sparse": ["plugins/animate/skills/animate"],
+   "skills": [
+    {"path": "plugins/animate/skills/animate", "phases": ["direction", "storyboard", "build", "sound", "qa", "deliver"]}
+   ]
+  },
+  {
+   "id": "klik-anim",
+   "url": "https://github.com/t3knobox/klik-anim-skill-creation",
+   "sha": "3e54925f685de13c7d904b6a2dd22f630542c85e",
+   "license": "none",
+   "verdict": "SAFE-WITH-NOTES",
+   "grade": "A",
+   "audited": "2026-10-10",
+   "notes": "Deep Remotion craft: measured springs, reading-time arithmetic, a camera dial, a motion linter. No license: read it for technique and never copy its code or text into deliverables. Its install and model-routing instructions are removed.",
+   "sparse": ["klik-anim", "klik-cam", "klik-remotion-method"],
+   "skills": [
+    {"path": "klik-anim", "phases": ["direction", "build", "qa"], "edits": [
+     {"files": ["SKILL.md"], "old": "**If the user doesn't answer, or you can't ask them, default to project-local**\n— it is scoped, reversible, and touches nothing outside the repo. A global\ninstall writes to the home directory, so confirm that one explicitly. Mention\n`npx remotion skills update` for keeping them current either way.", "new": "**If the user doesn't answer, or you can't ask them, install nothing.** The\nsame skills are already in the motion library under `remotion/`; read them there."}
+    ]},
+    {"path": "klik-cam", "phases": ["build"]},
+    {"path": "klik-remotion-method", "phases": ["brief", "storyboard", "qa"], "edits": [
+     {"files": ["SKILL.md"], "old": "then FROZEN; switch to Opus |", "new": "then FROZEN |"},
+     {"files": ["SKILL.md"], "old": "- **Main conversation (Fable 5):**", "new": "- **Main conversation:**"},
+     {"files": ["SKILL.md"], "old": "- **Fresh context (Opus):** execution-plan synthesis and build — inherit ONLY\n  the artifacts. The model/session switch IS the handoff.", "new": "- **Fresh context:** execution-plan synthesis and build — inherit ONLY\n  the artifacts. The session switch IS the handoff."},
+     {"files": ["SKILL.md"], "old": "- **Model split:** planning phases on **Fable 5**; build on **Opus** — say so\n  at the plan gate, with the plan's token estimate (band, excludes iterations).\n", "new": ""},
+     {"files": ["references/execution-plan.md"], "old": "At approval, tell the user: **switch to Opus for the build** (planning ran on\nFable 5); quote the token band again;", "new": "At approval, quote the token band again;"},
+     {"files": ["templates/EXECUTION_PLAN.template.md"], "old": "3. **Recommend the user runs this phase on Opus** (planning happened on\n   Fable 5). Estimated build spend:", "new": "3. Estimated build spend:"}
+    ]}
+   ]
+  },
+  {
+   "id": "launch-kit",
+   "url": "https://github.com/charlie947/motion-graphics-skills",
+   "sha": "4cd156acdad0483884867c2d5a22268db66099d1",
+   "license": "MIT",
+   "verdict": "SAFE-WITH-NOTES",
+   "grade": "B",
+   "audited": "2026-10-10",
+   "notes": "Briefs with facts discipline, brand files, effect recipes, loops, GIF and Reel export. brand-intake no longer edits CLAUDE.md. Skip its suggestions to install other skills: the library has them.",
+   "sparse": ["skills"],
+   "skills": [
+    {"path": "skills/brand-intake", "phases": ["brief", "direction"], "edits": [
+     {"files": ["SKILL.md"], "old": ", plus a rule in CLAUDE.md so Claude reads them before it animates anything", "new": ""},
+     {"files": ["SKILL.md"], "old": "## Step 4: Add the read-first rule to CLAUDE.md\n\nCreate CLAUDE.md if it does not exist, and add this block word for word:", "new": "## Step 4: Link the files from the production bible\n\nDo not create or edit CLAUDE.md. List brand.md and MOTION.md in production.md; the motion\ndirector loads them before any animation. The rule they carry, for reference:"},
+     {"files": ["SKILL.md"], "old": "Tell the user brand.md, MOTION.md and the CLAUDE.md rule are in place", "new": "Tell the user brand.md and MOTION.md are in place and linked from production.md"}
+    ]},
+    {"path": "skills/motion-brief-writer", "phases": ["brief"]},
+    {"path": "skills/launch-video", "phases": ["storyboard", "build"]},
+    {"path": "skills/apple-launch-film", "phases": ["storyboard", "build"]},
+    {"path": "skills/vox-explainer", "phases": ["direction", "storyboard", "build"]},
+    {"path": "skills/animated-chart", "phases": ["build"]},
+    {"path": "skills/milestone-reveal", "phases": ["build"]},
+    {"path": "skills/motion-effects", "phases": ["direction", "build"]},
+    {"path": "skills/title-sequence-3d", "phases": ["build"]},
+    {"path": "skills/model-showdown", "phases": ["deliver"]},
+    {"path": "skills/newsletter-promo", "phases": ["storyboard"]},
+    {"path": "skills/loop-cover", "phases": ["build", "deliver"]},
+    {"path": "skills/reel-export", "phases": ["deliver"]}
+   ]
+  },
+  {
+   "id": "iart",
+   "url": "https://github.com/iart-ai/motion-design-skills",
+   "sha": "3c129f769d90a1328c209c386492333c9ac62312",
+   "license": "MIT",
+   "verdict": "SAFE-WITH-NOTES",
+   "grade": "B",
+   "audited": "2026-10-10",
+   "notes": "Art direction, color science and color management, composition, beat-sync editing, After Effects. Vendor footers are stripped. Its repo-root scripts are not installed: use frame_qa.py and the review recipes. Its CSS and CDN samples suit live web pages, not frame-exact renders.",
+   "sparse": ["skills"],
+   "skills": [
+    {"path": "skills/motion-art-direction", "phases": ["direction"], "edits": [
+     {"files": ["references/direction-playbook.md"], "old": "\n## Built by the team behind iart.ai\n\nThis skill is part of an open motion-graphics collection from iart.ai — the AI motion agent that turns data, scripts, and designs into editable motion graphics (Remotion → MP4). If you'd rather not hand-build this, iart.ai can act as the motion director — apply one consistent motion language and your brand across every shot, then render the piece. → [iart.ai](https://iart.ai/?utm_source=github&utm_medium=reference&utm_campaign=motion-design-skills&utm_content=ref_footer&utm_term=motion-art-direction)\n", "new": "\n"}
+    ]},
+    {"path": "skills/color-motion", "phases": ["direction", "deliver"], "edits": [
+     {"files": ["references/palettes-and-interpolation.md"], "old": " Built by **[iart.ai](https://iart.ai/?utm_source=github&utm_medium=readme&utm_campaign=motion-design-skills&utm_content=skill_footer&utm_term=color-motion)** — the AI motion agent for editable, on-brand motion graphics.", "new": ""}
+    ]},
+    {"path": "skills/shot-composition", "phases": ["direction", "storyboard"], "edits": [
+     {"files": ["references/camera-and-grids.md"], "old": " Built by **[iart.ai](https://iart.ai/?utm_source=github&utm_medium=readme&utm_campaign=motion-design-skills&utm_content=skill_footer&utm_term=shot-composition)** — the AI motion agent for editable, on-brand motion graphics.", "new": ""}
+    ]},
+    {"path": "skills/beat-sync-editing", "phases": ["storyboard", "sound"], "edits": [
+     {"files": ["references/editing-techniques.md"], "old": " Built by **[iart.ai](https://iart.ai/?utm_source=github&utm_medium=readme&utm_campaign=motion-design-skills&utm_content=skill_footer&utm_term=beat-sync-editing)** — the AI motion agent for editable, on-brand motion graphics.", "new": ""}
+    ]},
+    {"path": "skills/animation-principles", "phases": ["direction"], "edits": [
+     {"files": ["references/twelve-principles.md"], "old": " Built by **[iart.ai](https://iart.ai/?utm_source=github&utm_medium=readme&utm_campaign=motion-design-skills&utm_content=skill_footer&utm_term=animation-principles)** — the AI motion agent for editable, on-brand motion graphics.", "new": ""}
+    ]},
+    {"path": "skills/logo-animation", "phases": ["build", "web"], "edits": [
+     {"files": ["references/logo-patterns.md"], "old": " Built by **[iart.ai](https://iart.ai/?utm_source=github&utm_medium=readme&utm_campaign=motion-design-skills&utm_content=skill_footer&utm_term=logo-animation)** — the AI motion agent for editable, on-brand motion graphics.", "new": ""}
+    ]},
+    {"path": "skills/motion-background", "phases": ["build", "web"], "edits": [
+     {"files": ["references/background-recipes.md"], "old": " Built by **[iart.ai](https://iart.ai/?utm_source=github&utm_medium=readme&utm_campaign=motion-design-skills&utm_content=skill_footer&utm_term=motion-background)** — the AI motion agent for editable, on-brand motion graphics.", "new": ""}
+    ]},
+    {"path": "skills/after-effects", "phases": ["build", "deliver"], "edits": [
+     {"files": ["SKILL.md"], "old": "</content>", "new": ""},
+     {"files": ["references/expressions.md"], "old": "</content>", "new": ""},
+     {"files": ["references/expressions.md"], "old": "</invoke>", "new": ""},
+     {"files": ["references/project-hygiene.md"], "old": " Built by **[iart.ai](https://iart.ai/?utm_source=github&utm_medium=readme&utm_campaign=motion-design-skills&utm_content=skill_footer&utm_term=after-effects)** — the AI motion agent for editable, on-brand motion graphics.", "new": ""}
+    ]},
+    {"path": "skills/remotion-video", "phases": ["build"], "edits": [
+     {"files": ["references/api-and-patterns.md"], "old": " Built by **[iart.ai](https://iart.ai/?utm_source=github&utm_medium=readme&utm_campaign=motion-design-skills&utm_content=skill_footer&utm_term=remotion-video)** — the AI motion agent for editable, on-brand motion graphics.", "new": ""}
+    ]}
+   ]
+  }
+ ],
+ "excluded": [
+  {"url": "https://github.com/howseen-ai/claude-motion-design", "reason": "Strong render and QA craft, rewritten into the motion phases instead. The skill text teaches spoofed user agents for scraping, cropping watermarks, frame-for-frame copies of other companies' films and ways around command guards, and depends on a private workspace."}
+ ]
+}
