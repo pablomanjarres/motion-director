@@ -12,7 +12,7 @@ command used. `<skill>` below is this skill's folder; `<library>` is the path
 |---|---|---|
 | React product UI, data-driven variants, captions, Studio editing | Remotion | `npx create-video@latest --yes --blank --no-tailwind <dir>` |
 | Remotion plus a ready sound engine, beat sheets, loudness checks, 3D sim capture | Remotion from the claude-motion template | `python3 <skill>/scripts/motion_library.py scaffold claude-motion <dir>`, then `npm ci` |
-| Typography-led brand or launch films, showreels, no company-size license limit | HyperFrames | `bash <skill>/scripts/hf.sh init <dir> --non-interactive --example=blank` (add `--resolution portrait` for 9:16) |
+| Typography-led brand or launch films, showreels, no company-size license limit | HyperFrames | `bash <skill>/scripts/hf.sh init <dir> --non-interactive --example=blank`, then a second root file for 9:16 (rules below) |
 | HyperFrames with a 406-card style library and talking-head cut tools | HyperFrames from the hf-kit template | `python3 <skill>/scripts/motion_library.py scaffold hf-kit <dir>`, then `mkdir -p <dir>/video-projects` and `npm ci` |
 | A launch film timed to a voice-over, word-locked cues | HTML and GSAP with the launch-film scripts (rendered by HyperFrames) | project folder plus `node <library>/launch-film/product-launch-motion/scripts/assemble.mjs` |
 | A stylized explainer, history or short in a drawn style | animate canvas kit | `node <library>/animate/animate/tools/build.mjs <piece>` from the project folder |
@@ -28,6 +28,8 @@ company license).
 
 ## Rules for every toolchain
 
+- **One brief.** `production.md` is the only brief. When a library skill expects its own brief or plan file (HyperFrames' `BRIEF.md`, klik's SSOT, animate's intake), fill it from `production.md` instead of running that skill's interview.
+- **One project, one root per format.** Every format reads the same timeline and a shared layout function. In HyperFrames keep `index.html` at 1920x1080 and a second root such as `vertical.html` at 1080x1920 in the same project, and render each with `hf.sh render --composition <file> --output <path>` (`--resolution` changes pixel density, never the framing). In Remotion register one `<Composition>` per format.
 - Pin engine versions in `package.json` and record them in `production.md`. No unpinned `npx` in renders.
 - **HyperFrames runs only through `bash <skill>/scripts/hf.sh <command>`**: it pins the release, turns off telemetry, update checks and global skill installs, and refuses `usage` (it reads agent login tokens), `skills`, `upgrade`, `feedback`, `events`, `auth`, `open` and cloud commands. Skip any HyperFrames skill text that asks for those.
 - Never let a scaffold or installer add agent skills or edit agent configuration (`npx skills add`, `npx remotion skills add`, `npx motion-ai`, `hyperframes skills update`). Every skill is already in the library.
@@ -40,7 +42,7 @@ company license).
 |---|---|
 | Remotion | `remotion/remotion-create`, `remotion/remotion-markup`, `remotion/remotion-studio`, `remotion/remotion-render`, plus `klik-anim/klik-anim` and `klik-anim/klik-cam` for craft |
 | claude-motion template | its four skills: `claude-motion/motion-design`, `claude-motion/review-loop`, `claude-motion/sound-design`, `claude-motion/web-sims` |
-| HyperFrames | `hyperframes/hyperframes-core`, `hyperframes/hyperframes-animation`, `hyperframes/hyperframes-cli`, `hf-reel/hyperframes-motion-reel`, `hyperframes/motion-doctrine`, and the workflow that matches (`hyperframes/product-launch-video`, `hyperframes/motion-graphics`, `hyperframes/music-to-video`, `hyperframes/general-video`, ...) |
+| HyperFrames | `hyperframes/hyperframes-core`, `hyperframes/hyperframes-animation`, `hyperframes/hyperframes-cli`, `hf-reel/hyperframes-motion-reel`, `hyperframes/motion-doctrine`; build with the `hyperframes/general-video`, `hyperframes/motion-graphics` or `hyperframes/music-to-video` workflow. `product-launch-video`, `faceless-explainer` and `pr-to-video` are for story and visual design only: their audio scripts need `media-use`, which is not installed, so sound follows `phases/sound.md` |
 | hf-kit template | `hf-kit/make-a-video`, `hf-kit/video-storytelling`, `hf-kit/style-library`, `hf-kit/short-form-edit` |
 | Launch film | `launch-film/product-launch-motion` |
 | Canvas | `animate/animate` |
