@@ -3,8 +3,8 @@
 
 Reports one-frame position jumps (pops), one-frame flashes, frozen stretches (the
 final hold excepted) and black frames away from the edges. With --against it
-compares two renders frame by frame, which proves a render is deterministic when
-the same frames are rendered twice. Needs ffmpeg and ffprobe; Python stdlib only.
+hashes every decoded frame of two renders at full resolution, which proves a render
+is deterministic when the same frames are rendered twice (at different concurrency). Needs ffmpeg and ffprobe; Python stdlib only.
 
 Exit status: 0 nothing to look at, 1 findings listed, 2 the video could not be read.
 """
@@ -12,7 +12,7 @@ import argparse
 import json
 import sys
 
-from media import MediaError, probe_fps, raw_frames
+from media import MediaError, frame_hashes, probe_fps, raw_frames
 
 
 def change(a, b):
@@ -77,16 +77,17 @@ def find_defects(frames, fps, cuts, min_jump, ratio, freeze_seconds, events=()):
     return findings, notes
 
 
-def compare(frames, other, fps):
-    if len(frames) != len(other):
-        return ["frame counts differ: %d vs %d" % (len(frames), len(other))]
-    diffs = [change(a, b) for a, b in zip(frames, other)]
-    first = next((i for i, diff in enumerate(diffs) if diff > 0.5), None)
-    if first is None:
+def compare(hashes, other_hashes, frames, other, fps):
+    """Frames whose full-resolution hashes differ, with the largest visible difference among them."""
+    if len(hashes) != len(other_hashes):
+        return ["frame counts differ: %d vs %d" % (len(hashes), len(other_hashes))]
+    differing = [i for i, (a, b) in enumerate(zip(hashes, other_hashes)) if a != b]
+    if not differing:
         return []
-    worst = max(range(len(diffs)), key=diffs.__getitem__)
-    return ["renders differ from frame %d (%.3f s); largest difference at frame %d (%.1f)"
-            % (first, first / fps, worst, diffs[worst])]
+    worst = max(differing, key=lambda i: change(frames[i], other[i]) if i < min(len(frames), len(other)) else 0.0)
+    return ["renders differ in %d of %d frames, first at frame %d (%.3f s); largest visible difference at frame "
+            "%d (%.1f)" % (len(differing), len(hashes), differing[0], differing[0] / fps, worst,
+                           change(frames[worst], other[worst]))]
 
 
 def main(argv=None):
@@ -110,7 +111,8 @@ def main(argv=None):
         fps = probe_fps(args.video)
         frames = raw_frames(args.video, width, height)
         if args.against:
-            findings, notes = compare(frames, raw_frames(args.against, width, height), fps), []
+            other = raw_frames(args.against, width, height)
+            findings, notes = compare(frame_hashes(args.video), frame_hashes(args.against), frames, other, fps), []
         else:
             findings, notes = find_defects(frames, fps, cuts, args.min_jump, args.ratio, args.freeze_seconds, events)
     except MediaError as error:

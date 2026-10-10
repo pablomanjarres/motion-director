@@ -51,6 +51,12 @@ def has_audio(path):
     return bool(probe(path, "stream=index", "a:0"))
 
 
+def frame_hashes(path):
+    """An MD5 of every decoded video frame at full resolution, for proving two renders identical."""
+    out = run(["ffmpeg", "-v", "error", "-i", path, "-map", "0:v:0", "-f", "framemd5", "-"])
+    return [line.rsplit(",", 1)[1].strip() for line in out.splitlines() if line.strip() and not line.startswith("#")]
+
+
 def tile(columns, rows):
     """The tile filter for contact sheets; unused cells are mid grey so they never read as black frames."""
     return "tile=%dx%d:color=0x808080" % (columns, rows)
