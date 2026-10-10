@@ -19,6 +19,8 @@ import shutil
 import subprocess
 import sys
 
+from library_index import find_skills, load_index, write_index
+
 PHASES = ("brief", "direction", "storyboard", "engine", "build", "sound", "qa", "deliver", "web")
 VERDICTS = ("SAFE", "SAFE-WITH-NOTES")
 LICENSE_FILES = ("LICENSE", "LICENSE.md", "LICENSE.txt", "COPYING")
@@ -161,6 +163,56 @@ def install(manifest, home):
         for name in os.listdir(root):
             if name not in keep and os.path.isdir(os.path.join(root, name)):
                 shutil.rmtree(os.path.join(root, name))
+    write_index(manifest, home)
+
+
+def verify(manifest, home):
+    problems = []
+    for source in manifest["sources"]:
+        head = head_of(os.path.join(home, "src", source["id"]))
+        if head != source["sha"]:
+            problems.append("%s: checkout at %s, pinned %s" % (source["id"], (head or "nothing")[:7], source["sha"][:7]))
+        for skill in source["skills"]:
+            if not os.path.isfile(os.path.join(home, "library", source["id"], skill["dir"], "SKILL.md")):
+                problems.append("%s/%s: missing from the library" % (source["id"], skill["dir"]))
+    index = load_index(home)
+    if not index or index.get("manifest_digest") != manifest["digest"]:
+        problems.append("index is missing or older than library.json")
+    for problem in problems:
+        print("stale: " + problem)
+    if problems:
+        print("run: python3 %s install" % os.path.abspath(__file__))
+        return 1
+    total = sum(len(source["skills"]) for source in manifest["sources"])
+    print("ok: %d sources, %d skills at their pins in %s" % (len(manifest["sources"]), total, home))
+    return 0
+
+
+def where(home, query):
+    index = load_index(home)
+    if not index:
+        print("no library at %s; run install first" % home, file=sys.stderr)
+        return 1
+    hits = find_skills(index, query)
+    if len(hits) != 1:
+        found = ", ".join(skill["id"] for skill in hits)
+        print("ambiguous, pick one: " + found if hits else "no skill matches %r" % query, file=sys.stderr)
+        return 1
+    print(os.path.join(home, hits[0]["path"]))
+    return 0
+
+
+def outdated(manifest):
+    moved = 0
+    for source in manifest["sources"]:
+        heads = git("ls-remote", source["url"], "HEAD").split()
+        upstream = heads[0] if heads else "unknown"
+        if upstream != source["sha"]:
+            moved += 1
+            print("%s: pinned %s, upstream HEAD %s (%s)" % (source["id"], source["sha"][:7], upstream[:7], source["url"]))
+    if not moved:
+        print("all %d sources still match upstream HEAD" % len(manifest["sources"]))
+    return 1 if moved else 0
 
 
 def main(argv=None):
@@ -168,7 +220,10 @@ def main(argv=None):
     parser.add_argument("--manifest", default=DEFAULT_MANIFEST)
     parser.add_argument("--home", default=None, help="library home (default: %s)" % default_home())
     commands = parser.add_subparsers(dest="command", required=True)
-    commands.add_parser("install", help="fetch pinned sources and rebuild the library")
+    commands.add_parser("install", help="fetch pinned sources, rebuild the library, then verify")
+    commands.add_parser("verify", help="exit 1 unless the library matches library.json")
+    commands.add_parser("where", help="print the SKILL.md path for a skill").add_argument("query")
+    commands.add_parser("outdated", help="list sources whose upstream moved past the pin")
     args = parser.parse_args(argv)
     home = os.path.abspath(args.home or default_home())
     try:
@@ -177,8 +232,14 @@ def main(argv=None):
         print("manifest error: %s" % error, file=sys.stderr)
         return 2
     try:
-        install(manifest, home)
-        return 0
+        if args.command == "install":
+            install(manifest, home)
+            return verify(manifest, home)
+        if args.command == "verify":
+            return verify(manifest, home)
+        if args.command == "where":
+            return where(home, args.query)
+        return outdated(manifest)
     except (InstallError, OSError, shutil.Error) as error:
         print("install error: %s" % error, file=sys.stderr)
         return 1
