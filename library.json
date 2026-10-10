@@ -146,6 +146,131 @@
      {"files": ["references/api-and-patterns.md"], "old": " Built by **[iart.ai](https://iart.ai/?utm_source=github&utm_medium=readme&utm_campaign=motion-design-skills&utm_content=skill_footer&utm_term=remotion-video)** — the AI motion agent for editable, on-brand motion graphics.", "new": ""}
     ]}
    ]
+  },
+  {
+   "id": "hf-kit",
+   "url": "https://github.com/nateherkai/hyperframes-student-kit",
+   "sha": "0d30152a82b9ceb93cfdd9bdbf46f0d5ab3cde86",
+   "license": "MIT",
+   "verdict": "SAFE-WITH-NOTES",
+   "grade": "A",
+   "audited": "2026-10-10",
+   "notes": "HyperFrames editing craft, a 406-card style library and talking-head cut tools. The skills expect the kit workspace: scaffold it. Its style tokens and placeholder copy carry a third-party brand that is not licensed for reuse: re-token before client work. Paid-API scripts that read .env files up the tree are not installed.",
+   "template": {"exclude": ["video-projects", ".agents", ".claude/skills/hyperframes", ".claude/skills/hyperframes-cli", ".claude/skills/hyperframes-registry", ".claude/skills/gsap", ".claude/skills/website-to-hyperframes", ".claude/skills/short-form-video", ".claude/skills/motion-showreel/scripts/kie.mjs", ".claude/skills/motion-showreel/scripts/sfx.mjs", "scripts/transcribe-elevenlabs.mjs"]},
+   "skills": [
+    {"path": ".claude/skills/make-a-video", "phases": ["brief", "storyboard"]},
+    {"path": ".claude/skills/short-form-edit", "phases": ["brief", "storyboard", "sound", "qa", "deliver"]},
+    {"path": ".claude/skills/video-storytelling", "phases": ["direction", "storyboard", "build"]},
+    {"path": ".claude/skills/hyperframes-video-beats", "phases": ["storyboard", "build"]},
+    {"path": ".claude/skills/edit-video", "phases": ["build"]},
+    {"path": ".claude/skills/cut-silences", "phases": ["build"]},
+    {"path": ".claude/skills/cut-mistakes", "phases": ["build"]},
+    {"path": ".claude/skills/style-library", "phases": ["direction", "build"]},
+    {"path": ".claude/skills/motion-showreel", "phases": ["direction", "storyboard", "sound"], "exclude": ["scripts/kie.mjs", "scripts/sfx.mjs"]}
+   ]
+  },
+  {
+   "id": "hyperframes",
+   "url": "https://github.com/heygen-com/hyperframes",
+   "sha": "6f3f86a9c9824c8ad5b7bf760375e243466e5ee0",
+   "license": "Apache-2.0",
+   "verdict": "SAFE-WITH-NOTES",
+   "grade": "A",
+   "audited": "2026-10-10",
+   "notes": "The official HyperFrames skills plus HeyGen's internal motion doctrine. Run the CLI only through scripts/hf.sh (pinned, telemetry and skill installs off, credential-reading and upload commands refused). Usage checks, skill updates and auto-upgrades are stripped. media-use is not installed: it is tied to HeyGen services, sends its own telemetry and loads .env files from parent folders.",
+   "sparse": ["skills", ".claude/skills"],
+   "skills": [
+    {"path": "skills/hyperframes", "phases": ["engine", "brief"], "edits": [
+     {"files": ["SKILL.md"], "old": "when this skill is inside a HyperFrames plugin. Standalone installs keep the update instructions below.", "new": "always: this library copy counts as a plugin install."},
+     {"files": ["SKILL.md"], "old": "### Check remaining usage\n\nAt the start of creation, run `npx hyperframes usage --json`. Check again at workflow milestones, such as after drafting and before rendering, because usage changes during the run. Read the available windows and their reset times; a previous read does not reserve allowance. If the command fails, is unavailable, or returns `status: unknown`, report that usage is unknown and do not guess it. Keep scope and workflow choices with the user.\n\n", "new": ""},
+     {"files": ["SKILL.md"], "old": "### Keep the project's CLI current\n\nA scaffolded project pins `hyperframes@<version>` in its `package.json` scripts so renders stay reproducible; the pin never advances on its own, and a pinned run of an older CLI prints no warning about it. When resuming a project whose scripts carry a pin, probe once before the first render-affecting command:\n\n```bash\nnpx hyperframes@latest upgrade --project . --check\n```\n\nThe probe is read-only and reports the pin against the latest release; keep the explicit `.` — on older CLI releases a bare `--project` followed by another flag consumes that flag as its directory value. When it reports the project behind — or any CLI output already shows it (the stderr notice `This project pins hyperframes@… (latest …)`, or `_meta.updateAvailable: true` in a `--json` result from a pinned script) — apply with `npx hyperframes@latest upgrade --project .`, then verify with `npx hyperframes check`. A passing check confirms the project's compositions still validate on the new version — not that rendered output is frame-identical to the old pin — so a successful bump is never silent: name the old and new version in the run's summary. A project with no composition yet needs no verification. If the check fails, revert the `package.json` change, continue on the pinned version, and report which version the project stays on and why. Act on the signal rather than relaying it to the user; never leave a bumped pin unverified.\n\n", "new": "### Keep the project's CLI pinned\n\nRender with the version the project pins and never upgrade it during a video task.\n\n"},
+     {"files": ["SKILL.md"], "old": "## 4. Install and enter the workflow\n\nBefore reading the selected workflow, install or refresh it and the core domain skills:\n\n```bash\nnpx hyperframes skills update <workflow-name>\n```\n\nUse the bare name without `/`. If the command fails, surface the error; do not reconstruct the workflow from memory. Everything else about installation — the core-vs-lazy split, what `init` refreshes, diagnosis, CI opt-out, and the no-CLI fallback — lives in `references/skill-lifecycle.md`.\n\n", "new": "## 4. Enter the workflow\n\nEvery workflow is already in this library: read `../<workflow-name>/SKILL.md`. Never install or refresh skills.\n\n"},
+     {"files": ["references/plugin-installation.md"], "old": "That directory is `<PLUGIN_ROOT>`. If none exists, this is a standalone skill;\nfollow the normal installation and freshness instructions.", "new": "That directory is `<PLUGIN_ROOT>`. A copy inside the motion library always counts as a plugin\ninstallation, manifest or not: follow the rules below, and never run `usage`, `feedback`,\n`events`, `auth`, `upgrade` or `open` either."},
+     {"files": ["references/plugin-installation.md"], "old": "node \"<PLUGIN_ROOT>/skills/hyperframes/scripts/plugin-cli.mjs\" <command> <args...>", "new": "bash ~/.claude/skills/motion/scripts/hf.sh <command> <args...>"},
+     {"files": ["references/skill-lifecycle.md"], "old": "# Skill installation and freshness\n\nRead this reference when installing or updating skills, diagnosing unexpected workflow behavior, or running HyperFrames setup in CI.\n\nFor a plugin installation, follow [plugin execution rules](plugin-installation.md); the plugin manager owns updates and all workflows are bundled. The commands below apply only to standalone skills.\n\nHyperFrames installs the core set eagerly and workflow skills lazily.\n\n- **Core set:** `/hyperframes`, the `hyperframes-*` domain skills, and `/media-use`.\n- **Workflow skills:** installed when routing selects them through `npx hyperframes skills update <workflow-name>`.\n\n## What `init` does\n\n`npx hyperframes init` checks GitHub and refreshes the core set plus other skills already installed. It does not install workflows that have never been used. A current install is a no-op. Offline or rate-limited checks degrade gracefully and do not fail project scaffolding.\n\nThe `--skip-skills` CLI flag is temporarily ignored. CI and tests may opt out with `HYPERFRAMES_SKIP_SKILLS=1`.\n\n## Diagnose and update\n\n```bash\nnpx hyperframes skills check\nnpx hyperframes skills check --json\nnpx hyperframes skills update\nnpx hyperframes skills update <workflow-name>\nnpx hyperframes skills\n```\n\n- `skills check` exits non-zero when an installed skill is stale or the core set is incomplete. Workflows available on demand but not installed are not failures.\n- Bare `skills update` refreshes the core set and everything already installed, prunes unpublished skills, and does not expand the workflow set.\n- Named `skills update <name...>` also installs those named workflows or domain skills.\n- Bare `skills` installs the full published set explicitly.\n\nIf the HyperFrames CLI is unavailable, use `npx skills add heygen-com/hyperframes --skill <workflow-name>` for one workflow or `npx skills add heygen-com/hyperframes --all` for the full published set.\n\nThe CLI may print a one-line stale-skill reminder during `render`, `lint`, or `check`. Treat a failed update as a visible tool failure; do not continue from a remembered workflow contract.\n", "new": "# Skill lifecycle\n\nIn the motion library every workflow and domain skill is already installed and pinned. Never run `hyperframes skills update`, `skills check` or `npx skills add`.\n"},
+     {"files": ["references/capability-menu.md"], "old": "and workflow skills install lazily. Before reaching across, run `npx hyperframes skills update <that-workflow>` with the bare name.", "new": "and every workflow is already in the library."}
+    ]},
+    {"path": "skills/hyperframes-core", "phases": ["build"], "edits": [
+     {"files": ["SKILL.md"], "old": "when this skill is inside a HyperFrames plugin. Standalone installs keep the update instructions below.", "new": "always: this library copy counts as a plugin install."}
+    ]},
+    {"path": "skills/hyperframes-animation", "phases": ["direction", "build"], "edits": [
+     {"files": ["SKILL.md"], "old": "when this skill is inside a HyperFrames plugin. Standalone installs keep the update instructions below.", "new": "always: this library copy counts as a plugin install."}
+    ]},
+    {"path": "skills/hyperframes-keyframes", "phases": ["build"], "edits": [
+     {"files": ["SKILL.md"], "old": "when this skill is inside a HyperFrames plugin. Standalone installs keep the update instructions below.", "new": "always: this library copy counts as a plugin install."}
+    ]},
+    {"path": "skills/hyperframes-creative", "phases": ["direction", "storyboard"], "edits": [
+     {"files": ["SKILL.md"], "old": "when this skill is inside a HyperFrames plugin. Standalone installs keep the update instructions below.", "new": "always: this library copy counts as a plugin install."}
+    ]},
+    {"path": "skills/hyperframes-audio", "phases": ["sound"], "edits": [
+     {"files": ["SKILL.md"], "old": "when this skill is inside a HyperFrames plugin. Standalone installs keep the update instructions below.", "new": "always: this library copy counts as a plugin install."}
+    ]},
+    {"path": "skills/hyperframes-cli", "phases": ["build", "qa", "deliver"], "edits": [
+     {"files": ["SKILL.md"], "old": "when this skill is inside a HyperFrames plugin. Standalone installs keep the update instructions below.", "new": "always: this library copy counts as a plugin install."},
+     {"files": ["SKILL.md"], "old": "## Remaining harness usage\n\nRun `npx hyperframes usage --json` at the start of a video workflow and again at milestones such as after drafting and before rendering. A fresh read at handoff can serve as the start read. Use `--harness claude-code`, `--harness codex`, or `--harness grok` to select explicitly.\n\nKnown results contain `status: \"known\"`, `harness`, `planTier`, `session`, and `weekly`. Each available window contains `usedPercent`, `remainingPercent`, and `resetsAt`; an unavailable window is `null`. `planTier` is the readable subscription tier when available, otherwise `null`. Claude Code reports its shared five-hour and weekly windows. Codex reports its shared session and weekly windows when available. Grok reports its included weekly allowance with `session: null`.\n\nUnknown results contain `status: \"unknown\"` and a token-free `reason`. Missing, expired, unsupported, ambiguous, or unreadable logins and unavailable provider responses return unknown. Report the unknown state without guessing allowance. The command reads existing credentials without refreshing or rewriting them and emits no tokens or telemetry. Usage is a snapshot; it does not reserve allowance or estimate the next video's cost. Keep scope and workflow choices with the user.\n", "new": ""},
+     {"files": ["references/upgrade-info-misc.md"], "old": "## Remaining harness usage\n\nRun `npx hyperframes usage --json` at the start of a video workflow and again at milestones such as after drafting and before rendering. A fresh read at handoff can serve as the start read. Use `--harness claude-code`, `--harness codex`, or `--harness grok` to select explicitly.\n\nKnown results contain `status: \"known\"`, `harness`, `planTier`, `session`, and `weekly`. Each available window contains `usedPercent`, `remainingPercent`, and `resetsAt`; an unavailable window is `null`. `planTier` is the readable subscription tier when available, otherwise `null`. Claude Code reports its shared five-hour and weekly windows. Codex reports its shared session and weekly windows when available. Grok reports its included weekly allowance with `session: null`.\n\nUnknown results contain `status: \"unknown\"` and a token-free `reason`. Missing, expired, unsupported, ambiguous, or unreadable logins and unavailable provider responses return unknown. Report the unknown state without guessing allowance. The command reads existing credentials without refreshing or rewriting them and emits no tokens or telemetry. Usage is a snapshot; it does not reserve allowance or estimate the next video's cost. Keep scope and workflow choices with the user.\n", "new": ""}
+    ]},
+    {"path": "skills/hyperframes-registry", "phases": ["build"], "edits": [
+     {"files": ["SKILL.md"], "old": "when this skill is inside a HyperFrames plugin. Standalone installs keep the update instructions below.", "new": "always: this library copy counts as a plugin install."}
+    ]},
+    {"path": "skills/hyperframes-studio", "phases": ["brief", "build"], "edits": [
+     {"files": ["SKILL.md"], "old": "when this skill is inside a HyperFrames plugin. Standalone installs keep the update instructions below.", "new": "always: this library copy counts as a plugin install."}
+    ]},
+    {"path": "skills/product-launch-video", "phases": ["storyboard", "build"], "edits": [
+     {"files": ["SKILL.md"], "old": "when this skill is inside a HyperFrames plugin. Standalone installs keep the update instructions below.", "new": "always: this library copy counts as a plugin install."},
+     {"files": ["SKILL.md"], "old": "> **First, keep this skill fresh — confirm with the user before running:** `npx hyperframes skills update product-launch-video`. A fast no-op when everything is current; otherwise it refreshes this skill plus the core domain skills it depends on before you rely on them.\n", "new": ""},
+     {"files": ["SKILL.md"], "old": "**Show sign-in status before proceeding past Setup** — run `npx hyperframes auth status` and relay its output verbatim. It reports whether voice/BGM will use HeyGen or local engines and, when signed out, how to sign in. Note the exit code contract: `auth status` **exits 1 when not signed in** (and when the stored credential is rejected) — that non-zero exit is the normal signed-out state, not a command failure, so don't treat it as an error, don't retry it, and don't chain it with `&&`/`set -e` in a way that would abort the workflow. Apply one branch:\n", "new": ""}
+    ]},
+    {"path": "skills/faceless-explainer", "phases": ["storyboard", "build"], "edits": [
+     {"files": ["SKILL.md"], "old": "when this skill is inside a HyperFrames plugin. Standalone installs keep the update instructions below.", "new": "always: this library copy counts as a plugin install."},
+     {"files": ["SKILL.md"], "old": "> **First, keep this skill fresh — confirm with the user before running:** `npx hyperframes skills update faceless-explainer`. A fast no-op when everything is current; otherwise it refreshes this skill plus the core domain skills it depends on before you rely on them.\n", "new": ""},
+     {"files": ["SKILL.md"], "old": "**Show sign-in status before proceeding past Setup** — run `npx hyperframes auth status` and relay its output verbatim. It reports whether voice/BGM will use HeyGen or local engines and, when signed out, how to sign in. Apply one branch:\n", "new": ""}
+    ]},
+    {"path": "skills/pr-to-video", "phases": ["storyboard", "build"], "edits": [
+     {"files": ["SKILL.md"], "old": "when this skill is inside a HyperFrames plugin. Standalone installs keep the update instructions below.", "new": "always: this library copy counts as a plugin install."},
+     {"files": ["SKILL.md"], "old": "> **First, keep this skill fresh — confirm with the user before running:** `npx hyperframes skills update pr-to-video`. A fast no-op when everything is current; otherwise it refreshes this skill plus the core domain skills it depends on before you rely on them.\n", "new": ""},
+     {"files": ["SKILL.md"], "old": "**Show sign-in status before proceeding past Setup** — run `npx hyperframes auth status` and relay its output verbatim. It reports whether voice/BGM will use HeyGen or local engines and, when signed out, how to sign in. Apply one branch:\n", "new": ""}
+    ]},
+    {"path": "skills/embedded-captions", "phases": ["build", "deliver"], "edits": [
+     {"files": ["SKILL.md"], "old": "when this skill is inside a HyperFrames plugin. Standalone installs keep the update instructions below.", "new": "always: this library copy counts as a plugin install."},
+     {"files": ["SKILL.md"], "old": "> **First, keep this skill fresh — confirm with the user before running:** `npx hyperframes skills update embedded-captions`. A fast no-op when everything is current; otherwise it refreshes this skill plus the core domain skills it depends on before you rely on them.\n", "new": ""}
+    ]},
+    {"path": "skills/talking-head-recut", "phases": ["build"], "edits": [
+     {"files": ["SKILL.md"], "old": "when this skill is inside a HyperFrames plugin. Standalone installs keep the update instructions below.", "new": "always: this library copy counts as a plugin install."},
+     {"files": ["SKILL.md"], "old": "> **First, keep this skill fresh — confirm with the user before running:** `npx hyperframes skills update talking-head-recut`. A fast no-op when everything is current; otherwise it refreshes this skill plus the core domain skills it depends on before you rely on them.\n", "new": ""}
+    ]},
+    {"path": "skills/motion-graphics", "phases": ["build"], "edits": [
+     {"files": ["SKILL.md"], "old": "when this skill is inside a HyperFrames plugin. Standalone installs keep the update instructions below.", "new": "always: this library copy counts as a plugin install."},
+     {"files": ["SKILL.md"], "old": "> **First, keep this skill fresh — confirm with the user before running:** `npx hyperframes skills update motion-graphics`. A fast no-op when everything is current; otherwise it refreshes this skill plus the core domain skills it depends on before you rely on them.\n", "new": ""}
+    ]},
+    {"path": "skills/music-to-video", "phases": ["storyboard", "sound", "build"], "edits": [
+     {"files": ["SKILL.md"], "old": "when this skill is inside a HyperFrames plugin. Standalone installs keep the update instructions below.", "new": "always: this library copy counts as a plugin install."},
+     {"files": ["SKILL.md"], "old": "> **First, keep this skill fresh — confirm with the user before running:** `npx hyperframes skills update music-to-video`. A fast no-op when everything is current; otherwise it refreshes this skill plus the core domain skills it depends on before you rely on them.\n", "new": ""}
+    ]},
+    {"path": "skills/slideshow", "phases": ["web"], "edits": [
+     {"files": ["SKILL.md"], "old": "when this skill is inside a HyperFrames plugin. Standalone installs keep the update instructions below.", "new": "always: this library copy counts as a plugin install."},
+     {"files": ["SKILL.md"], "old": "> **First, keep this skill fresh — confirm with the user before running:** `npx hyperframes skills update slideshow`. A fast no-op when everything is current; otherwise it refreshes this skill plus the core domain skills it depends on before you rely on them.\n", "new": ""}
+    ]},
+    {"path": "skills/general-video", "phases": ["build"], "edits": [
+     {"files": ["SKILL.md"], "old": "when this skill is inside a HyperFrames plugin. Standalone installs keep the update instructions below.", "new": "always: this library copy counts as a plugin install."},
+     {"files": ["SKILL.md"], "old": "Run `npx hyperframes usage --json` at the start unless the workflow just read it, then check again at milestones such as after drafting and before rendering. Read the available windows and reset times. If usage is unknown, say so without guessing allowance; keep scope and workflow choices with the user.\n\n", "new": ""},
+     {"files": ["SKILL.md"], "old": "Before relying on this workflow, run:\n\n```bash\nnpx hyperframes skills update general-video\n```\n\nA successful no-op means the skill is current. Surface an update failure instead of continuing from memory.\n\n", "new": ""},
+     {"files": ["SKILL.md"], "old": "First run `npx hyperframes skills update <workflow-name>`. ", "new": "Read its SKILL.md in this library. "}
+    ]},
+    {"path": "skills/remotion-to-hyperframes", "phases": ["engine"], "edits": [
+     {"files": ["SKILL.md"], "old": "when this skill is inside a HyperFrames plugin. Standalone installs keep the update instructions below.", "new": "always: this library copy counts as a plugin install."},
+     {"files": ["SKILL.md"], "old": "> **First, keep this skill fresh — confirm with the user before running:** `npx hyperframes skills update remotion-to-hyperframes`. A fast no-op when everything is current; otherwise it refreshes this skill plus the core domain skills it depends on before you rely on them.\n", "new": ""}
+    ]},
+    {"path": "skills/figma", "phases": ["direction", "build"], "edits": [
+     {"files": ["SKILL.md"], "old": "when this skill is inside a HyperFrames plugin. Standalone installs keep the update instructions below.", "new": "always: this library copy counts as a plugin install."},
+     {"files": ["SKILL.md"], "old": "> **First, keep this skill fresh — confirm with the user before running:** `npx hyperframes skills update figma`. A fast no-op when everything is current; otherwise it refreshes this skill plus the core domain skills it depends on before you rely on them.\n", "new": ""}
+    ]},
+    {"path": ".claude/skills/motion-doctrine", "phases": ["direction", "build", "qa"]},
+    {"path": ".claude/skills/cut-the-curve", "phases": ["build"]},
+    {"path": ".claude/skills/seam-craft", "phases": ["build"]},
+    {"path": ".claude/skills/oversized-cursor", "phases": ["build"]},
+    {"path": ".claude/skills/captions-overlay", "phases": ["build"]}
+   ]
   }
  ],
  "excluded": [
