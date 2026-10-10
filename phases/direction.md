@@ -1,7 +1,8 @@
 # Phase 2: Direction
 
 Choose a look and a motion language on purpose instead of shipping the first idea.
-Output: `production.md` section 2 and two to four look frames.
+Output: `production.md` section 2. Look frames come later, in the storyboard phase,
+rendered from the scaffolded project.
 
 ## 1. Measure the references
 
@@ -79,12 +80,6 @@ At 30 fps, frames = ms × 0.03 (300 ms is 9 frames).
 - Palette: one primary, one accent, two or three neutrals tinted toward the primary; roughly 60/30/10 by area. Build ramps and gradients in OKLCH (`linear-gradient(in oklch, ...)`); add 3 to 5 percent grain against banding.
 - One focal point per frame. Everything that must be read stays legible on a phone, judged at 360 px wide.
 - Color management for video (Rec.709, tags, the QuickTime gamma trap): `iart/color-motion`.
-
-## 6. Look frames (still-frame gate)
-
-Render two to four full-size stills of the most different beats in the chosen
-direction. A weak still will not be rescued by motion: fix it here. When the person
-is present, show the stills and get a yes before animating.
 
 ## Library reads for this phase
 

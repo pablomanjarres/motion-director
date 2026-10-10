@@ -1,8 +1,8 @@
-# Phase 3: Storyboard
+# Phase 4: Storyboard
 
-Turn the direction into a timed plan that picture, sound and review all read.
-Output: the beat table in `production.md` section 3, a timeline file, and one
-still per beat.
+Turn the direction into a timed plan that picture, sound and review all read, in
+the project the toolchain phase scaffolded. Output: the beat table in
+`production.md` section 4, a timeline file, look frames, and one still per beat.
 
 ## 1. Choose the structure
 
@@ -58,12 +58,14 @@ picture and sound.
 - With voice-over: keep the word timings file next to it and anchor beats to words. Cue to the meaning word (the verb, not the noun); lead a reveal that must be read by 0.02 to 0.06 s; land hits exactly on the word.
 - With a song: keep the beat analysis next to it and snap cuts to the grid (2, 4 or 8 beat phrases, not every beat).
 
-## 5. Panels and check-ins
+## 5. Look frames, panels and check-ins
 
-Render one still per beat from the real scene code at full size, so panels become
-the build instead of throwaway drawings. Three cheap check-ins happen before full
-animation: the story (beat table), the look (from direction) and the storyboard
-(panels). When the person is present, ask at each one with options and a
+First render two to four full-size look frames of the most different beats, from
+the scaffolded project. This is the still-frame gate: a weak still will not be
+rescued by motion, so fix the look here. Then render one still per beat from the
+real scene code, so panels become the build instead of throwaway drawings. Three
+cheap check-ins happen before full animation: the story (beat table), the look
+(look frames) and the storyboard (panels). When the person is present, ask at each one with options and a
 recommended default. When they are away, decide, record the decision and the
 alternatives in `production.md`, and continue.
 
