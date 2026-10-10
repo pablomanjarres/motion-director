@@ -44,6 +44,7 @@ class ReviewPackTest(unittest.TestCase):
         self.assertIn("1.80 s", index)
         self.assertIn("strip-01.png", index)
         self.assertIn("1.00 s to 1.50 s", index)
+        self.assertIn("cell N shows (N - 1) x 0.5 s", index)
 
     def test_empty_contact_cells_are_grey_not_black(self):
         done = self.pack("--beats", "0.2,0.6,1.0,1.4,1.8")

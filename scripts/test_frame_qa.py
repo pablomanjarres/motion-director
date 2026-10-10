@@ -72,6 +72,17 @@ class FrameQaTest(unittest.TestCase):
         self.assertEqual(differs.returncode, 1, differs.stdout + differs.stderr)
         self.assertIn("frame 30", differs.stdout)
 
+    def test_more_than_three_general_flashes_a_second_is_reported(self):
+        black = ["-f", "lavfi", "-i", "color=c=black:s=192x108:r=30:d=2"]
+        strobe = encode(os.path.join(self.tmp, "strobe.mp4"), black + [
+            "-vf", "drawbox=x=0:y=0:w=iw:h=ih:color=white:t=fill:enable='lt(mod(n,6),3)'"])
+        found = self.qa(strobe)
+        self.assertEqual(found.returncode, 1, found.stdout + found.stderr)
+        self.assertIn("general flashes", found.stdout)
+        calm = encode(os.path.join(self.tmp, "calm.mp4"), black + [
+            "-vf", "drawbox=x=0:y=0:w=iw:h=ih:color=white:t=fill:enable='lt(mod(n,30),15)'"])
+        self.assertNotIn("general flashes", self.qa(calm).stdout)
+
     def test_against_catches_a_difference_too_small_to_see_at_analysis_size(self):
         first = self.make("plain", "t*60")
         speck = self.make("speck", "t*60", ",drawbox=x=0:y=0:w=4:h=4:color=white:t=fill:enable='eq(n,20)'")
