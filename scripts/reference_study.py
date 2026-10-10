@@ -15,10 +15,12 @@ import os
 import statistics
 import sys
 
+from frame_qa import changes, spikes
 from media import MediaError, duration, ffmpeg, frame_size, has_audio, probe_fps, raw_frames, run
 
 BARS = "▁▂▃▄▅▆▇█"
 SHEET_ROWS = 6
+SPIKE_RATIO = 4.0
 
 
 def scene_scores(video):
@@ -35,12 +37,22 @@ def scene_scores(video):
     return scores
 
 
-def find_shots(scores, length, threshold, min_shot):
-    """Hard cuts (a scene change of at least threshold) at least min_shot apart, and the shots between."""
-    cuts = []
-    for moment, score in scores:
-        if (score >= threshold and min_shot <= moment <= length - min_shot
-                and (not cuts or moment - cuts[-1] >= min_shot)):
+def spiking_frames(video):
+    """Frames whose picture change is a one-frame spike, and frames inside one-frame flashes."""
+    frames = raw_frames(video, 160, 90)
+    _, jumps, flashed = spikes(frames, changes(frames), 1.0, SPIKE_RATIO)
+    return set(jumps), flashed
+
+
+def find_shots(scores, length, fps, threshold, floor, spiking=(), flashed=()):
+    """Hard cuts and the shots between them. A frame is a cut when its scene change reaches threshold, or
+    reaches floor on a one-frame spike in picture change (a cut between similar pictures); never inside a
+    flash, and at least two frames after the previous cut."""
+    cuts, gap = [], 1.5 / fps
+    for frame, (moment, score) in enumerate(scores):
+        if frame in flashed or not (score >= threshold or (score >= floor and frame in spiking)):
+            continue
+        if gap <= moment <= length - gap and (not cuts or moment - cuts[-1] >= gap):
             cuts.append(moment)
     edges = [0.0] + cuts + [length]
     return cuts, list(zip(edges, edges[1:]))
@@ -175,11 +187,11 @@ def shot_stats(shots, length):
             "final": round(lengths[-1], 2)}
 
 
-def study(video, out, threshold, min_shot, still, columns):
+def study(video, out, threshold, floor, still, columns):
     os.makedirs(out, exist_ok=True)
     length, fps, size = duration(video), probe_fps(video), frame_size(video)
     scores = scene_scores(video)
-    cuts, shots = find_shots(scores, length, threshold, min_shot)
+    cuts, shots = find_shots(scores, length, fps, threshold, floor, *spiking_frames(video))
     rates = [(moment, score * fps) for moment, score in scores]
     holds = find_holds(rates, still, 1.0, fps)
     result = {
@@ -275,8 +287,9 @@ def main(argv=None):
     parser.add_argument("videos", nargs="+")
     parser.add_argument("--draft", help="a render of your own, compared against the videos on board.md")
     parser.add_argument("--out", default="refs/study", help="output folder (default refs/study)")
-    parser.add_argument("--threshold", type=float, default=0.3, help="scene change counted as a hard cut (0-1)")
-    parser.add_argument("--min-shot", type=float, default=0.25, help="shortest shot in seconds")
+    parser.add_argument("--threshold", type=float, default=0.3, help="scene change that is always a hard cut (0-1)")
+    parser.add_argument("--spike-floor", type=float, default=0.2,
+                        help="scene change that is a hard cut when the picture change also spikes for one frame")
     parser.add_argument("--still", type=float, default=0.005,
                         help="change per second (scene change times fps) below which the picture is still")
     parser.add_argument("--columns", type=int, default=6, help="contact sheet columns")
@@ -285,7 +298,7 @@ def main(argv=None):
     for video in args.videos + ([args.draft] if args.draft else []):
         folder = os.path.join(args.out, os.path.splitext(os.path.basename(video))[0])
         try:
-            studies.append(study(video, folder, args.threshold, args.min_shot, args.still, args.columns))
+            studies.append(study(video, folder, args.threshold, args.spike_floor, args.still, args.columns))
         except MediaError as error:
             print(error, file=sys.stderr)
             return 1
