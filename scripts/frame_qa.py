@@ -2,7 +2,8 @@
 """Find motion defects in a rendered video by measuring frame-to-frame change.
 
 Reports one-frame position jumps (pops), one-frame flashes, frozen stretches (the
-final hold excepted) and black frames away from the edges. With --against it
+final hold excepted), black frames away from the edges, and more than three general
+flashes in any one second (the photosensitivity limit). With --against it
 hashes every decoded frame of two renders at full resolution, which proves a render
 is deterministic when the same frames are rendered twice (at different concurrency). Needs ffmpeg and ffprobe; Python stdlib only.
 
@@ -13,6 +14,32 @@ import json
 import sys
 
 from media import MediaError, frame_hashes, probe_fps, raw_frames
+
+
+# Grey levels to linear light, the basis of relative luminance in the general flash rule.
+LINEAR = [level / 255.0 / 12.92 if level <= 10 else ((level / 255.0 + 0.055) / 1.055) ** 2.4 for level in range(256)]
+
+
+def general_flashes(frames, fps, area=0.25):
+    """The most general flashes in any one second, and the frame that second starts on. A transition is a frame
+    where at least `area` of the picture changes relative luminance by 0.1 or more in one direction, the darker
+    side below 0.8; a flash is a pair of opposite transitions."""
+    transitions = []
+    for i in range(1, len(frames)):
+        darker = brighter = 0
+        for x, y in zip(frames[i - 1], frames[i]):
+            a, b = LINEAR[x], LINEAR[y]
+            if abs(b - a) >= 0.1 and min(a, b) < 0.8:
+                darker, brighter = (darker + 1, brighter) if b < a else (darker, brighter + 1)
+        if max(darker, brighter) >= area * len(frames[i]):
+            transitions.append((i, -1 if darker >= brighter else 1))
+    window, most, start = max(1, int(round(fps))), 0, 0
+    for k, (first, _) in enumerate(transitions):
+        signs = [sign for frame, sign in transitions[k:] if frame < first + window]
+        flashes = (sum(1 for a, b in zip(signs, signs[1:]) if a != b) + 1) // 2
+        if flashes > most:
+            most, start = flashes, first
+    return most, start
 
 
 def change(a, b):
@@ -70,6 +97,10 @@ def find_defects(frames, fps, cuts, min_jump, ratio, freeze_seconds, events=()):
             elif length > freeze_seconds:
                 findings.append("frozen for %.2f s from %s" % (length, stamp(start)))
             start = None
+    most, start = general_flashes(frames, fps)
+    if most > 3:
+        findings.append("%d general flashes in the second from %s (the photosensitivity limit is 3)"
+                        % (most, stamp(start)))
     edge = int(0.5 * fps)
     dark = [i for i in range(edge, len(frames) - edge) if sum(frames[i]) / float(len(frames[i])) < 10]
     if dark:
