@@ -42,9 +42,10 @@ Expect h264, the planned size and fps, the exact duration, `yuv420p`, `bt709` ta
 
 ## 3. A fresh critic
 
-Spawn a separate subagent as the critic. Give it the brief section, the
+Spawn a separate subagent as the critic. Give it the brief section, `facts.md`,
+the brand files when they exist (`brand.md`, `MOTION.md` or the brand guide), the
 motion-language spec, the contact sheet, the strips, the phone sheet and this
-rubric. Do not give it the code or the builder's reasoning. Its stance is reject
+rubric. Without the brand files it judges brand fit blind. Do not give it the code or the builder's reasoning. Its stance is reject
 until earned.
 
 It scores each item from 1 to 10:
