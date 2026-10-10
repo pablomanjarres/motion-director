@@ -65,7 +65,7 @@ class MotionLibraryTest(unittest.TestCase):
         source = {
             "id": "fixture", "url": "file://" + self.upstream, "sha": sha,
             "license": "MIT", "verdict": "SAFE", "audited": "2026-10-10",
-            "sparse": ["/skills/"],
+            "sparse": ["skills"],
             "skills": [{"path": "skills/alpha", "phases": ["direction", "build"]},
                        "skills/beta"],
         }
