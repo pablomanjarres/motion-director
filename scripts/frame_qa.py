@@ -43,15 +43,18 @@ def spikes(frames, diffs, min_jump, ratio):
     return flashes, jumps, flashed
 
 
-def find_defects(frames, fps, cuts, min_jump, ratio, freeze_seconds):
+def find_defects(frames, fps, cuts, min_jump, ratio, freeze_seconds, events=()):
     findings, notes = [], []
     diffs = changes(frames)
     stamp = lambda i: "%.3f s (frame %d)" % (i / fps, i)
     flashes, jumps, _ = spikes(frames, diffs, min_jump, ratio)
     findings += ["flash at %s: one frame unlike both neighbours" % stamp(i) for i in flashes]
+    near = lambda i, moments: any(abs(i / fps - moment) <= 1.5 / fps for moment in moments)
     for i in jumps:
-        if any(abs(i / fps - cut) <= 1.5 / fps for cut in cuts):
+        if near(i, cuts):
             notes.append("declared cut at %s" % stamp(i))
+        elif near(i, events):
+            notes.append("declared event at %s" % stamp(i))
         else:
             findings.append("jump at %s: change %.1f vs %.1f around it (pop or undeclared cut)"
                             % (stamp(i), diffs[i], neighbours(diffs, i)))
@@ -91,6 +94,9 @@ def main(argv=None):
     parser.add_argument("video")
     parser.add_argument("--against", help="a second render of the same frames to compare")
     parser.add_argument("--cuts", default="", help="comma-separated seconds of intended hard cuts")
+    parser.add_argument("--events", default="",
+                        help="comma-separated seconds of intended one-frame changes that are not cuts "
+                             "(a caption switching whole, an inversion)")
     parser.add_argument("--size", default="160x90", help="analysis size, default 160x90")
     parser.add_argument("--min-jump", type=float, default=1.0, help="smallest change worth flagging (0-255)")
     parser.add_argument("--ratio", type=float, default=3.0, help="how far a jump must exceed its neighbours")
@@ -99,13 +105,14 @@ def main(argv=None):
     args = parser.parse_args(argv)
     width, height = (int(n) for n in args.size.lower().split("x"))
     cuts = [float(c) for c in args.cuts.split(",") if c.strip()]
+    events = [float(e) for e in args.events.split(",") if e.strip()]
     try:
         fps = probe_fps(args.video)
         frames = raw_frames(args.video, width, height)
         if args.against:
             findings, notes = compare(frames, raw_frames(args.against, width, height), fps), []
         else:
-            findings, notes = find_defects(frames, fps, cuts, args.min_jump, args.ratio, args.freeze_seconds)
+            findings, notes = find_defects(frames, fps, cuts, args.min_jump, args.ratio, args.freeze_seconds, events)
     except MediaError as error:
         print(error, file=sys.stderr)
         return 2
