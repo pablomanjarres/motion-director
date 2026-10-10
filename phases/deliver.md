@@ -29,11 +29,16 @@ characters, timed from the word timings. Burn them in for social cuts and ship a
 
 ## 3. Encode
 
+Render one master per format, then encode every deliverable from it. Remotion:
+`npx remotion render <id> master.mov --codec=prores --prores-profile=hq`, after
+removing any global `Config.setCrf()` from `remotion.config.ts` (Remotion rejects a
+CRF with ProRes, and the claude-motion template sets one). HyperFrames:
+`hf.sh render --format mov`.
+
 ```bash
-# H.264 delivery: limited range, BT.709 tags, fast start
+# H.264 delivery: limited range and BT.709 tags (setparams keeps the tags on current ffmpeg), fast start
 ffmpeg -i master.mov -c:v libx264 -preset slow -crf 16 -profile:v high \
-  -vf "scale=out_range=tv:out_color_matrix=bt709,format=yuv420p" \
-  -color_range tv -colorspace bt709 -color_primaries bt709 -color_trc bt709 \
+  -vf "scale=out_range=tv:out_color_matrix=bt709,format=yuv420p,setparams=range=tv:color_primaries=bt709:color_trc=bt709:colorspace=bt709" \
   -c:a aac -b:a 256k -ar 48000 -movflags +faststart name_16x9_1920x1080_30p.mp4
 # Platforms that reject silent uploads: add a silent track
 ffmpeg -i silent.mp4 -f lavfi -i anullsrc=r=48000:cl=stereo -c:v copy -c:a aac -shortest out.mp4
