@@ -37,19 +37,23 @@ two or three times and pays off late (around 80 to 95 percent of the runtime).
 One value per row, recorded in `production.md`. Engines translate it; nobody invents
 new values per scene.
 
-| Personality | Durations | Easing | Overshoot |
-|---|---|---|---|
-| Playful | 150-300 ms | back-out | 10-20% |
-| Premium | 350-600 ms | cubic-bezier(0.4, 0, 0.2, 1) | none |
-| Corporate | 200-400 ms | cubic-bezier(0.2, 0, 0, 1) | 0-3% |
-| Energetic | 100-250 ms | expo-out | 15-30% |
+| Personality | Durations | Overshoot |
+|---|---|---|
+| Playful | 150-300 ms | 10-20% |
+| Premium | 350-600 ms | none |
+| Corporate | 200-400 ms | 0-3% |
+| Energetic | 100-250 ms | 15-30% |
 
-House defaults when the brand has no motion system:
+The personality sets durations and overshoot. Easing always comes from the three
+house curves below; a brand with its own signature curve swaps it in for the
+entrance curve. Never add a curve per scene.
+
+House curves and defaults:
 
 - Entrances `cubic-bezier(0.16, 1, 0.3, 1)`; exits `cubic-bezier(0.7, 0, 0.84, 0)` at 60 to 75 percent of the entrance length; moves between states `cubic-bezier(0.65, 0, 0.35, 1)`. Linear only for continuous motion (rotation, drift, grain).
 - Springs in one vocabulary, the damping ratio ζ = damping / (2·√(stiffness·mass)). Type and UI stay at ζ ≥ 0.7 (a hair of overshoot at most); one hero accent per piece may drop to about 0.5.
 - A base unit (for example 100 ms, or 3 frames at 30 fps); every duration is a multiple.
-- Stagger: words 60-90 ms, list items 40-80 ms, grid cells 20-40 ms; a whole group reveal stays under about 700 ms, and the last item lands before the next beat.
+- Stagger: words 60-90 ms, list items 40-80 ms, grid cells 20-40 ms; a whole group reveal finishes within 500 ms (700 ms when the group fills the frame), and the last item lands before the next beat.
 - Intensity budget: nothing travels more than a third of the frame without an intermediate key; entrance scale 0.94 to 1.0; at most 2 or 3 things moving at once.
 - Layers: primary at full amplitude, secondary at 30-50 percent and 50-100 ms behind, ambient at 10-20 percent. One hero per moment.
 - Holds: at least 0.3 s of stillness after each beat. No frame is fully dead except the final hold; keep one small thing alive (grain, a caret, a slow drift).

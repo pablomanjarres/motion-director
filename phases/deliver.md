@@ -12,7 +12,7 @@ identical.
 
 | Format | Keep text and key UI inside |
 |---|---|
-| 9:16 at 1080x1920 (Reels, TikTok, Shorts) | x 90 to 960, y 250 to 1420 (platform UI covers the bottom 500 px and the right 120 px) |
+| 9:16 at 1080x1920 (Reels, TikTok, Shorts) | x 90 to 960, y 360 to 1420 (platform UI covers the top 360 px, the bottom 500 px and the right 120 px) |
 | 16:9 at 1920x1080 | 110 px from every edge |
 | 4:5 at 1080x1350 and 1:1 at 1080x1080 | 80 px from every edge |
 

@@ -44,7 +44,7 @@ Every duration comes from one clock. Pick it now and write it in section 1.
 - **Voice**: record or synthesize the voice-over first (a scratch voice such as macOS `say` is fine until the real take exists). Measure each line; a shot holds for the measured line plus about 0.25 s, and the next shot starts at that hold.
 - **Song**: map the beats before animating. The song decides the arc: the turn lands on the drop, the payoff on the loudest hit.
 - **Grid**: choose fps and BPM so beats fall on whole frames (30 fps at 120 BPM is 15 frames per beat; 24 fps at 120 BPM puts an eighth note on 6 frames).
-- **Reading time**: a short phrase holds at least 1 s plus 0.25 s per word beyond three; the closing line at least 2 s; a call to action at least 3 s.
+- **Reading time**: a short phrase holds at least 1 s plus 0.25 s per word beyond three; a headline that carries the message, read cold, holds 1.5 s plus 0.3 s per word; the closing line at least 2 s; a call to action at least 3 s. When two rules apply, the longer hold wins.
 
 ## Truth gate
 
