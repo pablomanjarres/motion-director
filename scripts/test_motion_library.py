@@ -113,6 +113,23 @@ class MotionLibraryTest(unittest.TestCase):
         self.assertIn("teaches scraping around bot checks", index_md)
         self.assertFalse(os.path.exists(os.path.join(self.home, "src", "risky")))
 
+    def test_skill_excludes_and_audited_edits_apply_to_the_library_copy(self):
+        write(self.up("skills/alpha/examples/client.jpg"), "not ours\n")
+        write(self.up("skills/alpha/setup.sh"), "pip install numpy || pip install --break-system-packages numpy\n")
+        sha = self.commit("extras")
+        edit = {"files": ["setup.sh"], "old": " || pip install --break-system-packages numpy", "new": ""}
+        self.write_manifest(sha, skills=[{"path": "skills/alpha", "exclude": ["examples/client.jpg"],
+                                          "edits": [edit]}])
+        self.assertOk(self.cli("install"))
+        self.assertFalse(os.path.exists(self.lib("alpha", "examples", "client.jpg")))
+        self.assertEqual(read(self.lib("alpha", "setup.sh")), "pip install numpy\n")
+        edit["old"] = "text that is gone"
+        self.write_manifest(sha, skills=[{"path": "skills/alpha", "edits": [edit]}])
+        failed = self.cli("install")
+        self.assertNotEqual(failed.returncode, 0)
+        self.assertIn("text that is gone", failed.stderr)
+        self.assertEqual(read(self.lib("alpha", "setup.sh")), "pip install numpy\n")
+
     def test_verify_fails_until_new_pin_is_installed(self):
         self.assertOk(self.cli("install"))
         write(self.up("skills/beta/SKILL.md"), "---\nname: beta\ndescription: Use when v2.\n---\n")
