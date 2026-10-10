@@ -21,10 +21,14 @@ delivered files.
 |---|---|
 | `SKILL.md` | entry point: the pipeline, its gates and the rules |
 | `phases/` | brief, direction, toolchain, storyboard, build, sound, review, deliver, and a web track |
-| `templates/production.md` | the per-project production bible a later session can resume from |
+| `references/launch-films.md` | craft measured from 14 recent launch films: structure, type, product framing, motion, sound and end cards in numbers |
+| `templates/` | the per-project production bible a later session can resume from, the facts table, and the critic's brief |
 | `library.json` | the audited sources: pinned commits, skill paths and phases, notes, and install-time edits |
 | `scripts/motion_library.py` | installs, verifies and indexes the library, finds skills, lists upstream drift, scaffolds template projects |
+| `scripts/reference_study.py` | measures films the same way (cuts, shot lengths, holds, motion, loudness, colours, contact sheets) and puts a draft on a board beside its references |
+| `scripts/review_pack.py` | builds the review pack: frame 0, beat frames, transition strips and a phone-width sheet |
 | `scripts/frame_qa.py` | finds pops, one-frame flashes, frozen stretches and black frames in a render; compares two renders frame by frame |
+| `scripts/media.py` | the ffmpeg and ffprobe helpers the scripts share |
 | `scripts/hf.sh` | runs the HyperFrames CLI pinned, with telemetry, update checks and global skill installs off |
 
 The library itself is not in this repository. `install` fetches each source from
@@ -71,11 +75,11 @@ install with the file and the text it expected.
 ## Tests
 
 ```bash
-cd scripts && python3 -m unittest test_motion_library test_frame_qa test_hf_wrapper
+cd scripts && python3 -m unittest discover -p 'test_*.py'
 ```
 
-The frame checker tests need ffmpeg; the installer tests use a local git repository
-as the upstream and run offline.
+The video tests need ffmpeg and generate their own clips; the installer tests use a
+local git repository as the upstream and run offline.
 
 ## Sources
 
