@@ -51,7 +51,8 @@ def build(video, beats, transitions, settle, out):
         index.append("strip-%02d.png  every frame from %.2f s to %.2f s, 8 per row" % (number, start, end))
     ffmpeg("-i", video, "-vf", "fps=2,scale=360:-1," + tile(6, max(1, math.ceil(length * 2 / 6.0))),
            "-frames:v", "1", path("phone.png"))
-    index.append("phone.png  two frames per second at 360 px wide, 6 per row: judge readability here")
+    index.append("phone.png  two frames per second at 360 px wide, 6 per row; cell N shows (N - 1) x 0.5 s: "
+                 "judge readability here")
     with open(path("index.txt"), "w", encoding="utf-8") as handle:
         handle.write("\n".join(index) + "\n")
     return index
