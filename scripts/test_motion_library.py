@@ -158,6 +158,36 @@ class MotionLibraryTest(unittest.TestCase):
         self.assertEqual(moved.returncode, 1)
         self.assertIn("fixture", moved.stdout)
 
+    def test_scaffold_copies_template_minus_excludes_and_applies_edits(self):
+        write(self.up("sims/kit/runtime.js"), "const BASE = {\n  watermark: 'X: @someone',\n};\n")
+        write(self.up("examples/one/README.md"), "gallery\n")
+        write(self.up("AGENTS.md"), "1. Plan.\n8. Add the piece to examples/.\n")
+        template = {"exclude": ["examples"], "replace": [
+            {"files": ["sims/kit/runtime.js"], "old": "watermark: 'X: @someone',", "new": "watermark: '',"},
+            {"files": ["AGENTS.md"], "old": "8. Add the piece to examples/.\n", "new": ""}]}
+        self.write_manifest(self.commit("template"), sparse=None, template=template)
+        self.assertOk(self.cli("install"))
+        dest = os.path.join(self.tmp, "project")
+        self.assertOk(self.cli("scaffold", "fixture", dest))
+        self.assertIn("watermark: '',", read(os.path.join(dest, "sims", "kit", "runtime.js")))
+        self.assertEqual(read(os.path.join(dest, "AGENTS.md")), "1. Plan.\n")
+        self.assertFalse(os.path.exists(os.path.join(dest, "examples")))
+        self.assertFalse(os.path.exists(os.path.join(dest, ".git")))
+        self.assertTrue(os.path.isfile(os.path.join(dest, "skills", "alpha", "SKILL.md")))
+        self.assertNotEqual(self.cli("scaffold", "fixture", dest).returncode, 0)
+
+    def test_scaffold_fails_cleanly_when_an_audited_edit_no_longer_matches(self):
+        template = {"replace": [{"files": ["skills/beta/SKILL.md"], "old": "absent text", "new": ""}]}
+        self.write_manifest(self.sha1, sparse=None, template=template)
+        self.assertOk(self.cli("install"))
+        dest = os.path.join(self.tmp, "project")
+        failed = self.cli("scaffold", "fixture", dest)
+        self.assertNotEqual(failed.returncode, 0)
+        self.assertIn("absent text", failed.stderr)
+        self.assertFalse(os.path.exists(dest))
+        self.write_manifest(self.sha1)
+        self.assertNotEqual(self.cli("scaffold", "fixture", dest).returncode, 0)
+
 
 if __name__ == "__main__":
     unittest.main()
