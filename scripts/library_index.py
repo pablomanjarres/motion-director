@@ -59,8 +59,9 @@ def write_index(manifest, home):
     ]
     for source in manifest["sources"]:
         lines += ["## %s" % source["id"], "",
-                  "%s @ `%s` · %s · %s" % (source["url"], source["sha"][:7],
-                                          source.get("license", "unknown license"), source["verdict"])]
+                  "%s @ `%s` · %s · %s · grade %s" % (source["url"], source["sha"][:7],
+                                                     source.get("license", "unknown license"), source["verdict"],
+                                                     source.get("grade", "unrated"))]
         if source.get("notes"):
             lines.append("Notes: " + source["notes"])
         lines += ["", "| skill | phases | use when |", "| --- | --- | --- |"]
