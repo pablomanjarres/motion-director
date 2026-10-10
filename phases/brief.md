@@ -50,6 +50,8 @@ Every duration comes from one clock. Pick it now and write it in section 1.
 
 - Every number, name, quote and claim that appears on screen is listed in `facts.md` with its source and date. No entry, no number on screen.
 - Never round up, add "+", or turn a target into a result. Keep measured results, targets and sample data apart.
+- A count-up or ticker puts every number it passes through on screen. Swap or mask to the sourced value instead of counting through figures that are not in `facts.md`.
+- Figures shown together must agree: totals add up, and a balance shown beside a set-aside amount already subtracts it.
 - Sample content says so on every frame where it appears ("Concept demo", "Illustrative data"). Prefer relative bars and skeleton text to invented figures.
 - Product screens are captured from the real product or rebuilt from real screenshots. Never present an invented screen as the product.
 - Logos come from files. Never redraw a logo from memory and never imitate another company's brand.
