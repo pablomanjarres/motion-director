@@ -9,11 +9,9 @@
    "verdict": "SAFE-WITH-NOTES",
    "grade": "A",
    "audited": "2026-10-10",
-   "notes": "A Remotion project template with a stdlib Python sound engine, beat contact sheets, a waveform and loudness check, and frame-stepped 3D capture. Its skills assume a project scaffolded from it (timeline.json, src/lib.ts, npm scripts, sfx/). Remotion needs a company license above three employees.",
-   "template": {"exclude": ["examples", ".mcp.json.example"], "edits": [
-    {"files": ["sims/kit/runtime.js", "sims/crawlers/main.js", "sims/dossier/main.js", "sims/engine/main.js"], "old": "watermark: 'X: @whaleyxbt',", "new": "watermark: '',"},
-    {"files": ["AGENTS.md"], "old": "8. Add the piece to `examples/` with the prompt you were given.\n", "new": ""},
-    {"files": ["AGENTS.md"], "old": "examples/                gallery: prompt, process and result for each piece\n", "new": ""}
+   "notes": "A Remotion project template with a stdlib Python sound engine, beat contact sheets, a waveform and loudness check, and frame-stepped 3D capture. Its skills assume a project scaffolded from it (timeline.json, src/lib.ts, npm scripts, sfx/); scaffolding leaves out its own agent files. Its sheet.mjs reads every number in timeline.json as a beat and needs drawtext for labels, so use scripts/review_pack.py. remotion.config.ts sets a global CRF: remove it before a ProRes master. Remotion needs a company license above three employees.",
+   "template": {"exclude": ["examples", ".mcp.json.example", ".claude", "CLAUDE.md", "AGENTS.md", ".github", "CONTRIBUTING.md"], "edits": [
+    {"files": ["sims/kit/runtime.js", "sims/crawlers/main.js", "sims/dossier/main.js", "sims/engine/main.js"], "old": "watermark: 'X: @whaleyxbt',", "new": "watermark: '',"}
    ]},
    "skills": [
     {"path": ".claude/skills/motion-design", "phases": ["direction", "build"]},
@@ -150,7 +148,7 @@
    "audited": "2026-10-10",
    "notes": "HyperFrames editing craft, a 406-card style library and talking-head cut tools. The skills expect the kit workspace: scaffold it. Its style tokens and placeholder copy carry a third-party brand that is not licensed for reuse: re-token before client work. Paid-API scripts that read .env files up the tree are not installed.",
    "sparse": [".claude", "assets", "docs", "examples/editing", "examples/short-form", "examples/starter", "licenses", "scripts", "style-library", "style-templates", "tests"],
-   "template": {"exclude": ["video-projects", ".agents", ".claude/skills/hyperframes", ".claude/skills/hyperframes-cli", ".claude/skills/hyperframes-registry", ".claude/skills/gsap", ".claude/skills/website-to-hyperframes", ".claude/skills/short-form-video", ".claude/skills/motion-showreel/scripts/kie.mjs", ".claude/skills/motion-showreel/scripts/sfx.mjs", "scripts/transcribe-elevenlabs.mjs"]},
+   "template": {"exclude": ["video-projects", ".agents", ".claude/skills/hyperframes", ".claude/skills/hyperframes-cli", ".claude/skills/hyperframes-registry", ".claude/skills/gsap", ".claude/skills/website-to-hyperframes", ".claude/skills/short-form-video", ".claude/skills/motion-showreel/scripts/kie.mjs", ".claude/skills/motion-showreel/scripts/sfx.mjs", "scripts/transcribe-elevenlabs.mjs", "CLAUDE.md", "AGENTS.md"]},
    "skills": [
     {"path": ".claude/skills/make-a-video", "phases": ["brief", "storyboard"]},
     {"path": ".claude/skills/short-form-edit", "phases": ["brief", "storyboard", "sound", "qa", "deliver"]},
