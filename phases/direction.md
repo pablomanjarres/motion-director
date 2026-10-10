@@ -26,7 +26,9 @@ ends). Any two directions differ on at least four dials.
 Judge each one: Does it serve the one sentence from the brief? Is it the brand,
 done better? Could a competitor use it unchanged (if yes, kill it)? Would it
 survive weak assets or a slow render? The direction that matches the most obvious
-reading of the brief is usually one of the two you kill.
+reading of the brief is usually one of the two you kill. A direction that copies a
+worked example from a library skill is killed and replaced, even when two
+examples fit.
 `launch-film/product-launch-motion` (creative-direction reference) has the full dial set.
 
 Then name one **signature move**: a device you can say in one sentence that recurs
@@ -81,6 +83,8 @@ At 30 fps, frames = ms × 0.03 (300 ms is 9 frames).
 
 ## 5. Type, color, composition
 
+- House defaults when there is no brand: a warm off-white ground (`#F7F5F0`), near-black ink (`#17171A`) and one saturated accent chosen here for one meaning; one display grotesk (Instrument Sans, Manrope or General Sans) plus a mono for labels (JetBrains Mono), embedded locally.
+- Video is not a web page. On a 1080 px tall frame: headlines 64-140 px, body 28-42 px, labels at least 18-24 px, strokes 2-4 px and chart lines 4 px or more. Interface and chart specs from other skills are sized for screens seen up close; scale them up and judge them on the phone sheet.
 - At most three families (display, UI sans, mono). Display type around 120-140 px on a 1080 px tall frame with slightly negative tracking. Small labels twice the size you first think.
 - Palette: one primary, one accent, two or three neutrals tinted toward the primary; roughly 60/30/10 by area. Build ramps and gradients in OKLCH (`linear-gradient(in oklch, ...)`); add 3 to 5 percent grain against banding.
 - One focal point per frame. Everything that must be read stays legible on a phone, judged at 360 px wide.
