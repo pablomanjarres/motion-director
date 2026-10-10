@@ -42,6 +42,14 @@ def duration(path):
     return float(probe(path, "format=duration"))
 
 
+def video_duration(path):
+    """The video stream's own length, so a longer audio track does not stretch it; the container's as a fallback."""
+    try:
+        return float(probe(path, "stream=duration", "v:0"))
+    except ValueError:
+        return duration(path)
+
+
 def frame_size(path):
     width, height = probe(path, "stream=width,height", "v:0").split(",")[:2]
     return int(width), int(height)
@@ -63,8 +71,11 @@ def tile(columns, rows):
 
 
 def raw_frames(path, width, height, pix_fmt="gray", rate=None):
-    """Decoded frames scaled to width x height, one bytes object each (gray: 1 byte a pixel, rgb24: 3)."""
+    """Decoded frames scaled to width x height, one bytes object each (gray: 1 byte a pixel, rgb24: 3). Without a
+    rate every real frame appears once, never duplicated to a constant rate, so indices match frame hashes and
+    scene scores on variable-frame-rate files too."""
     filters = ("fps=%s," % rate if rate else "") + "scale=%d:%d:flags=area,format=%s" % (width, height, pix_fmt)
-    data = run(["ffmpeg", "-v", "error", "-i", path, "-vf", filters, "-f", "rawvideo", "-"], text=False)
+    data = run(["ffmpeg", "-v", "error", "-i", path, "-vf", filters, "-fps_mode", "passthrough", "-f", "rawvideo", "-"],
+               text=False)
     size = width * height * (3 if pix_fmt == "rgb24" else 1)
     return [data[i:i + size] for i in range(0, len(data) - size + 1, size)]

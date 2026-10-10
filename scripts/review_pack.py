@@ -10,7 +10,7 @@ import math
 import os
 import sys
 
-from media import MediaError, duration, ffmpeg, probe_fps, tile
+from media import MediaError, ffmpeg, probe_fps, tile, video_duration
 
 
 def numbers(text):
@@ -24,7 +24,7 @@ def windows(text):
 def build(video, beats, transitions, settle, out):
     os.makedirs(out, exist_ok=True)
     path = lambda name: os.path.join(out, name)
-    length, fps = duration(video), probe_fps(video)
+    length, fps = video_duration(video), probe_fps(video)
     index = ["%s: %.2f s at %.3f fps" % (video, length, fps),
              "frame0.png  frame 0 at full size, the thumbnail feeds show"]
     ffmpeg("-i", video, "-frames:v", "1", path("frame0.png"))
