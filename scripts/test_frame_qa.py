@@ -6,12 +6,14 @@ import sys
 import tempfile
 import unittest
 
+from test_fixtures import encode, needs_ffmpeg
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 SCRIPT = os.path.join(HERE, "frame_qa.py")
 FLASH_AT_FRAME_30 = ",drawbox=x=0:y=0:w=iw:h=ih:color=white:t=fill:enable='eq(n,30)'"
 
 
-@unittest.skipUnless(shutil.which("ffmpeg") and shutil.which("ffprobe"), "needs ffmpeg and ffprobe")
+@needs_ffmpeg
 class FrameQaTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -27,10 +29,8 @@ class FrameQaTest(unittest.TestCase):
         size = "color=c=gray:s=192x108:r=30:d=%s" % seconds
         square = "color=c=white:s=20x20:r=30:d=%s" % seconds
         graph = "[0][1]overlay=x='%s':y=40%s" % (x_expr, extra)
-        subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i", size, "-f", "lavfi", "-i", square,
-                        "-filter_complex", graph, "-c:v", "libx264", "-crf", "10", "-pix_fmt", "yuv420p", out],
-                       check=True)
-        return out
+        return encode(out, ["-f", "lavfi", "-i", size, "-f", "lavfi", "-i", square, "-filter_complex", graph],
+                      "-crf", "10")
 
     def qa(self, *args):
         return subprocess.run([sys.executable, SCRIPT] + list(args), capture_output=True, text=True)

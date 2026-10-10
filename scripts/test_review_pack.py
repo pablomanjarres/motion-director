@@ -6,18 +6,18 @@ import sys
 import tempfile
 import unittest
 
+from test_fixtures import encode, needs_ffmpeg
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 SCRIPT = os.path.join(HERE, "review_pack.py")
 
 
-@unittest.skipUnless(shutil.which("ffmpeg") and shutil.which("ffprobe"), "needs ffmpeg and ffprobe")
+@needs_ffmpeg
 class ReviewPackTest(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.mkdtemp(prefix="review-pack-test-")
         self.addCleanup(shutil.rmtree, self.tmp, True)
-        self.video = os.path.join(self.tmp, "clip.mp4")
-        subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=s=320x180:r=30:d=3",
-                        "-c:v", "libx264", "-pix_fmt", "yuv420p", self.video], check=True)
+        self.video = encode(os.path.join(self.tmp, "clip.mp4"), ["-f", "lavfi", "-i", "testsrc2=s=320x180:r=30:d=3"])
         self.out = os.path.join(self.tmp, "pack")
 
     def pack(self, *args):
