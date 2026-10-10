@@ -64,6 +64,7 @@ decision and the alternatives in `production.md`, and keep going.
 | Script | Use |
 |---|---|
 | `scripts/motion_library.py install, verify, where, outdated, scaffold` | the library and project templates |
+| `scripts/review_pack.py <video> --beats s,s --transitions a-b` | the review pack: frame 0, beat frames, contact sheet, transition strips, phone sheet, index |
 | `scripts/frame_qa.py <video> [--cuts s,s] [--against other.mp4]` | pops, flashes, frozen stretches, black frames, determinism |
 | `scripts/hf.sh <command>` | the only way to run HyperFrames |
 

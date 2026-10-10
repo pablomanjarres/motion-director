@@ -6,20 +6,15 @@ measurements, critic scores and what changed.
 ## 1. Render for review
 
 - A half-resolution draft first (for example 960x540 with a fast preset). Judge rhythm, not sharpness.
-- A contact sheet with one frame per beat, taken about 0.3 s after each beat so motion has settled.
-- A strip of every frame across each transition.
-- A phone sheet scaled to 360 px wide.
-- Frame 0 on its own: it is the thumbnail.
+- Then build the review pack from the timeline's beat times and transition windows:
 
 ```bash
-# one frame per beat (times come from the timeline file), then tile them
-ffmpeg -v error -ss 3.3 -i draft.mp4 -frames:v 1 -vf scale=640:-1 beat-02.png
-ffmpeg -v error -pattern_type glob -i 'beat-*.png' -vf tile=4x2 contact.png
-# every frame across a transition (frames 90 to 120)
-ffmpeg -v error -i draft.mp4 -vf "select='between(n,90,120)',scale=320:-1,tile=8x4" -frames:v 1 strip-02.png
-# phone-width sheet, two frames per second
-ffmpeg -v error -i draft.mp4 -vf "fps=2,scale=360:-1,tile=6x5" -frames:v 1 phone.png
+python3 <this skill>/scripts/review_pack.py draft.mp4 --beats 0.5,3.5,6.5 --transitions 3.0-3.6 --out review/r1
 ```
+
+It writes frame 0 at full size (the thumbnail), one frame per beat taken 0.3 s after
+it so motion has settled, a beat contact sheet, every frame across each transition,
+a 360 px phone sheet, and `index.txt` saying what each image shows.
 
 Open and look at every image. Never claim a fix you have not re-rendered and looked at.
 
@@ -37,39 +32,21 @@ ffprobe -v error -show_entries stream=codec_name,width,height,r_frame_rate,pix_f
 
 Expect h264, the planned size and fps, the exact duration, `yuv420p`, `bt709` tags, and one audio stream.
 
-- Remotion code: `node <library>/klik-anim/klik-anim/scripts/lint-motion.mjs src` flags random numbers, clocks, timers, linear easing and unclamped interpolation.
+- Remotion code: `node <library>/klik-anim/klik-anim/scripts/lint-motion.mjs src` flags random numbers, clocks, timers, linear easing and unclamped interpolation. It accepts easing curves only from a module whose file name starts with `motion` (for example `src/motion.ts`), so keep the shared curves there.
 - HyperFrames: `bash <this skill>/scripts/hf.sh lint` then `hf.sh check` must report zero findings.
 
 ## 3. A fresh critic
 
-Spawn a separate subagent as the critic. Give it the brief section, `facts.md`,
-the brand files when they exist (`brand.md`, `MOTION.md` or the brand guide), the
-motion-language spec, the contact sheet, the strips, the phone sheet and this
-rubric. Without the brand files it judges brand fit blind. Do not give it the code
-or the builder's reasoning. Its stance is reject until earned.
+Spawn a separate subagent with `templates/critic-prompt.md` filled in as its task.
+It gets the brief, `facts.md`, the brand files, the motion-language spec and the
+review pack, never the code or the builder's reasoning; without the brand files it
+judges brand fit blind. It looks and writes only, scores the rubric in that
+template, and leaves `review/r<N>-verdict.md`. Read that file instead of waiting
+for a reply: a subagent's report can land with the session that started the job
+rather than with you.
 
-The critic only looks and writes: no rendering, no code, about a dozen tool calls.
-It writes its verdict to `review/r<N>-verdict.md` in the project (the scores
-table, the three worst problems with timestamps and fixes, the one sentence) and
-stops. Read that file instead of waiting for a reply; a subagent's report can land
-with the session that started the job rather than with you.
-
-It scores each item from 1 to 10:
-
-| Item | Passes when |
-|---|---|
-| Hook | the first 2 s make a stranger keep watching |
-| Readability | every line reads on the phone sheet within its hold |
-| Motion quality | easing matches the spec, arcs are clean, exits are faster than entrances, nothing pops |
-| Variety | something new every 2 to 4 s, no dead stretch |
-| Composition | one focal point per frame, safe areas respected |
-| Truth and brand | only numbers from `facts.md`, sample labels present, brand colors and type correct |
-| Sound sync | hits land on their events (when there is audio) |
-| Finish | no banding, clipping or stray frames; texture is deliberate |
-
-It also returns the three worst problems with timestamps, and one sentence saying
-what the film is about, written from the frames alone. Pass means every score is
-at least 8 and that sentence matches the brief's sentence.
+Pass means every score is at least 8 and the critic's sentence matches the brief's
+sentence.
 
 Fix only items scored 7 or lower and leave anything at 9 or above alone.
 
