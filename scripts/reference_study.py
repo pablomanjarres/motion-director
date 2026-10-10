@@ -57,8 +57,12 @@ def find_shots(scores, length, fps, threshold, floor, spiking=(), flashed=()):
             continue
         if gap <= moment <= length - gap and (not cuts or moment - cuts[-1] >= gap):
             cuts.append(moment)
+    return cuts, between(cuts, length)
+
+
+def between(cuts, length):
     edges = [0.0] + cuts + [length]
-    return cuts, list(zip(edges, edges[1:]))
+    return list(zip(edges, edges[1:]))
 
 
 def find_holds(rates, still, min_hold, fps):
@@ -190,16 +194,23 @@ def shot_stats(shots, length):
             "final": round(lengths[-1], 2)}
 
 
-def study(video, out, threshold, floor, still, columns):
+def study(video, out, threshold, floor, still, columns, declared=None):
+    """Measure one film; declared cut times, when given, replace cut detection (for a draft whose cuts are known)."""
     os.makedirs(out, exist_ok=True)
     length, fps, size = duration(video), probe_fps(video), frame_size(video)
     scores = scene_scores(video)
-    cuts, shots = find_shots(scores, length, fps, threshold, floor, *spiking_frames(video))
+    if declared is None:
+        cuts, shots = find_shots(scores, length, fps, threshold, floor, *spiking_frames(video))
+    else:
+        cuts = sorted(cut for cut in declared if 0 < cut < length)
+        shots = between(cuts, length)
     rates = [(moment, score * fps) for moment, score in scores]
     holds = find_holds(rates, still, 1.0, fps)
     result = {
         "video": os.path.basename(video), "duration": round(length, 2), "fps": round(fps, 3), "size": list(size),
         "shots": shot_stats(shots, length), "cuts": [round(cut, 3) for cut in cuts],
+        "cut_strength": None if declared is None else
+        [round(scores[min(int(round(cut * fps)), len(scores) - 1)][1], 3) for cut in cuts],
         "holds": [[round(start, 2), round(end, 2)] for start, end in holds],
         "hold_share": round(sum(end - start for start, end in holds) / length, 3),
         "motion": curve([rate for rate, (_, score) in zip(rates, scores) if score < threshold], length),
@@ -270,6 +281,10 @@ def summary(result):
              "Still holds of 1 s or more: %d, %.0f%% of the running time" % (len(result["holds"]),
                                                                            result["hold_share"] * 100),
              "Motion each second (change per second): %s" % bars(result["motion"])]
+    if result.get("cut_strength"):
+        strength = sorted(result["cut_strength"])
+        lines.append("Declared cuts: scene change at them %.2f to %.2f, median %.2f (below 0.2 a cut between similar "
+                     "pictures is easy to miss)" % (strength[0], strength[-1], statistics.median(strength)))
     sound = result["loudness"]
     if sound:
         inner = [(second, value) for second, value in enumerate(sound["momentary"])
@@ -292,6 +307,8 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("videos", nargs="+")
     parser.add_argument("--draft", help="a render of your own, compared against the videos on board.md")
+    parser.add_argument("--draft-cuts", default="",
+                        help="the draft's planned cut times in seconds, comma-separated; they replace detection")
     parser.add_argument("--out", default=os.path.join(default_home(), "studies"),
                         help="output folder, outside the project (default: studies beside the library)")
     parser.add_argument("--threshold", type=float, default=0.3, help="scene change that is always a hard cut (0-1)")
@@ -305,7 +322,9 @@ def main(argv=None):
     for video in args.videos + ([args.draft] if args.draft else []):
         folder = os.path.join(args.out, os.path.splitext(os.path.basename(video))[0])
         try:
-            studies.append(study(video, folder, args.threshold, args.spike_floor, args.still, args.columns))
+            declared = [float(t) for t in args.draft_cuts.split(",") if t.strip()] or None
+            studies.append(study(video, folder, args.threshold, args.spike_floor, args.still, args.columns,
+                                 declared if video == args.draft else None))
         except MediaError as error:
             print(error, file=sys.stderr)
             return 1
