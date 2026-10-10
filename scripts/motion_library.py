@@ -24,7 +24,7 @@ from library_index import find_skills, load_index, write_index
 PHASES = ("brief", "direction", "storyboard", "engine", "build", "sound", "qa", "deliver", "web")
 VERDICTS = ("SAFE", "SAFE-WITH-NOTES")
 LICENSE_FILES = ("LICENSE", "LICENSE.md", "LICENSE.txt", "COPYING")
-IGNORED = shutil.ignore_patterns(".git", "node_modules", ".DS_Store", "__pycache__")
+JUNK = (".git", "node_modules", ".DS_Store", "__pycache__")
 SKILL_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_MANIFEST = os.path.join(SKILL_DIR, "library.json")
 
@@ -59,10 +59,8 @@ def load_manifest(path):
         if not re.match(r"^[0-9a-f]{40}$", source.get("sha", "")):
             raise ManifestError("%s: sha must be a full 40-character commit" % sid)
         template = source.get("template")
-        if template is not None and not (
-                all(isinstance(path, str) for path in template.get("exclude", []))
-                and all(set(edit) == {"files", "old", "new"} for edit in template.get("replace", []))):
-            raise ManifestError('%s: template takes "exclude" paths and {files, old, new} edits' % sid)
+        if template is not None and not copy_rules_valid(template):
+            raise ManifestError('%s: template takes "exclude" paths and {files, old, new} "edits"' % sid)
         source["skills"] = [normalize_skill(sid, entry) for entry in source.get("skills", [])]
         dirs = [skill["dir"] for skill in source["skills"]]
         if len(dirs) != len(set(dirs)):
@@ -85,7 +83,40 @@ def normalize_skill(sid, entry):
     unknown = [phase for phase in skill.get("phases", []) if phase not in PHASES]
     if unknown:
         raise ManifestError("%s/%s: unknown phases %s" % (sid, name, unknown))
-    return {"path": path, "dir": name, "phases": list(skill.get("phases", []))}
+    if not copy_rules_valid(skill):
+        raise ManifestError('%s/%s: "exclude" takes paths and "edits" takes {files, old, new}' % (sid, name))
+    return {"path": path, "dir": name, "phases": list(skill.get("phases", [])),
+            "exclude": list(skill.get("exclude", [])), "edits": list(skill.get("edits", []))}
+
+
+def copy_rules_valid(rules):
+    return (all(isinstance(path, str) for path in rules.get("exclude", []))
+            and all(set(edit) == {"files", "old", "new"} for edit in rules.get("edits", [])))
+
+
+def copy_filter(base, excluded):
+    """shutil.copytree ignore callback: drop junk plus `excluded` paths relative to `base`."""
+    excluded = set(os.path.normpath(path) for path in excluded)
+
+    def ignore(directory, names):
+        rel = os.path.relpath(directory, base)
+        return [name for name in names
+                if name in JUNK or os.path.normpath(os.path.join(rel, name)) in excluded]
+    return ignore
+
+
+def apply_edits(root, edits, label):
+    """Apply audited text edits under `root`; each must match exactly once or upstream changed."""
+    for edit in edits:
+        for rel in edit["files"]:
+            path = os.path.join(root, rel)
+            with open(path, encoding="utf-8") as handle:
+                text = handle.read()
+            if text.count(edit["old"]) != 1:
+                raise InstallError("%s: expected exactly one %r in %s; re-audit before changing the pin"
+                                   % (label, edit["old"], rel))
+            with open(path, "w", encoding="utf-8") as handle:
+                handle.write(text.replace(edit["old"], edit["new"]))
 
 
 def git(*args):
@@ -145,7 +176,9 @@ def build_library(source, checkout, library_root):
             if not os.path.isfile(os.path.join(origin, "SKILL.md")):
                 raise InstallError("%s: %s has no SKILL.md at %s" % (source["id"], skill["path"], source["sha"][:7]))
             assert_contained(checkout, origin)
-            shutil.copytree(origin, os.path.join(staging, skill["dir"]), ignore=IGNORED)
+            copy = os.path.join(staging, skill["dir"])
+            shutil.copytree(origin, copy, ignore=copy_filter(origin, skill["exclude"]))
+            apply_edits(copy, skill["edits"], "%s/%s" % (source["id"], skill["dir"]))
         for name in LICENSE_FILES:
             if os.path.isfile(os.path.join(checkout, name)):
                 shutil.copy2(os.path.join(checkout, name), os.path.join(staging, name))
@@ -235,26 +268,10 @@ def scaffold(manifest, home, source_id, dest):
     if os.path.lexists(dest):
         raise InstallError("%s already exists; scaffold into a new directory" % dest)
     template = source["template"]
-    excluded = set(os.path.normpath(path) for path in template.get("exclude", []))
-
-    def ignore(directory, names):
-        rel = os.path.relpath(directory, checkout)
-        return [name for name in names
-                if name == ".git" or os.path.normpath(os.path.join(rel, name)) in excluded]
-
     assert_contained(checkout, checkout)
-    shutil.copytree(checkout, dest, ignore=ignore)
+    shutil.copytree(checkout, dest, ignore=copy_filter(checkout, template.get("exclude", [])))
     try:
-        for edit in template.get("replace", []):
-            for rel in edit["files"]:
-                path = os.path.join(dest, rel)
-                with open(path, encoding="utf-8") as handle:
-                    text = handle.read()
-                if text.count(edit["old"]) != 1:
-                    raise InstallError("%s: expected exactly one %r in %s; re-audit the template"
-                                       % (source_id, edit["old"], rel))
-                with open(path, "w", encoding="utf-8") as handle:
-                    handle.write(text.replace(edit["old"], edit["new"]))
+        apply_edits(dest, template.get("edits", []), source_id)
     except Exception:
         shutil.rmtree(dest, ignore_errors=True)
         raise
