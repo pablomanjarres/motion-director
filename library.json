@@ -156,6 +156,7 @@
    "grade": "A",
    "audited": "2026-10-10",
    "notes": "HyperFrames editing craft, a 406-card style library and talking-head cut tools. The skills expect the kit workspace: scaffold it. Its style tokens and placeholder copy carry a third-party brand that is not licensed for reuse: re-token before client work. Paid-API scripts that read .env files up the tree are not installed.",
+   "sparse": [".claude", "assets", "docs", "examples/editing", "examples/short-form", "examples/starter", "licenses", "scripts", "style-library", "style-templates", "tests"],
    "template": {"exclude": ["video-projects", ".agents", ".claude/skills/hyperframes", ".claude/skills/hyperframes-cli", ".claude/skills/hyperframes-registry", ".claude/skills/gsap", ".claude/skills/website-to-hyperframes", ".claude/skills/short-form-video", ".claude/skills/motion-showreel/scripts/kie.mjs", ".claude/skills/motion-showreel/scripts/sfx.mjs", "scripts/transcribe-elevenlabs.mjs"]},
    "skills": [
     {"path": ".claude/skills/make-a-video", "phases": ["brief", "storyboard"]},
