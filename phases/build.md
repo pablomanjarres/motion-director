@@ -15,12 +15,12 @@ Every visual is a pure function of the current frame or time. Then any single
 frame renders on its own, parallel renders agree, motion blur and QA work, and
 cues stay locked to words.
 
-- No CSS transitions or animations, timers, `requestAnimationFrame` clocks, `Date.now`, `performance.now` or `Math.random` in anything that renders. Use a seeded generator (for example mulberry32) keyed by element index.
+- No CSS transitions or animations, SVG `<pattern>` fills, timers, `requestAnimationFrame` clocks, `Date.now`, `performance.now` or `Math.random` in anything that renders. Use a seeded generator (for example mulberry32) keyed by element index.
 - Seek third-party animation instead of letting it play: a GSAP timeline stays paused and is set per frame (`tl.pause(t)`; when seeking to the same time twice, nudge it first, `tl.totalTime(t + 0.001, true); tl.totalTime(t, true)`), WAAPI animations get `pause()` and `currentTime = t * 1000`, Lottie gets `goToAndStop(frame, true)` and dotLottie `setFrame(frame)`. Libraries that only run in real time stay out of renders.
 - Fonts and images finish loading before frame 0 (`await document.fonts.ready`, decoded images). Fonts are local files; nothing fetches from the network while rendering.
 - Springs are closed-form. A value retargeted several times is the sum of one spring per change, so seeking stays continuous.
 - Canvas that reads pixels back uses `getContext('2d', { willReadFrequently: true })`. Guard `pow()` bases and NaN: one bad pixel can black out a bloomed frame.
-- Prove it with `python3 <this skill>/scripts/frame_qa.py a.mp4 --against b.mp4` on two renders of the same frames.
+- Prove it by identity: render the same frames twice at different concurrency (for example 1 and 8 workers) and run `python3 <this skill>/scripts/frame_qa.py a.mp4 --against b.mp4`, which hashes every frame. Hinted text can change with how frames are split across workers: set `text-rendering: geometricPrecision` on scaled SVG text.
 
 ## 3. Structure
 

@@ -62,10 +62,10 @@ decision and the alternatives in `production.md`, and keep going.
 
 ## Time
 
-A 15-second piece fits in about an hour: brief and direction by minute 10,
-toolchain and storyboard panels by 20, a rough cut by 25, sound and a gated
-version by 45, one critic round of about 10 minutes, fixes and delivery by 60.
-Each rework between critic rounds adds about 30 to 45 minutes.
+A launch-grade 15-second film takes about two hours with two critic rounds:
+brief and direction with the reference board by minute 25, toolchain, look frames
+through the gate and panels by 45, a rough cut by 55, sound and a gated version by
+80, each critic round about 15 minutes, fixes and delivery by 120.
 Short on time: deliver the master format first and keep the review round; the
 truth gate is never skipped.
 
