@@ -48,7 +48,7 @@ class FrameQaTest(unittest.TestCase):
         self.assertIn("1.000", found.stdout)
 
     def test_jump_is_reported_unless_declared_as_a_cut(self):
-        jump = self.make("jump", "if(lt(n,45),20,120)")
+        jump = self.make("jump", "if(lt(t,1.5),20,120)")
         found = self.qa(jump)
         self.assertEqual(found.returncode, 1, found.stdout + found.stderr)
         self.assertIn("jump", found.stdout)
