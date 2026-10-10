@@ -14,7 +14,7 @@ import os
 import statistics
 import sys
 
-from media import MediaError, duration, ffmpeg, frame_size, probe_fps, run
+from media import MediaError, duration, ffmpeg, frame_size, has_audio, probe_fps, raw_frames, run
 
 BARS = "▁▂▃▄▅▆▇█"
 SHEET_ROWS = 6
@@ -106,6 +106,65 @@ def write_sheets(video, picks, length, fps, out, columns):
             for i, (number, frame) in enumerate(chosen)]
 
 
+def loudness(video, length):
+    """Integrated loudness, loudness range, true peak and momentary loudness each second; None if silent."""
+    if not has_audio(video):
+        return None
+    out = run(["ffmpeg", "-nostats", "-v", "error", "-i", video, "-vn", "-af",
+               "ebur128=peak=true:metadata=1,ametadata=mode=print:file=-", "-f", "null", "-"])
+    moment, momentary, last, peak = None, [], {}, 0.0
+    for line in out.splitlines():
+        if "pts_time:" in line:
+            moment = float(line.rsplit("pts_time:", 1)[1])
+        elif line.startswith("lavfi.r128.") and moment is not None:
+            key, value = line[len("lavfi.r128."):].split("=", 1)
+            last[key] = float(value)
+            if key == "M" and moment >= 0.4:
+                momentary.append((moment, max(float(value), -70.0)))
+            elif key == "true_peak":
+                peak = max(peak, float(value))
+    return {"integrated": round(last["I"], 1) if "I" in last else None,
+            "range": round(last["LRA"], 1) if "LRA" in last else None,
+            "true_peak": round(20 * math.log10(peak), 1) if peak > 0 else None,
+            "momentary": curve(momentary, length)}
+
+
+def palette(video, length, top=6):
+    """Most common colours over frames sampled through the film, small saturated accents, and brightness."""
+    rate = max(0.5, min(4.0, 240.0 / max(length, 1.0)))
+    bins, accents, total, luma = {}, {}, 0, 0.0
+    for frame in raw_frames(video, 48, 27, "rgb24", "%.3f" % rate):
+        for i in range(0, len(frame), 3):
+            red, green, blue = frame[i], frame[i + 1], frame[i + 2]
+            total += 1
+            luma += 0.2126 * red + 0.7152 * green + 0.0722 * blue
+            tally(bins, red, green, blue)
+            if max(red, green, blue) - min(red, green, blue) >= 72:
+                tally(accents, red, green, blue)
+    return {"colours": strongest(bins, total, top), "accents": strongest(accents, total, 3),
+            "mean_luma": int(round(luma / max(total, 1)))}
+
+
+def tally(bins, red, green, blue):
+    entry = bins.setdefault((red >> 4, green >> 4, blue >> 4), [0, 0, 0, 0])
+    for slot, value in enumerate((1, red, green, blue)):
+        entry[slot] += value
+
+
+def strongest(bins, total, top, near=40):
+    """The `top` most common colours; a bin within `near` of a colour already chosen joins it."""
+    chosen = []
+    for count, red, green, blue in sorted(bins.values(), reverse=True):
+        colour = (red / count, green / count, blue / count)
+        home = next((pick for pick in chosen if sum((a - b) ** 2 for a, b in zip(pick[1], colour)) < near ** 2), None)
+        if home:
+            home[0] += count
+        elif len(chosen) < top:
+            chosen.append([count, colour])
+    return [{"hex": "#%02X%02X%02X" % tuple(int(round(c)) for c in colour), "share": round(count / float(total), 3)}
+            for count, colour in sorted(chosen, key=lambda pick: -pick[0])]
+
+
 def shot_stats(shots, length):
     lengths = [end - start for start, end in shots]
     tenths = statistics.quantiles(lengths, n=10) if len(lengths) > 1 else [lengths[0]] * 9
@@ -128,6 +187,7 @@ def study(video, out, threshold, min_shot, still, columns):
         "holds": [[round(start, 2), round(end, 2)] for start, end in holds],
         "hold_share": round(sum(end - start for start, end in holds) / length, 3),
         "motion": curve([rate for rate, (_, score) in zip(rates, scores) if score < threshold], length),
+        "loudness": loudness(video, length), "palette": palette(video, length),
     }
     cells = write_sheets(video, sample_times(shots), length, fps, out, columns)
     with open(os.path.join(out, "study.json"), "w", encoding="utf-8") as handle:
@@ -147,6 +207,21 @@ def summary(result):
              "Still holds of 1 s or more: %d, %.0f%% of the running time" % (len(result["holds"]),
                                                                            result["hold_share"] * 100),
              "Motion each second (change per second): %s" % bars(result["motion"])]
+    sound = result["loudness"]
+    if sound:
+        inner = [(second, value) for second, value in enumerate(sound["momentary"])
+                 if value is not None and 0 < second < len(sound["momentary"]) - 1] or [(0, None)]
+        quiet, loud = min(inner, key=lambda pair: pair[1] or 0), max(inner, key=lambda pair: pair[1] or 0)
+        lines += ["Loudness: %s LUFS integrated, range %s LU, true peak %s dBTP; quietest second %d, loudest %d"
+                  % (sound["integrated"], sound["range"], sound["true_peak"], quiet[0], loud[0]),
+                  "Loudness each second (momentary): %s" % bars(sound["momentary"], floor=-60.0)]
+    else:
+        lines.append("Loudness: no audio track")
+    colours = result["palette"]
+    lines.append("Colours: %s; accents: %s; mean brightness %d of 255" % (
+        ", ".join("%s %.0f%%" % (c["hex"], c["share"] * 100) for c in colours["colours"]),
+        ", ".join("%s %.1f%%" % (c["hex"], c["share"] * 100) for c in colours["accents"]) or "none",
+        colours["mean_luma"]))
     return lines
 
 
