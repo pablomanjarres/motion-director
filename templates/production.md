@@ -78,7 +78,7 @@ Licenses: {engine, fonts, music, footage, icons}. Caption for a portfolio: {...}
 
 ## Skill ledger
 
-Required. One row per library or registered skill actually read. A phase is not
+Required. One row per library or installed skill actually read. A phase is not
 done until it has its rows (film track: at least two per phase from Direction on).
 
 | phase | skill id | what it decided |

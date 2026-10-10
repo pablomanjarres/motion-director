@@ -105,6 +105,6 @@ At 30 fps, frames = ms × 0.03 (300 ms is 9 frames).
 | One persistent world, spotlight luminance, token discipline | `hf-kit/video-storytelling` |
 | Ready styles, or a style built from references | `animate/animate` |
 | 406 HyperFrames reference cards | `hf-kit/style-library` |
-| Product UI that looks designed, not templated | registered skills `frontend-design`, `ui-ux-pro-max`, `ui-glowup` |
-| A logo that does not exist yet | registered skill `create-logo` |
-| Charts and stat tiles in motion | registered skill `dataviz` |
+| Product UI that looks designed, not templated | an installed interface-design skill |
+| A logo that does not exist yet | an installed logo skill |
+| Charts and stat tiles in motion | an installed data-visualization skill (scale its specs up for video) |

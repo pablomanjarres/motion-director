@@ -54,8 +54,7 @@ turned off, the page must still be complete and strong.
 ## 6. Evidence
 
 Record the interaction in a real browser at normal and at reduced motion
-(Playwright video, or the person's Chrome through the registered `claude-in-chrome`
-skill with a GIF). Grab start, middle and end frames. Then score the rubric.
+(Playwright video, or a browser-automation tool that records a GIF). Grab start, middle and end frames. Then score the rubric.
 
 ## 7. Web rubric
 
@@ -76,4 +75,4 @@ weaker with motion off, or no browser evidence.
 | UI motion principles, personality, reduced-motion substitutes | `motion-principles/motion-principles` |
 | Logo animation and ambient backgrounds | `iart/logo-animation`, `iart/motion-background` |
 | A motion audit of an existing site | `awesome-motion/web-motion-auditor` |
-| Interface design and React quality | registered skills `frontend-design`, `ui-ux-pro-max`, `vercel:react-best-practices` |
+| Interface design and React quality | installed interface-design and React review skills |
