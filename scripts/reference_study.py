@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """Measure films the way the pipeline measures its own drafts.
 
-For each video: hard cuts and shot lengths, still holds, a motion curve, and contact sheets
-with one frame per shot (one every two seconds through long shots). Each film gets study.json,
-study.md and sheet-NN.png in its own folder under --out. study.md says which moment each
-sheet cell shows, because many ffmpeg builds lack drawtext. Needs ffmpeg and ffprobe;
-Python stdlib only.
+For each video: hard cuts and shot lengths, still holds, a motion curve, loudness, colours,
+and contact sheets with one frame per shot (one every two seconds through long shots). Each
+film gets study.json, study.md and sheet-NN.png in its own folder under --out. study.md says
+which moment each sheet cell shows, because many ffmpeg builds lack drawtext. With several
+films, or with --draft, board.md compares them, and marks each measure where the draft falls
+outside the references. Needs ffmpeg and ffprobe; Python stdlib only.
 """
 import argparse
 import json
@@ -197,6 +198,50 @@ def study(video, out, threshold, min_shot, still, columns):
     return result
 
 
+def median_motion(item):
+    values = [value for value in item["motion"] if value is not None]
+    return round(statistics.median(values), 3) if values else None
+
+
+MEASURES = (
+    ("median shot s", lambda item: item["shots"]["median"]),
+    ("cuts a minute", lambda item: item["shots"]["cuts_per_minute"]),
+    ("final shot s", lambda item: item["shots"]["final"]),
+    ("still share", lambda item: item["hold_share"]),
+    ("median motion", median_motion),
+    ("LUFS", lambda item: (item["loudness"] or {}).get("integrated")),
+    ("LRA", lambda item: (item["loudness"] or {}).get("range")),
+    ("true peak", lambda item: (item["loudness"] or {}).get("true_peak")),
+    ("brightness", lambda item: item["palette"]["mean_luma"]),
+)
+
+
+def show(value):
+    if value is None:
+        return "-"
+    return str(value) if isinstance(value, int) else "%.2f" % value if abs(value) < 10 else "%.1f" % value
+
+
+def board(studies, draft):
+    """One row per film; with a draft, its value per measure against the references' range."""
+    head = ["film", "length s", "shots"] + [name for name, _ in MEASURES]
+    lines = ["# Reference board", "", "| " + " | ".join(head) + " |", "|" + " --- |" * len(head)]
+    for item in studies + ([draft] if draft else []):
+        name = item["video"] + (" (draft)" if item is draft else "")
+        cells = [name, show(item["duration"]), str(item["shots"]["count"])] + [show(get(item)) for _, get in MEASURES]
+        lines.append("| " + " | ".join(cells) + " |")
+    if draft:
+        lines += ["", "## The draft against the references", "",
+                  "| measure | lowest | median | highest | draft | |", "| --- | --- | --- | --- | --- | --- |"]
+        for name, get in MEASURES:
+            values, mine = sorted(v for v in map(get, studies) if v is not None), get(draft)
+            if values and mine is not None:
+                outside = "outside" if mine < values[0] or mine > values[-1] else ""
+                lines.append("| %s | %s | %s | %s | %s | %s |" % (name, show(values[0]), show(statistics.median(values)),
+                                                              show(values[-1]), show(mine), outside))
+    return lines
+
+
 def summary(result):
     shots = result["shots"]
     lines = ["# %s" % result["video"], "",
@@ -228,6 +273,7 @@ def summary(result):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("videos", nargs="+")
+    parser.add_argument("--draft", help="a render of your own, compared against the videos on board.md")
     parser.add_argument("--out", default="refs/study", help="output folder (default refs/study)")
     parser.add_argument("--threshold", type=float, default=0.3, help="scene change counted as a hard cut (0-1)")
     parser.add_argument("--min-shot", type=float, default=0.25, help="shortest shot in seconds")
@@ -235,14 +281,21 @@ def main(argv=None):
                         help="change per second (scene change times fps) below which the picture is still")
     parser.add_argument("--columns", type=int, default=6, help="contact sheet columns")
     args = parser.parse_args(argv)
-    for video in args.videos:
+    studies = []
+    for video in args.videos + ([args.draft] if args.draft else []):
         folder = os.path.join(args.out, os.path.splitext(os.path.basename(video))[0])
         try:
-            result = study(video, folder, args.threshold, args.min_shot, args.still, args.columns)
+            studies.append(study(video, folder, args.threshold, args.min_shot, args.still, args.columns))
         except MediaError as error:
             print(error, file=sys.stderr)
             return 1
-        print("\n".join(summary(result)) + "\n")
+        print("\n".join(summary(studies[-1])) + "\n")
+    draft = studies.pop() if args.draft else None
+    if draft or len(studies) > 1:
+        path = os.path.join(args.out, "board.md")
+        with open(path, "w", encoding="utf-8") as handle:
+            handle.write("\n".join(board(studies, draft)) + "\n")
+        print("board: " + path)
     return 0
 
 
