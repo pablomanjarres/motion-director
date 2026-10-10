@@ -65,3 +65,69 @@ a film is listed as such.
 - **Directing attention.** Fade everything but the subject over about 10 frames, magnify, or cut from the screen to the face watching it (inserts 1.5-2.1 s, faces about 1.3 s).
 - **Cursor.** Visible and clicking in interface-only films; an agent gets its own labelled cursor; live-action films show none.
 - **Finish.** None of the four interface films carries measurable grain.
+
+## Edit and motion
+
+- **Cut rate by kind.** Short launch montages run 111-188 cuts a minute (median shot 0.13-0.32 s); product films 19-31; brand spots 10-65; one-canvas and one-shot films none.
+- **Pace by section.** The problem goes fast (Keep thinking 108 cuts a minute; Intelligent UI 1.5 s shots), the answer slower (2.4 s, then 3.0 s; Keep thinking halves its cut rate), the payoff fast again (90 a minute), and one still shot ends it.
+- **A hinge between problem and answer.** 2-2.5 s of an almost empty frame with the sound near silent (Keep thinking), a foreground object closing the frame to black for 2-3 frames (Intelligent UI), or 3 black frames and a 1.75 s fade up at the midpoint (dots).
+- **Camera.** Spend the one move on the opening (Opus 5.5: a 13% push-in over 1.24 s). A pull-back that speeds up per frame as shots shorten makes many cuts read as one move (Fable 5: 3.5-10% a shot). In interface films the camera is the transition: Dashboards has about 10 hard switches in 82 s, and every other change is a camera move.
+- **Steps for a handmade feel.** Fable 5 animates on twos inside 24 fps, Haiku 5.5 runs at 12 fps with a line that boils on twos, and the safeguards film moves its paper graphics in 2-6 frame holds. Interface moves stay on ones.
+- **Timing templates repeat to the frame.** Sora 2 runs five blocks of exactly 239 frames; lower thirds pop on a 3, 8, 3, 3 frame pattern; GPT-6 Astra's year cards take 18 frames in and 17 out.
+- **Numbers.** Data appears as dots, relative bars or a figure built from the subject (the safeguards film collapses a field to 0 against 1 dot). The set's only count-up steps four times on twos with shrinking increments (+2, +3, +2, +1).
+- **Letters from stand-ins.** A wordmark assembled from the film's own objects, one letter swapped per frame, out of reading order (GPT-6 Astra, the safeguards film).
+- **Loops for feeds.** The last frame returns to frame 0 within 1-3 levels out of 255 (Opus 5.5, GPT-6 Astra social cut), or the film ends in its opening state (Haiku 5.5).
+
+## Sound
+
+- Most films build into the reveal: +10 LU across a montage (Fable 5), a steady climb under the line to its loudest window just before the name (Opus 5.5).
+- The turn gets one sound event: 0.4 s of near-silence (Keep thinking), a 23 dB step on a single frame (You can just build things), the music entering with the first super (Ads), an 11 LU drop before the key demo (Atlas).
+- Before or under the reveal: a 25 LU drop while the cuts slow (Fable 5), 3.9 s of near-silence (Ads), or the music pulled out under the name (Opus 5.5).
+- Hits sit on cuts: one 2 frames before a word lands, the wordmark with its own hit on the frame it appears, cuts 2-3 frames ahead of musical onsets.
+- The end: the sound falls 20-50 LU over the last 1.5-6 s; Keep thinking holds 1.85 s of silence on its lockup; dots fades only its audio over the last 1.5 s.
+- No score at all is a valid choice: Sora 2 lets each clip carry its own sound between silent black cards.
+
+## End cards
+
+- **Short films.** The end takes 20-30% of the runtime: the name alone for 1.3-2.3 s, then the wordmark for 0.9-1.7 s, one centred line on a plain ground each time, then the loop. Haiku 5.5 lets the name be the ending (3.1 s) and returns to its opening state.
+- **Longer films.** Interface films hold the mark 1.8-4.4 s inside a 4.5-7.8 s card. Brand spots put the wordmark at 8.6-9.1% cap height and the tagline at 3.3-4.3% for the last 3.0-3.5 s.
+- **Entrances.** A hard cut, or a mark built in about 0.9 s (dots: from light over 22 frames, letters 3 frames apart), or a logo growing from 53-67% to full size in 9-15 frames with a fast start.
+- **Clear the stage first.** Dashboards removes its working grid in about 5 frames and warms the ground slightly before the logo builds.
+
+## Recipes by kind
+
+**Short launch or social cut, 10-20 s** (Opus 5.5, Fable 5, Haiku 5.5, GPT-6 Astra social cut)
+1. From 0 to about 45%: the motif without words. A montage locked to one shape (a horizon at one height, a numeral in one box), or one continuous build (particles forming a figure on an S-curve: 10% at about 2 s, 50% at 3.2 s, 90% at 4.9 s).
+2. From about 45 to 80%: at most one line of up to four words, one word across each group of cuts, while the cuts accelerate. No words at all also works.
+3. At the top of the build, cut to the name, one centred line, for 1.3-3.1 s, in near-silence or on the loudest hit.
+4. Wordmark for 0.9-1.7 s, then back to frame 0 for the loop.
+
+**Product launch, 60-150 s** (Atlas, Intelligent UI, Dashboards, dots)
+1. Open on the finished output or on the human problem, not on interface chrome (Dashboards: its output full frame for 2.5 s; Intelligent UI: no interface for 52%).
+2. A hinge, with the sound dipped.
+3. The product as the answer in three or four chapters, one idea and one card or line each (2-8 words, about 6.5% cap height, 1.8-3.0 s).
+4. Interface on the scale ladder and the time budget; inserts cut to the person watching.
+5. The fastest cutting and the loudest moment at the payoff; then the line, late (79-89% of the runtime), the name, and the mark held 1.8-4.4 s while the sound leaves.
+
+**Brand spot, 60-90 s** (Keep thinking, Ads are coming to AI, You can just build things)
+1. One idea carried by people and objects; product interface at most 6% of the runtime.
+2. The cut rate follows the story: a fast problem montage, a hinge, a slower answer, a fast payoff, one long final shot.
+3. Words late (79-86% of the runtime), switched on whole on cuts; one sound event marks the turn.
+4. Wordmark about 9% cap height and tagline 3.3-4.3% for the last 3-3.5 s; the picture outlasts the sound.
+
+## Before calling a launch film done
+
+- The idea reads from the frames alone, before any line appears.
+- Count the words: a 15 s piece carries at most one line before the name.
+- Every line meant to be read sits in the bands above: statements 3.9-6.5%, readable interface at least 2.1% (magnified, never a whole window), taglines at least 3.1%.
+- One signature device, built from the brand's own material, repeated at least three times, paying off at the reveal.
+- Hard cuts, or a written reason for each dissolve.
+- Shots shorten into the reveal, and one still shot carries the end.
+- A near-silence or a pulled-out bed before or under the name; loudness range at least 4 LU; the end card plays in near-silence.
+- The end holds 3 s or more, and the picture does not fade.
+- No grain on interface films unless the brand asks for it.
+- On the board (`reference_study.py --draft`), every measure marked `outside` has a reason.
+
+## Do not copy
+
+Logos, wordmarks, symbols, typefaces, brand colours, product names, taglines ("There's more to discover", "Keep thinking", "You can just build things", "Sometimes words aren't enough"), music, characters, and the specific footage or plates. Take the measurements, the structures and the logic of each device, then build the device from the piece's own brand and material.
