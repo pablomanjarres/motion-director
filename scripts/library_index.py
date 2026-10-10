@@ -69,6 +69,10 @@ def write_index(manifest, home):
                 lines.append("| `%s` | %s | %s |" % (skill["id"], ", ".join(skill["phases"]) or "-",
                                                     cell(skill["description"])))
         lines.append("")
+    if manifest.get("excluded"):
+        lines += ["## Excluded after review", "", "Not installed. Do not fetch these by hand.", ""]
+        lines += ["- %s: %s" % (entry["url"], entry["reason"]) for entry in manifest["excluded"]]
+        lines.append("")
     with open(os.path.join(home, "INDEX.md"), "w", encoding="utf-8") as handle:
         handle.write("\n".join(lines))
 

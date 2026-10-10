@@ -67,6 +67,9 @@ def load_manifest(path):
         dirs = [skill["dir"] for skill in source["skills"]]
         if len(dirs) != len(set(dirs)):
             raise ManifestError('%s: two skills share a directory name; give one an "as"' % sid)
+    for entry in manifest.get("excluded", []):
+        if not (isinstance(entry.get("url"), str) and isinstance(entry.get("reason"), str)):
+            raise ManifestError("each excluded entry needs a url and a reason")
     manifest["digest"] = hashlib.sha256(raw.encode("utf-8")).hexdigest()
     return manifest
 
