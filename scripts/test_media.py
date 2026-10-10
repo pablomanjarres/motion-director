@@ -1,7 +1,6 @@
 """Tests for media.py, the shared ffmpeg and ffprobe helpers."""
 import os
 import shutil
-import subprocess
 import sys
 import tempfile
 import unittest
@@ -9,6 +8,7 @@ import unittest
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import media  # noqa: E402
+from test_fixtures import encode, needs_ffmpeg  # noqa: E402
 
 
 class RateParsingTest(unittest.TestCase):
@@ -20,14 +20,12 @@ class RateParsingTest(unittest.TestCase):
                 media.parse_rate(bad)
 
 
-@unittest.skipUnless(shutil.which("ffmpeg") and shutil.which("ffprobe"), "needs ffmpeg and ffprobe")
+@needs_ffmpeg
 class ProbeTest(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.mkdtemp(prefix="media-test-")
         self.addCleanup(shutil.rmtree, self.tmp, True)
-        self.silent = os.path.join(self.tmp, "silent.mp4")
-        subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=s=64x36:r=25:d=2",
-                        "-c:v", "libx264", "-pix_fmt", "yuv420p", self.silent], check=True)
+        self.silent = encode(os.path.join(self.tmp, "silent.mp4"), ["-f", "lavfi", "-i", "testsrc2=s=64x36:r=25:d=2"])
 
     def test_reads_rate_length_size_and_audio(self):
         self.assertEqual(media.probe_fps(self.silent), 25.0)

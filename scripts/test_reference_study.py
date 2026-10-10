@@ -7,6 +7,8 @@ import sys
 import tempfile
 import unittest
 
+from test_fixtures import encode, needs_ffmpeg
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 SCRIPT = os.path.join(HERE, "reference_study.py")
 CREAM, INK, CLAY = (245, 243, 238), (23, 23, 26), (217, 119, 87)
@@ -21,7 +23,7 @@ def near(hex_value, rgb, tolerance=10):
     return all(abs(a - b) <= tolerance for a, b in zip(value, rgb))
 
 
-@unittest.skipUnless(shutil.which("ffmpeg") and shutil.which("ffprobe"), "needs ffmpeg and ffprobe")
+@needs_ffmpeg
 class ReferenceStudyTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -30,26 +32,21 @@ class ReferenceStudyTest(unittest.TestCase):
         segment = "color=c=%s:s=320x180:r=30:d=2"
         graph = ("[0][3]overlay=x=20:y=20[a];[a][1][2]concat=n=3:v=1:a=0[v];"
                  "[4][5][6]concat=n=3:v=0:a=1,volume=0.5[s]")
-        cls.make(cls.film, ["-f", "lavfi", "-i", segment % colour(CREAM), "-f", "lavfi", "-i", segment % colour(INK),
+        encode(cls.film, ["-f", "lavfi", "-i", segment % colour(CREAM), "-f", "lavfi", "-i", segment % colour(INK),
                             "-f", "lavfi", "-i", segment % colour(CREAM),
                             "-f", "lavfi", "-i", "color=c=%s:s=40x40:r=30:d=2" % colour(CLAY),
                             "-f", "lavfi", "-i", "sine=f=440:d=3:sample_rate=48000",
                             "-f", "lavfi", "-i", "anullsrc=r=48000:cl=mono:d=0.5",
                             "-f", "lavfi", "-i", "sine=f=660:d=2.5:sample_rate=48000",
-                            "-filter_complex", graph, "-map", "[v]", "-map", "[s]", "-c:a", "aac"])
+                          "-filter_complex", graph, "-map", "[v]", "-map", "[s]", "-c:a", "aac"], "-crf", "12")
         cls.copy = os.path.join(cls.tmp, "copy.mp4")
         shutil.copy(cls.film, cls.copy)
         cls.draft = os.path.join(cls.tmp, "draft.mp4")
-        cls.make(cls.draft, ["-f", "lavfi", "-i", segment.replace("d=2", "d=6") % colour(CREAM)])
+        encode(cls.draft, ["-f", "lavfi", "-i", segment.replace("d=2", "d=6") % colour(CREAM)], "-crf", "12")
 
     @classmethod
     def tearDownClass(cls):
         shutil.rmtree(cls.tmp, True)
-
-    @staticmethod
-    def make(path, inputs):
-        subprocess.run(["ffmpeg", "-v", "error", "-y"] + inputs + ["-c:v", "libx264", "-crf", "12",
-                                                                     "-pix_fmt", "yuv420p", path], check=True)
 
     def study(self, *args):
         out = tempfile.mkdtemp(dir=self.tmp)
