@@ -69,7 +69,7 @@ delivery/
   name.srt                 # when there is speech
   LICENSES.md              # engine, fonts, music, footage, icons, generated media
   source/                  # the project without node_modules, caches or renders, plus a README to re-render
-  production.md  facts.md
+  direction.md  facts.md  # the look, type, palette and motion language; production.md stays in the project
 ```
 
 ## 6. Licenses to record

@@ -72,12 +72,13 @@ the scaffolded project. This is the still-frame gate: a weak still will not be
 rescued by motion, so fix the look here. Put each look frame beside two reference
 contact sheets at the same size: a frame emptier, smaller or wordier than every
 reference frame (scale, density and words in `references/launch-films.md`) fails
-here. Build the gate sheet in one command, and send any look a critic round changes
+here. Build the gate sheet at the sheets' own cell size (320 px wide), and send any look a critic round changes
 back through it:
 
 ```bash
-ffmpeg -i look-01.png -i <studies>/<film-a>/sheet-01.png -i <studies>/<film-b>/sheet-01.png -filter_complex \
-  "[0]scale=1920:-2[a];[1]scale=1920:-2[b];[2]scale=1920:-2[c];[a][b][c]vstack=inputs=3" gate-01.png
+ffmpeg -i look-%02d.png -vf "scale=320:-2,tile=6x1:color=0x808080" -frames:v 1 looks.png
+ffmpeg -i looks.png -i <studies>/<film-a>/sheet-01.png -i <studies>/<film-b>/sheet-01.png \
+  -filter_complex "[0][1][2]vstack=inputs=3" gate.png
 ```
  Then render one still per beat from the
 real scene code, so panels become the build instead of throwaway drawings. Three
