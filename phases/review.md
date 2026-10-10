@@ -19,13 +19,15 @@ a 360 px phone sheet, and `index.txt` saying what each image shows.
 - Then put the draft on the board beside the references chosen in Direction:
 
 ```bash
-python3 <this skill>/scripts/reference_study.py refs/*.mp4 --draft draft.mp4 --out review/r1/board
+python3 <this skill>/scripts/reference_study.py <refs>/*.mp4 --draft draft.mp4 --out ~/.local/share/motion-studio/studies/<project>/r1
 ```
 
 `board.md` lists each measure with the references' lowest, median and highest value
 and marks it `outside` where the draft leaves that range. Every `outside` gets a fix
 or a written reason in `production.md`: a draft that holds its end card half as long
-as its references, or has a third of their loudness range, is usually wrong.
+as its references, or has a third of their loudness range, is usually wrong. Median
+motion reads low for any small subject on an empty ground; treat a low value as a
+prompt to check scale and density on the sheets, not as a number to chase.
 
 Open and look at every image. Never claim a fix you have not re-rendered and looked at.
 

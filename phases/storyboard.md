@@ -66,7 +66,10 @@ picture and sound.
 
 First render two to four full-size look frames of the most different beats, from
 the scaffolded project. This is the still-frame gate: a weak still will not be
-rescued by motion, so fix the look here. Then render one still per beat from the
+rescued by motion, so fix the look here. Put each look frame beside two reference
+contact sheets at the same size: a frame emptier, smaller or wordier than every
+reference frame (scale, density and words in `references/launch-films.md`) fails
+here. Then render one still per beat from the
 real scene code, so panels become the build instead of throwaway drawings. Three
 cheap check-ins happen before full animation: the story (beat table), the look
 (look frames) and the storyboard (panels). When the person is present, ask at each one with options and a

@@ -11,12 +11,12 @@ interface, a model launch, a social cut, a brand spot) and measure them all the
 same way:
 
 ```bash
-python3 <this skill>/scripts/reference_study.py refs/*.mp4 --out refs/study
+python3 <this skill>/scripts/reference_study.py <refs>/*.mp4 --out ~/.local/share/motion-studio/studies/<project>
 ```
 
 Each film gets contact sheets with one frame per shot, shot lengths, still holds,
 motion and loudness each second, integrated loudness and its colours;
-`refs/study/board.md` puts the films side by side. Open every sheet. Write the
+`board.md` in that folder puts the films side by side. Open every sheet. Write the
 piece's targets into `production.md` from the board (median shot, cuts a minute,
 final hold, loudness and range, brightness) and from what the sheets show that
 numbers miss: type size against frame height, words on screen, how the product is
@@ -24,7 +24,7 @@ framed, the signature device. Compare proportions, not pixels.
 
 - Launch films, feature films, social cuts and brand spots: read `references/launch-films.md` first. It holds these measurements for 14 recent launch films; with no references supplied, name the two or three closest to the piece and use their numbers.
 - Frame grabs and palettes in more depth: `animate/animate` (`new-style.md` and its measuring tools). Musical onsets and beat grids: `hf-kit/motion-showreel` (`analyze-reference`).
-- Reference media stays local, out of git, and out of every deliverable.
+- Reference films and their studies stay outside the project folder (for example `~/.local/share/motion-studio/refs/` and `studies/`), out of version control and out of every deliverable.
 
 ## 2. Three directions, kill two
 
@@ -37,9 +37,9 @@ ends). Any two directions differ on at least four dials.
 Judge each one: Does it serve the one sentence from the brief? Is it the brand,
 done better? Could a competitor use it unchanged (if yes, kill it)? Would it
 survive weak assets or a slow render? The direction that matches the most obvious
-reading of the brief is usually one of the two you kill. A direction that copies a
-worked example from a library skill is killed and replaced, even when two
-examples fit.
+reading of the brief is usually one of the two you kill. A library skill's
+worked direction that matches the brief may be written out as one of the
+three, and it is always one of the two killed.
 `launch-film/product-launch-motion` (creative-direction reference) has the full dial set.
 
 Then name one **signature move**: a device you can say in one sentence that recurs
@@ -65,6 +65,7 @@ entrance curve. Never add a curve per scene.
 House curves and defaults:
 
 - Entrances `cubic-bezier(0.16, 1, 0.3, 1)`; exits `cubic-bezier(0.7, 0, 0.84, 0)` at 60 to 75 percent of the entrance length; moves between states `cubic-bezier(0.65, 0, 0.35, 1)`. Linear only for continuous motion (rotation, drift, grain).
+- A move the viewer must follow (a drop, a pour, the device's key move) lasts at least 12 frames: on the move curve, or for a fall an ease-in that lands on a hit. The entrance curve covers most of its travel in its first third, so a short watched move on it reads as a blink.
 - Springs in one vocabulary, the damping ratio ζ = damping / (2·√(stiffness·mass)). Type and UI stay at ζ ≥ 0.7 (a hair of overshoot at most); one hero accent per piece may drop to about 0.5.
 - A base unit (for example 100 ms, or 3 frames at 30 fps); every duration is a multiple.
 - Stagger: words 60-90 ms, list items 40-80 ms, grid cells 20-40 ms; a whole group reveal finishes within 500 ms (700 ms when the group fills the frame), and the last item lands before the next beat.
@@ -97,6 +98,7 @@ At 30 fps, frames = ms × 0.03 (300 ms is 9 frames).
 - House defaults when there is no brand: a warm off-white ground (`#F7F5F0`), near-black ink (`#17171A`) and one saturated accent chosen here for one meaning; one display grotesk (Instrument Sans, Manrope or General Sans) plus a mono for labels (JetBrains Mono), embedded locally.
 - Video is not a web page. Size type by cap height against frame height, in the bands measured in `references/launch-films.md`: statements 3.9-6.5%, taglines and labels at least 3.1%, interface lines meant to be read at least 2.1% (magnified, never read inside a whole window); text smaller than that is texture and carries no meaning. In 9:16, labels at least 32 px. Strokes 2-4 px, chart lines 4 px or more. A 16:9 film watched on a phone shows at about a fifth of its size, so frame tight on the action. Specs from other skills are sized for screens seen up close; judge everything on the phone sheet.
 - Check every bitmap and 3D render against the palette and the one-accent rule before it goes in: renders from a brand kit can carry extra hues (golds, gradients) that read as a second accent. A hero object also needs a bridge, something already on screen that leads the eye into it.
+- Type stays out of the mark's clear space: the brand guide's, or a quarter of the symbol's height.
 - At most three families (display, UI sans, mono). Display type around 120-140 px on a 1080 px tall frame with slightly negative tracking. Small labels twice the size you first think.
 - Palette: one primary, one accent, two or three neutrals tinted toward the primary; roughly 60/30/10 by area. Build ramps and gradients in OKLCH (`linear-gradient(in oklch, ...)`); add 3 to 5 percent grain against banding.
 - One focal point per frame. Everything that must be read stays legible on a phone, judged at 360 px wide.

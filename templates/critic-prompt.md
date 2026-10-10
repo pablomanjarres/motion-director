@@ -12,7 +12,8 @@ Read these and nothing else:
 - Brand: {paths to brand.md, MOTION.md or the brand guide, or "none"}
 - Motion language: {the motion-language lines from production.md section 2}
 - Review pack: {path to review/r{N}/}. Read its `index.txt` first; it says what each image shows and when.
-- Reference board: {path to review/r{N}/board/board.md} and the contact sheets of two references: {paths to their sheet-01.png}. Look at both reference sheets before the draft's frames.
+- Reference board: {path to this round's board.md} and the contact sheets of two references: {paths to their sheet-01.png}. Look at both reference sheets before the draft's frames.
+- Previous verdict: {path to review/r{N-1}-verdict.md, or "none" in round 1}. In round 2, check each of its fixes first, then look for regressions.
 - Waveform: {path to the waveform image with beat lines, or "no sound"}
 
 Do not render, run builds or read code. Use about fifteen tool calls and finish
