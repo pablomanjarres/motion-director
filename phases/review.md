@@ -35,6 +35,7 @@ Open and look at every image. Never claim a fix you have not re-rendered and loo
 ## 2. Measure
 
 - `python3 <this skill>/scripts/frame_qa.py draft.mp4` reports pops, one-frame flashes, frozen stretches and black frames; `--against` hashes every frame of two renders (render the same frames twice, at different concurrency, to prove determinism).
+- Photosensitivity: `frame_qa.py` reports more than three general flashes in any one second; none may ship.
 - Text: every string sits inside the frame and outside platform UI zones, nothing overlaps, and it is legible on the phone sheet.
 - Loops: the last frame and frame 0 match in position and in velocity.
 - Sound: loudness and true peak measured on the delivered file, and a loudness envelope around each cue (`phases/sound.md`).

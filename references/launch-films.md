@@ -137,6 +137,7 @@ a film is listed as such.
 - A near-silence or a pulled-out bed before or under the name; loudness range at least 4 LU; the end card plays in near-silence.
 - The end holds 3 s or more, and the picture does not fade.
 - No grain on interface films unless the brand asks for it.
+- At most three general flashes in any second (`frame_qa.py` counts them); the fastest measured montages stay within it because their plates keep a similar brightness.
 - On the board (`reference_study.py --draft`), every measure marked `outside` has a reason.
 
 ## Do not copy
