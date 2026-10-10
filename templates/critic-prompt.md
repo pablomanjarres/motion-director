@@ -12,15 +12,18 @@ Read these and nothing else:
 - Brand: {paths to brand.md, MOTION.md or the brand guide, or "none"}
 - Motion language: {the motion-language lines from production.md section 2}
 - Review pack: {path to review/r{N}/}. Read its `index.txt` first; it says what each image shows and when.
+- Reference board: {path to review/r{N}/board/board.md} and the contact sheets of two references: {paths to their sheet-01.png}. Look at both reference sheets before the draft's frames.
 - Waveform: {path to the waveform image with beat lines, or "no sound"}
 
-Do not render, run builds or read code. Use about a dozen tool calls and finish
-within ten minutes.
+Do not render, run builds or read code. Use about fifteen tool calls and finish
+within twelve minutes.
 
 Score each item from 1 to 10:
 
 | Item | Passes when |
 |---|---|
+| Idea | one idea, carried by the picture before any words, about what changes for a person rather than a list of features |
+| Beside the references | its frames could sit in the reference sheets: type size and word count, space around the subject, product framing, colour restraint, pacing; every board measure marked `outside` has a visible reason |
 | Hook | the first 2 s make a stranger keep watching |
 | Readability | every line reads on the phone sheet within its hold |
 | Motion quality | easing matches the motion language, arcs are clean, exits are faster than entrances, nothing pops |

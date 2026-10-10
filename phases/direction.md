@@ -6,13 +6,24 @@ rendered from the scaffolded project.
 
 ## 1. Measure the references
 
-For each reference, write down numbers, not adjectives: palette (hex and the role
-of each color), type (families, weights, size relative to frame height), motion
-(entrance length, easing feel, stagger, hold length), cuts per second, camera
-behavior, texture. Compare proportions, not pixels.
+Pick two to four films of the same kind as the piece (a product launch with
+interface, a model launch, a social cut, a brand spot) and measure them all the
+same way:
 
-- Frame grabs and palettes: `animate/animate` (`new-style.md` and its measuring tools).
-- Cut detection, contact sheets, onsets: `hf-kit/motion-showreel` (`analyze-reference`).
+```bash
+python3 <this skill>/scripts/reference_study.py refs/*.mp4 --out refs/study
+```
+
+Each film gets contact sheets with one frame per shot, shot lengths, still holds,
+motion and loudness each second, integrated loudness and its colours;
+`refs/study/board.md` puts the films side by side. Open every sheet. Write the
+piece's targets into `production.md` from the board (median shot, cuts a minute,
+final hold, loudness and range, brightness) and from what the sheets show that
+numbers miss: type size against frame height, words on screen, how the product is
+framed, the signature device. Compare proportions, not pixels.
+
+- Launch films, feature films, social cuts and brand spots: read `references/launch-films.md` first. It holds these measurements for 14 recent launch films; with no references supplied, name the two or three closest to the piece and use their numbers.
+- Frame grabs and palettes in more depth: `animate/animate` (`new-style.md` and its measuring tools). Musical onsets and beat grids: `hf-kit/motion-showreel` (`analyze-reference`).
 - Reference media stays local, out of git, and out of every deliverable.
 
 ## 2. Three directions, kill two

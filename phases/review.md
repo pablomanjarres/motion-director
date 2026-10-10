@@ -16,6 +16,17 @@ It writes frame 0 at full size (the thumbnail), one frame per beat taken 0.3 s a
 it so motion has settled, a beat contact sheet, every frame across each transition,
 a 360 px phone sheet, and `index.txt` saying what each image shows.
 
+- Then put the draft on the board beside the references chosen in Direction:
+
+```bash
+python3 <this skill>/scripts/reference_study.py refs/*.mp4 --draft draft.mp4 --out review/r1/board
+```
+
+`board.md` lists each measure with the references' lowest, median and highest value
+and marks it `outside` where the draft leaves that range. Every `outside` gets a fix
+or a written reason in `production.md`: a draft that holds its end card half as long
+as its references, or has a third of their loudness range, is usually wrong.
+
 Open and look at every image. Never claim a fix you have not re-rendered and looked at.
 
 ## 2. Measure
@@ -38,9 +49,10 @@ Expect h264, the planned size and fps, the exact duration, `yuv420p`, `bt709` ta
 ## 3. A fresh critic
 
 Spawn a separate subagent with `templates/critic-prompt.md` filled in as its task.
-It gets the brief, `facts.md`, the brand files, the motion-language spec and the
-review pack, never the code or the builder's reasoning; without the brand files it
-judges brand fit blind. It looks and writes only, scores the rubric in that
+It gets the brief, `facts.md`, the brand files, the motion-language spec, the review
+pack and the reference board with the references' contact sheets, never the code or
+the builder's reasoning; without the brand files it judges brand fit blind, and
+without the references it judges the draft against nothing. It looks and writes only, scores the rubric in that
 template, and leaves `review/r<N>-verdict.md`. Read that file instead of waiting
 for a reply: a subagent's report can land with the session that started the job
 rather than with you.
