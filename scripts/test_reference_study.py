@@ -91,6 +91,17 @@ class ReferenceStudyTest(unittest.TestCase):
         self.assertIn("sheet-01 cell  3", text)
         self.assertNotIn("sheet-01 cell  4", text)
 
+    def test_declared_cuts_set_the_drafts_shots_and_report_how_visible_each_is(self):
+        out = self.study(self.film, "--draft", self.draft, "--draft-cuts", "1.5,3.0")
+        with open(os.path.join(out, "draft", "study.json"), encoding="utf-8") as handle:
+            draft = json.load(handle)
+        self.assertEqual(draft["shots"]["count"], 3)
+        self.assertEqual(draft["cuts"], [1.5, 3.0])
+        self.assertEqual(len(draft["cut_strength"]), 2)
+        self.assertLess(max(draft["cut_strength"]), 0.2)
+        with open(os.path.join(out, "film", "study.json"), encoding="utf-8") as handle:
+            self.assertIsNone(json.load(handle)["cut_strength"])
+
     def test_board_marks_where_the_draft_leaves_the_references_range(self):
         out = self.study(self.film, self.copy, "--draft", self.draft)
         with open(os.path.join(out, "board.md"), encoding="utf-8") as handle:
