@@ -35,7 +35,7 @@ class HfWrapperTest(unittest.TestCase):
 
     def test_refuses_commands_that_read_credentials_install_skills_or_send_data(self):
         for command in ("usage", "feedback", "events", "skills", "upgrade", "auth", "open",
-                        "catch-up", "telemetry", "publish", "cloud", "lambda"):
+                        "catch-up", "telemetry", "publish", "cloud", "cloudrun", "lambda"):
             refused = self.run_hf(command, "--json")
             self.assertEqual(refused.returncode, 2, command)
             self.assertIn("refusing", refused.stderr)
