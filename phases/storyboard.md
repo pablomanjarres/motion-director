@@ -46,7 +46,7 @@ Starting templates (adjust to the clock). Launch templates come from `references
 
 | Piece | Beats |
 |---|---|
-| 10-20 s launch or social cut | the motif without words to about 45%; at most one line of up to four words across the accelerating cuts to about 80%; the name alone in near-silence for 1.3-3.1 s; the wordmark 0.9-1.7 s; back to frame 0 so it loops |
+| 10-20 s launch or social cut | the motif without words to about 45%; at most one line of up to four words across the accelerating cuts to about 80%; the name alone in near-silence for 1.3-3.1 s, then the wordmark for 0.9-1.7 s, at least 3 s together; back to frame 0 so it loops |
 | 15 s feature demo | 0-3 s the outcome or the problem as an image; 3-10 s the product doing one thing at a readable scale, at most one line; 10-12 s the result lands; 12-15 s the name or mark held while the sound falls away |
 | 30-45 s launch film | the problem as images for the first third, no interface; a hinge with the sound dipped; the product as the answer in two or three chapters with one card each; the payoff with the fastest cuts and the loudest moment; the line at about 80%; the end held 3-5 s |
 | 30 s reel | hook 0-1.5 s, context to 3 s, body to 22 s in three or four beats, payoff to 27 s, call to action to 30 s |
@@ -56,7 +56,7 @@ Starting templates (adjust to the clock). Launch templates come from `references
 ## 4. One timeline file
 
 Write the beats into one file (`timeline.json` or `src/timeline.ts`) as named
-times. Scenes, the sound cue sheet and or the review script all read it; no component
+times. Scenes, the sound cue sheet and the review script all read it; no component
 or cue hardcodes a start time. Write times as integer frames at the project fps (or exact
 frame / fps values) and compare in frames: seconds rounded to a few decimals put landings a
 frame late. Retiming means editing that file, then re-rendering

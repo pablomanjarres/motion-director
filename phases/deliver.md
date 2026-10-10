@@ -68,9 +68,15 @@ delivery/
   name_poster.png
   name.srt                 # when there is speech
   LICENSES.md              # engine, fonts, music, footage, icons, generated media
-  source/                  # the project without node_modules, caches or renders, plus a README to re-render
-  direction.md  facts.md  # the look, type, palette and motion language; production.md stays in the project
+  source/                  # the render project only, plus a README to re-render
+  direction.md  facts.md
 ```
+
+`source/` holds the code and assets that render the film, without node_modules, caches,
+renders, `review/`, `refs/` or `production.md`. Write `direction.md` at delivery from
+`production.md` section 2: the chosen direction in a paragraph, palette roles, type,
+the motion-language values and the signature move, with no process notes, scores or
+skill notes.
 
 ## 6. Licenses to record
 

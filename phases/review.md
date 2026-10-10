@@ -19,11 +19,12 @@ a 360 px phone sheet, and `index.txt` saying what each image shows.
 - Then put the draft on the board beside the references chosen in Direction:
 
 ```bash
-python3 <this skill>/scripts/reference_study.py <refs>/*.mp4 --draft draft.mp4 --draft-cuts <cut times from the timeline> \
-  --out ~/.local/share/motion-studio/studies/<project>/v1-r1
+python3 <this skill>/scripts/reference_study.py --refs-from ~/.local/share/motion-studio/studies/<project> \
+  --draft draft.mp4 --draft-cuts <cut times from the timeline> --out ~/.local/share/motion-studio/studies/<project>/v1-r1
 ```
 
-`board.md` lists each measure with the references' lowest, median and highest value
+`--refs-from` reuses the studies Direction made instead of measuring the references
+again. `board.md` lists each measure with the references' lowest, median and highest value
 and marks it `outside` where the draft leaves that range. Every `outside` gets a fix
 or a written reason in `production.md`: a draft that holds its end card half as long
 as its references, or has a third of their loudness range, is usually wrong. Median
