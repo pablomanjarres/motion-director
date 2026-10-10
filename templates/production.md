@@ -36,18 +36,18 @@ stagger {...}; intensity budget {max travel, scale range, overshoot};
 holds {minimum stillness after each beat}.
 Palette roles: {background, ink, accent (means: ...), support}. Type: {families, sizes}.
 
-## 3. Storyboard
+## 3. Toolchain
+
+Choice: {...}, because {...}. Scaffold: `{exact command}`.
+Library skills loaded for the build: {ids}.
+
+## 4. Storyboard
 
 | # | t (s) | frames | on screen | motion / camera | text (hold s) | sound | bridge to next |
 |---|---|---|---|---|---|---|---|
 | 1 | | | | | | | |
 
 Look frames: {paths}. Still-frame gate: {pass | fail and why}.
-
-## 4. Toolchain
-
-Choice: {...}, because {...}. Scaffold: `{exact command}`.
-Library skills loaded for the build: {ids}.
 
 ## 5. Build log
 

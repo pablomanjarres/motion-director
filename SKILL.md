@@ -20,9 +20,9 @@ reviewed instead of being the first idea that renders.
 | # | Phase | Read | Gate before the next phase |
 |---|---|---|---|
 | 1 | Brief | `phases/brief.md` | one-sentence message, the clock, formats, `facts.md` |
-| 2 | Direction | `phases/direction.md` | three directions with two killed, a motion-language spec, look frames that pass the still-frame gate |
-| 3 | Storyboard | `phases/storyboard.md` | beat table with visible bridges, the timeline file, panels, the lesson stated from the table alone |
-| 4 | Toolchain | `phases/toolchain.md` | engine chosen with a reason, scaffolded, versions pinned |
+| 2 | Direction | `phases/direction.md` | three directions with two killed, a motion-language spec |
+| 3 | Toolchain | `phases/toolchain.md` | engine chosen with a reason, scaffolded, versions pinned |
+| 4 | Storyboard | `phases/storyboard.md` | beat table with visible bridges, the timeline file, look frames that pass the still-frame gate, panels, the lesson stated from the table alone |
 | 5 | Build | `phases/build.md` | rough cut at final timing before polish, determinism proven |
 | 6 | Sound | `phases/sound.md` | cues from the timeline, loudness measured on the delivered file |
 | 7 | Review | `phases/review.md` | a fresh critic scores every item 8 or more and its one sentence matches the brief, within two rounds |

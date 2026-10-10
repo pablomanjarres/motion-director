@@ -1,7 +1,8 @@
-# Phase 4: Toolchain
+# Phase 3: Toolchain
 
-Pick the engine after the storyboard, from what the piece needs, then scaffold.
-Output: `production.md` section 4 with the choice, the reason and the exact
+Pick the engine right after the direction, from what the piece needs, then scaffold,
+so look frames and storyboard panels render from real project code.
+Output: `production.md` section 3 with the choice, the reason and the exact
 command used. `<skill>` below is this skill's folder; `<library>` is the path
 `motion_library.py where` prints.
 

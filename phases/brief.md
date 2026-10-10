@@ -9,7 +9,7 @@ and brand files when the client has a brand.
 |---|---|---|
 | film | a rendered video: launch film, product demo, explainer, reel, showreel, logo sting, B-roll over footage | all eight |
 | web | motion inside a site or app: micro-interactions, page transitions, scroll stories, loaders | brief, direction, then `phases/web.md` |
-| asset | a motion file someone else ships: Lottie or dotLottie, looping GIF or WebM, animated logo kit | brief, direction, storyboard, build, review, deliver |
+| asset | a motion file someone else ships: Lottie or dotLottie, looping GIF or WebM, animated logo kit | brief, direction, toolchain, storyboard, build, review, deliver |
 
 ## Intake
 
