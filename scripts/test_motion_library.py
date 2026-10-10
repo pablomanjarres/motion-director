@@ -193,7 +193,7 @@ class MotionLibraryTest(unittest.TestCase):
         write(self.up("sims/kit/runtime.js"), "const BASE = {\n  watermark: 'X: @someone',\n};\n")
         write(self.up("examples/one/README.md"), "gallery\n")
         write(self.up("AGENTS.md"), "1. Plan.\n8. Add the piece to examples/.\n")
-        template = {"exclude": ["examples"], "replace": [
+        template = {"exclude": ["examples"], "edits": [
             {"files": ["sims/kit/runtime.js"], "old": "watermark: 'X: @someone',", "new": "watermark: '',"},
             {"files": ["AGENTS.md"], "old": "8. Add the piece to examples/.\n", "new": ""}]}
         self.write_manifest(self.commit("template"), sparse=None, template=template)
@@ -208,7 +208,7 @@ class MotionLibraryTest(unittest.TestCase):
         self.assertNotEqual(self.cli("scaffold", "fixture", dest).returncode, 0)
 
     def test_scaffold_fails_cleanly_when_an_audited_edit_no_longer_matches(self):
-        template = {"replace": [{"files": ["skills/beta/SKILL.md"], "old": "absent text", "new": ""}]}
+        template = {"edits": [{"files": ["skills/beta/SKILL.md"], "old": "absent text", "new": ""}]}
         self.write_manifest(self.sha1, sparse=None, template=template)
         self.assertOk(self.cli("install"))
         dest = os.path.join(self.tmp, "project")
