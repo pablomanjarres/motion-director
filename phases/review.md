@@ -38,7 +38,7 @@ ffprobe -v error -show_entries stream=codec_name,width,height,r_frame_rate,pix_f
 Expect h264, the planned size and fps, the exact duration, `yuv420p`, `bt709` tags, and one audio stream.
 
 - Remotion code: `node <library>/klik-anim/klik-anim/scripts/lint-motion.mjs src` flags random numbers, clocks, timers, linear easing and unclamped interpolation.
-- HyperFrames: `npx hyperframes lint` then `npx hyperframes check` must report zero findings.
+- HyperFrames: `bash <this skill>/scripts/hf.sh lint` then `hf.sh check` must report zero findings.
 
 ## 3. A fresh critic
 
