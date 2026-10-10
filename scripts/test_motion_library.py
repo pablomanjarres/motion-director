@@ -9,11 +9,13 @@ import unittest
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SCRIPT = os.path.join(HERE, "motion_library.py")
+# Global ignores, hooks and URL rewrites on the machine running the suite must not leak in.
+HERMETIC_ENV = dict(os.environ, GIT_CONFIG_GLOBAL=os.devnull, GIT_CONFIG_NOSYSTEM="1")
 
 
 def git(cwd, *args):
     done = subprocess.run(["git", "-C", cwd] + list(args), check=True,
-                          capture_output=True, text=True)
+                          capture_output=True, text=True, env=HERMETIC_ENV)
     return done.stdout.strip()
 
 
@@ -74,7 +76,7 @@ class MotionLibraryTest(unittest.TestCase):
             json.dump({"version": 1, "sources": [source]}, handle)
 
     def cli(self, *args):
-        env = dict(os.environ, MOTION_STUDIO_HOME=self.home)
+        env = dict(HERMETIC_ENV, MOTION_STUDIO_HOME=self.home)
         return subprocess.run([sys.executable, SCRIPT, "--manifest", self.manifest] + list(args),
                               capture_output=True, text=True, env=env)
 
