@@ -21,7 +21,7 @@ import sys
 
 from library_index import find_skills, load_index, write_index
 
-PHASES = ("brief", "direction", "storyboard", "engine", "build", "sound", "qa", "deliver", "web")
+PHASES = ("brief", "direction", "toolchain", "storyboard", "build", "sound", "review", "deliver", "web")
 VERDICTS = ("SAFE", "SAFE-WITH-NOTES")
 LICENSE_FILES = ("LICENSE", "LICENSE.md", "LICENSE.txt", "COPYING")
 JUNK = (".git", "node_modules", ".DS_Store", "__pycache__")

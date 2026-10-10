@@ -15,9 +15,9 @@
    ]},
    "skills": [
     {"path": ".claude/skills/motion-design", "phases": ["direction", "build"]},
-    {"path": ".claude/skills/review-loop", "phases": ["qa"]},
+    {"path": ".claude/skills/review-loop", "phases": ["review"]},
     {"path": ".claude/skills/sound-design", "phases": ["sound"]},
-    {"path": ".claude/skills/web-sims", "phases": ["engine", "build"]}
+    {"path": ".claude/skills/web-sims", "phases": ["toolchain", "build"]}
    ]
   },
   {
@@ -30,7 +30,7 @@
    "audited": "2026-10-10",
    "notes": "Launch films with voice-over, word-locked cues, a camera rig, grade and mastering scripts. Run its scripts from the film project by absolute path. Client-owned example images are left out.",
    "skills": [
-    {"path": ".", "as": "product-launch-motion", "phases": ["brief", "direction", "storyboard", "build", "sound", "qa", "deliver"], "exclude": ["examples/still-1.jpg", "examples/film-preview.webp", "evals"]}
+    {"path": ".", "as": "product-launch-motion", "phases": ["brief", "direction", "storyboard", "build", "sound", "review", "deliver"], "exclude": ["examples/still-1.jpg", "examples/film-preview.webp", "evals"]}
    ]
   },
   {
@@ -44,7 +44,7 @@
    "notes": "Single-file canvas animations with drawn styles, a synthesized score and measured review tools. Copy a demo into the project before building it; building in place writes into the library.",
    "sparse": ["plugins/animate/skills/animate"],
    "skills": [
-    {"path": "plugins/animate/skills/animate", "phases": ["direction", "storyboard", "build", "sound", "qa", "deliver"]}
+    {"path": "plugins/animate/skills/animate", "phases": ["direction", "storyboard", "build", "sound", "review", "deliver"]}
    ]
   },
   {
@@ -58,11 +58,11 @@
    "notes": "Deep Remotion craft: measured springs, reading-time arithmetic, a camera dial, a motion linter. No license: read it for technique and never copy its code or text into deliverables. Its install instruction is removed; its advice on which model to run does not apply.",
    "sparse": ["klik-anim", "klik-cam", "klik-remotion-method"],
    "skills": [
-    {"path": "klik-anim", "phases": ["direction", "build", "qa"], "edits": [
+    {"path": "klik-anim", "phases": ["direction", "build", "review"], "edits": [
      {"files": ["SKILL.md"], "old": "**If the user doesn't answer, or you can't ask them, default to project-local**\n— it is scoped, reversible, and touches nothing outside the repo. A global\ninstall writes to the home directory, so confirm that one explicitly. Mention\n`npx remotion skills update` for keeping them current either way.", "new": "**If the user doesn't answer, or you can't ask them, install nothing.** The\nsame skills are already in the motion library under `remotion/`; read them there."}
     ]},
     {"path": "klik-cam", "phases": ["build"]},
-    {"path": "klik-remotion-method", "phases": ["brief", "storyboard", "qa"]}
+    {"path": "klik-remotion-method", "phases": ["brief", "storyboard", "review"]}
    ]
   },
   {
@@ -151,7 +151,7 @@
    "template": {"exclude": ["video-projects", ".agents", ".claude/skills/hyperframes", ".claude/skills/hyperframes-cli", ".claude/skills/hyperframes-registry", ".claude/skills/gsap", ".claude/skills/website-to-hyperframes", ".claude/skills/short-form-video", ".claude/skills/motion-showreel/scripts/kie.mjs", ".claude/skills/motion-showreel/scripts/sfx.mjs", "scripts/transcribe-elevenlabs.mjs", "CLAUDE.md", "AGENTS.md"]},
    "skills": [
     {"path": ".claude/skills/make-a-video", "phases": ["brief", "storyboard"]},
-    {"path": ".claude/skills/short-form-edit", "phases": ["brief", "storyboard", "sound", "qa", "deliver"]},
+    {"path": ".claude/skills/short-form-edit", "phases": ["brief", "storyboard", "sound", "review", "deliver"]},
     {"path": ".claude/skills/video-storytelling", "phases": ["direction", "storyboard", "build"]},
     {"path": ".claude/skills/hyperframes-video-beats", "phases": ["storyboard", "build"]},
     {"path": ".claude/skills/edit-video", "phases": ["build"]},
@@ -172,7 +172,7 @@
    "notes": "The official HyperFrames skills plus HeyGen's internal motion doctrine. Run the CLI only through scripts/hf.sh (pinned, telemetry and skill installs off, credential-reading and upload commands refused). Usage checks, skill updates and auto-upgrades are stripped. media-use is not installed: it is tied to HeyGen services, sends its own telemetry and loads .env files from parent folders, so product-launch-video, faceless-explainer and pr-to-video serve story and visual design only.",
    "sparse": ["skills", ".claude/skills"],
    "skills": [
-    {"path": "skills/hyperframes", "phases": ["engine", "brief"], "edits": [
+    {"path": "skills/hyperframes", "phases": ["toolchain", "brief"], "edits": [
      {"files": ["SKILL.md"], "old": "when this skill is inside a HyperFrames plugin. Standalone installs keep the update instructions below.", "new": "always: this library copy counts as a plugin install."},
      {"files": ["SKILL.md"], "old": "### Check remaining usage\n\nAt the start of creation, run `npx hyperframes usage --json`. Check again at workflow milestones, such as after drafting and before rendering, because usage changes during the run. Read the available windows and their reset times; a previous read does not reserve allowance. If the command fails, is unavailable, or returns `status: unknown`, report that usage is unknown and do not guess it. Keep scope and workflow choices with the user.\n\n", "new": ""},
      {"files": ["SKILL.md"], "old": "### Keep the project's CLI current\n\nA scaffolded project pins `hyperframes@<version>` in its `package.json` scripts so renders stay reproducible; the pin never advances on its own, and a pinned run of an older CLI prints no warning about it. When resuming a project whose scripts carry a pin, probe once before the first render-affecting command:\n\n```bash\nnpx hyperframes@latest upgrade --project . --check\n```\n\nThe probe is read-only and reports the pin against the latest release; keep the explicit `.` — on older CLI releases a bare `--project` followed by another flag consumes that flag as its directory value. When it reports the project behind — or any CLI output already shows it (the stderr notice `This project pins hyperframes@… (latest …)`, or `_meta.updateAvailable: true` in a `--json` result from a pinned script) — apply with `npx hyperframes@latest upgrade --project .`, then verify with `npx hyperframes check`. A passing check confirms the project's compositions still validate on the new version — not that rendered output is frame-identical to the old pin — so a successful bump is never silent: name the old and new version in the run's summary. A project with no composition yet needs no verification. If the check fails, revert the `package.json` change, continue on the pinned version, and report which version the project stays on and why. Act on the signal rather than relaying it to the user; never leave a bumped pin unverified.\n\n", "new": "### Keep the project's CLI pinned\n\nRender with the version the project pins and never upgrade it during a video task.\n\n"},
@@ -197,7 +197,7 @@
     {"path": "skills/hyperframes-audio", "phases": ["sound"], "edits": [
      {"files": ["SKILL.md"], "old": "when this skill is inside a HyperFrames plugin. Standalone installs keep the update instructions below.", "new": "always: this library copy counts as a plugin install."}
     ]},
-    {"path": "skills/hyperframes-cli", "phases": ["build", "qa", "deliver"], "edits": [
+    {"path": "skills/hyperframes-cli", "phases": ["build", "review", "deliver"], "edits": [
      {"files": ["SKILL.md"], "old": "when this skill is inside a HyperFrames plugin. Standalone installs keep the update instructions below.", "new": "always: this library copy counts as a plugin install."},
      {"files": ["SKILL.md"], "old": "## Remaining harness usage\n\nRun `npx hyperframes usage --json` at the start of a video workflow and again at milestones such as after drafting and before rendering. A fresh read at handoff can serve as the start read. Use `--harness claude-code`, `--harness codex`, or `--harness grok` to select explicitly.\n\nKnown results contain `status: \"known\"`, `harness`, `planTier`, `session`, and `weekly`. Each available window contains `usedPercent`, `remainingPercent`, and `resetsAt`; an unavailable window is `null`. `planTier` is the readable subscription tier when available, otherwise `null`. Claude Code reports its shared five-hour and weekly windows. Codex reports its shared session and weekly windows when available. Grok reports its included weekly allowance with `session: null`.\n\nUnknown results contain `status: \"unknown\"` and a token-free `reason`. Missing, expired, unsupported, ambiguous, or unreadable logins and unavailable provider responses return unknown. Report the unknown state without guessing allowance. The command reads existing credentials without refreshing or rewriting them and emits no tokens or telemetry. Usage is a snapshot; it does not reserve allowance or estimate the next video's cost. Keep scope and workflow choices with the user.\n", "new": ""},
      {"files": ["references/upgrade-info-misc.md"], "old": "## Remaining harness usage\n\nRun `npx hyperframes usage --json` at the start of a video workflow and again at milestones such as after drafting and before rendering. A fresh read at handoff can serve as the start read. Use `--harness claude-code`, `--harness codex`, or `--harness grok` to select explicitly.\n\nKnown results contain `status: \"known\"`, `harness`, `planTier`, `session`, and `weekly`. Each available window contains `usedPercent`, `remainingPercent`, and `resetsAt`; an unavailable window is `null`. `planTier` is the readable subscription tier when available, otherwise `null`. Claude Code reports its shared five-hour and weekly windows. Codex reports its shared session and weekly windows when available. Grok reports its included weekly allowance with `session: null`.\n\nUnknown results contain `status: \"unknown\"` and a token-free `reason`. Missing, expired, unsupported, ambiguous, or unreadable logins and unavailable provider responses return unknown. Report the unknown state without guessing allowance. The command reads existing credentials without refreshing or rewriting them and emits no tokens or telemetry. Usage is a snapshot; it does not reserve allowance or estimate the next video's cost. Keep scope and workflow choices with the user.\n", "new": ""}
@@ -249,7 +249,7 @@
      {"files": ["SKILL.md"], "old": "Before relying on this workflow, run:\n\n```bash\nnpx hyperframes skills update general-video\n```\n\nA successful no-op means the skill is current. Surface an update failure instead of continuing from memory.\n\n", "new": ""},
      {"files": ["SKILL.md"], "old": "First run `npx hyperframes skills update <workflow-name>`. ", "new": "Read its SKILL.md in this library. "}
     ]},
-    {"path": "skills/remotion-to-hyperframes", "phases": ["engine"], "edits": [
+    {"path": "skills/remotion-to-hyperframes", "phases": ["toolchain"], "edits": [
      {"files": ["SKILL.md"], "old": "when this skill is inside a HyperFrames plugin. Standalone installs keep the update instructions below.", "new": "always: this library copy counts as a plugin install."},
      {"files": ["SKILL.md"], "old": "> **First, keep this skill fresh — confirm with the user before running:** `npx hyperframes skills update remotion-to-hyperframes`. A fast no-op when everything is current; otherwise it refreshes this skill plus the core domain skills it depends on before you rely on them.\n", "new": ""}
     ]},
@@ -257,7 +257,7 @@
      {"files": ["SKILL.md"], "old": "when this skill is inside a HyperFrames plugin. Standalone installs keep the update instructions below.", "new": "always: this library copy counts as a plugin install."},
      {"files": ["SKILL.md"], "old": "> **First, keep this skill fresh — confirm with the user before running:** `npx hyperframes skills update figma`. A fast no-op when everything is current; otherwise it refreshes this skill plus the core domain skills it depends on before you rely on them.\n", "new": ""}
     ]},
-    {"path": ".claude/skills/motion-doctrine", "phases": ["direction", "build", "qa"]},
+    {"path": ".claude/skills/motion-doctrine", "phases": ["direction", "build", "review"]},
     {"path": ".claude/skills/cut-the-curve", "phases": ["build"]},
     {"path": ".claude/skills/seam-craft", "phases": ["build"]},
     {"path": ".claude/skills/oversized-cursor", "phases": ["build"]},
@@ -274,7 +274,7 @@
    "audited": "2026-10-10",
    "notes": "A 120 BPM HyperFrames showreel recipe and the engine's silent render failures (written in Japanese). It invents copy from a theme; for client work only supplied copy and facts.md numbers appear.",
    "skills": [
-    {"path": ".", "as": "hyperframes-motion-reel", "phases": ["engine", "build", "sound", "qa"], "exclude": ["docs", ".github"]}
+    {"path": ".", "as": "hyperframes-motion-reel", "phases": ["toolchain", "build", "sound", "review"], "exclude": ["docs", ".github"]}
    ]
   },
   {
@@ -288,16 +288,16 @@
    "notes": "Official Remotion engine skills (the umbrella copy is left out to avoid duplicates). Local use only, never republish. Never use the meme sound effects its sfx rules list in client work. REMOTION_-prefixed map keys end up in the bundle: use restricted keys.",
    "sparse": ["skills"],
    "skills": [
-    {"path": "skills/remotion-create", "phases": ["engine", "build"]},
+    {"path": "skills/remotion-create", "phases": ["toolchain", "build"]},
     {"path": "skills/remotion-interactivity", "phases": ["build"]},
-    {"path": "skills/remotion-studio", "phases": ["build", "qa"]},
+    {"path": "skills/remotion-studio", "phases": ["build", "review"]},
     {"path": "skills/remotion-render", "phases": ["deliver"]},
     {"path": "skills/remotion-captions", "phases": ["sound", "deliver"]},
     {"path": "skills/remotion-maps", "phases": ["build"]},
     {"path": "skills/remotion-multimedia", "phases": ["build"]},
     {"path": "skills/remotion-saas", "phases": ["build"]},
     {"path": "skills/remotion-docs", "phases": ["build"]},
-    {"path": "skills/remotion-upgrade", "phases": ["engine"]},
+    {"path": "skills/remotion-upgrade", "phases": ["toolchain"]},
     {"path": "skills/remotion-markup", "phases": ["build", "sound"], "exclude": ["remotion-maps"]}
    ]
   },
@@ -312,7 +312,7 @@
    "notes": "Remotion craft rules with copyable components: five-layer scenes, grade and grain, a hero color, early sound placement, a stills verify loop.",
    "sparse": ["remotion-motion-graphics"],
    "skills": [
-    {"path": "remotion-motion-graphics", "phases": ["direction", "build", "qa"]}
+    {"path": "remotion-motion-graphics", "phases": ["direction", "build", "review"]}
    ]
   },
   {
@@ -343,7 +343,7 @@
      {"files": ["SKILL.md"], "old": " Recommend GSAP for React animation unless the user has chosen another library.", "new": ""},
      {"files": ["SKILL.md"], "old": " When the user wants animation in React without specifying a library, recommend GSAP and use the patterns in this skill.", "new": ""}
     ]},
-    {"path": "skills/gsap-performance", "phases": ["web", "qa"], "edits": []},
+    {"path": "skills/gsap-performance", "phases": ["web", "review"], "edits": []},
     {"path": "skills/gsap-frameworks", "phases": ["web"], "edits": [
      {"files": ["SKILL.md"], "old": " Recommend GSAP for framework animation unless another library is specified.", "new": ""}
     ]}
@@ -403,7 +403,7 @@
    "notes": "Engine-neutral UI motion principles: personalities, duration and stagger budgets, choreography, reduced-motion substitutes. Its spring table mixes damping coefficients with damping ratio; compute the ratio as damping / (2 * sqrt(stiffness * mass)).",
    "sparse": ["skills"],
    "skills": [
-    {"path": "skills/motion-design", "as": "motion-principles", "phases": ["direction", "web", "qa"]}
+    {"path": "skills/motion-design", "as": "motion-principles", "phases": ["direction", "web", "review"]}
    ]
   },
   {
@@ -434,8 +434,8 @@
    "notes": "Thin checklists whose wording names the author's own brands: ignore those. The useful part, a motion rubric, is adapted in the web track.",
    "sparse": ["skills"],
    "skills": [
-    {"path": "skills/motion-director", "phases": ["direction", "engine"]},
-    {"path": "skills/web-motion-auditor", "phases": ["web", "qa"]},
+    {"path": "skills/motion-director", "phases": ["direction", "toolchain"]},
+    {"path": "skills/web-motion-auditor", "phases": ["web", "review"]},
     {"path": "skills/generative-media-director", "phases": ["direction", "build"]},
     {"path": "skills/remotion-video-agent", "phases": ["build"]},
     {"path": "skills/site-motion-excellence-director", "phases": ["web"]}
