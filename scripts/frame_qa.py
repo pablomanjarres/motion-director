@@ -93,12 +93,13 @@ def find_defects(frames, fps, cuts, min_jump, ratio, freeze_seconds):
 def compare(frames, other, fps):
     if len(frames) != len(other):
         return ["frame counts differ: %d vs %d" % (len(frames), len(other))]
-    worst = max(range(len(frames)), key=lambda i: change(frames[i], other[i])) if frames else 0
-    first = next((i for i in range(len(frames)) if change(frames[i], other[i]) > 0.5), None)
+    diffs = [change(a, b) for a, b in zip(frames, other)]
+    first = next((i for i, diff in enumerate(diffs) if diff > 0.5), None)
     if first is None:
         return []
+    worst = max(range(len(diffs)), key=diffs.__getitem__)
     return ["renders differ from frame %d (%.3f s); largest difference at frame %d (%.1f)"
-            % (first, first / fps, worst, change(frames[worst], other[worst]))]
+            % (first, first / fps, worst, diffs[worst])]
 
 
 def main(argv=None):
