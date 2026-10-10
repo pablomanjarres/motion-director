@@ -70,5 +70,16 @@ class FrameQaTest(unittest.TestCase):
         self.assertIn("frame 30", differs.stdout)
 
 
+class RateParsingTest(unittest.TestCase):
+    def test_reads_ffprobe_rates_including_trailing_separators(self):
+        sys.path.insert(0, HERE)
+        import frame_qa
+        self.assertEqual(frame_qa.parse_rate("30/1,\n"), 30.0)
+        self.assertAlmostEqual(frame_qa.parse_rate("30000/1001"), 29.97, places=2)
+        for bad in ("N/A", "0/0", ""):
+            with self.assertRaises(ValueError):
+                frame_qa.parse_rate(bad)
+
+
 if __name__ == "__main__":
     unittest.main()
