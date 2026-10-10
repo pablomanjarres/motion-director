@@ -29,7 +29,7 @@ into the payoff as described under dramaturgy.
 |---|---|---|
 | hero hits | 0.25-0.35 | at most one per moment |
 | support effects | 0.08-0.20 | |
-| bed or pad | about 0.03 | ducked about 9 dB under hero moments and under voice |
+| bed or pad | about 0.03 in long or voiced pieces, 0.05-0.06 in short sparse ones | ducked about 9 dB under hero moments and under voice; raise support cues with it |
 | music under voice | 14-20 dB below the voice | |
 
 Pan follows the element's position on screen. Keep one musical key and let pitch
@@ -64,13 +64,14 @@ ffmpeg -i final.mp4 -af ebur128=peak=true -f null -
 ```
 
 Targets on the delivered MP4: -14 LUFS integrated (plus or minus 0.5) and true
-peak at or below -1 dBTP. Voice-led social pieces may sit near -16 LUFS. A sparse
-mix cannot reach -14 without crushing; add sustained sound instead of more gain.
+peak at or below -1 dBTP. Voice-led pieces and short sparse ones may sit near -16
+LUFS; platforms normalize playback anyway. A sparse mix cannot reach -14 without
+crushing: add sustained sound or accept -16, never drive the limiter into saturation.
 
 ## 8. Prove sync and audibility
 
 - Draw a waveform with a line at every beat (`claude-motion` has `npm run wave`; plain ffmpeg `showwavespic` works too). A hit between lines means a hardcoded time or a stale render.
-- Read a 100 ms loudness envelope around each cue. A cue that does not rise above the bed is inaudible whatever its gain says.
+- Read a 100 ms loudness envelope around each cue with `bash <library>/launch-film/product-launch-motion/scripts/verify-cue.sh final.mp4 <start_s> <dur_s>`, starting half a second early so the bed shows before the cue. A cue that does not rise clearly above the bed is inaudible whatever its gain says.
 - Watch once muted: the message must survive without sound.
 - You cannot hear the mix. Report the measurements and ask the person to listen on headphones and on a phone speaker.
 
