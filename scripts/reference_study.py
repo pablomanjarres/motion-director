@@ -11,6 +11,8 @@ films, or with --draft, board.md compares them, and marks each measure where the
 outside the references. Needs ffmpeg and ffprobe; Python stdlib only.
 """
 import argparse
+import bisect
+import glob
 import json
 import math
 import os
@@ -18,7 +20,7 @@ import statistics
 import sys
 
 from frame_qa import changes, spikes
-from media import MediaError, duration, ffmpeg, frame_size, has_audio, probe_fps, raw_frames, run, tile
+from media import MediaError, ffmpeg, frame_size, has_audio, probe_fps, raw_frames, run, tile, video_duration
 from motion_library import default_home
 
 BARS = "▁▂▃▄▅▆▇█"
@@ -109,12 +111,20 @@ def sample_times(shots, every=2.0):
     return picks
 
 
-def write_sheets(video, picks, length, fps, out, columns):
-    """Tile the picked frames into sheet-01.png, sheet-02.png...; returns one index line per cell."""
-    last_frame = max(0, int(length * fps) - 2)
+def nearest(times, moment):
+    """Index of the real frame whose time is closest to moment (times ascending)."""
+    i = bisect.bisect_left(times, moment)
+    return min((j for j in (i - 1, i) if 0 <= j < len(times)), key=lambda j: abs(times[j] - moment))
+
+
+def write_sheets(video, picks, times, out, columns):
+    """Tile the picked frames into sheet-01.png, sheet-02.png...; returns one index line per cell. Picks map to
+    real frame indices by timestamp, so variable-frame-rate files index correctly."""
+    for name in glob.glob(os.path.join(out, "sheet-*.png")):
+        os.remove(name)
     chosen, seen = [], set()
     for number, moment in picks:
-        frame = min(int(round(moment * fps)), last_frame)
+        frame = nearest(times, moment)
         if frame not in seen:
             seen.add(frame)
             chosen.append((number, frame))
@@ -122,8 +132,14 @@ def write_sheets(video, picks, length, fps, out, columns):
     ffmpeg("-i", video, "-vf", "select='%s',scale=320:-2," % select + tile(columns, SHEET_ROWS),
            "-fps_mode", "vfr", os.path.join(out, "sheet-%02d.png"))
     per_sheet = columns * SHEET_ROWS
-    return ["sheet-%02d cell %2d  %7.2f s  shot %d" % (i // per_sheet + 1, i % per_sheet + 1, frame / fps, number)
+    return ["sheet-%02d cell %2d  %7.2f s  shot %d" % (i // per_sheet + 1, i % per_sheet + 1, times[frame], number)
             for i, (number, frame) in enumerate(chosen)]
+
+
+def cut_strength(scores, times, cut):
+    """The largest scene change within a frame either side of a declared cut."""
+    frame = nearest(times, cut)
+    return max(score for _, score in scores[max(0, frame - 1):frame + 2])
 
 
 def loudness(video, length):
@@ -197,8 +213,9 @@ def shot_stats(shots, length):
 def study(video, out, threshold, floor, still, columns, declared=None):
     """Measure one film; declared cut times, when given, replace cut detection (for a draft whose cuts are known)."""
     os.makedirs(out, exist_ok=True)
-    length, fps, size = duration(video), probe_fps(video), frame_size(video)
+    length, fps, size = video_duration(video), probe_fps(video), frame_size(video)
     scores = scene_scores(video)
+    times = [moment for moment, _ in scores]
     if declared is None:
         cuts, shots = find_shots(scores, length, fps, threshold, floor, *spiking_frames(video))
     else:
@@ -209,14 +226,13 @@ def study(video, out, threshold, floor, still, columns, declared=None):
     result = {
         "video": os.path.basename(video), "duration": round(length, 2), "fps": round(fps, 3), "size": list(size),
         "shots": shot_stats(shots, length), "cuts": [round(cut, 3) for cut in cuts],
-        "cut_strength": None if declared is None else
-        [round(scores[min(int(round(cut * fps)), len(scores) - 1)][1], 3) for cut in cuts],
+        "cut_strength": None if declared is None else [round(cut_strength(scores, times, cut), 3) for cut in cuts],
         "holds": [[round(start, 2), round(end, 2)] for start, end in holds],
         "hold_share": round(sum(end - start for start, end in holds) / length, 3),
         "motion": curve([rate for rate, (_, score) in zip(rates, scores) if score < threshold], length),
         "loudness": loudness(video, length), "palette": palette(video, length),
     }
-    cells = write_sheets(video, sample_times(shots), length, fps, out, columns)
+    cells = write_sheets(video, sample_times(shots), times, out, columns)
     with open(os.path.join(out, "study.json"), "w", encoding="utf-8") as handle:
         json.dump(result, handle, indent=1)
     with open(os.path.join(out, "study.md"), "w", encoding="utf-8") as handle:
@@ -305,7 +321,8 @@ def summary(result):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("videos", nargs="+")
+    parser.add_argument("videos", nargs="*")
+    parser.add_argument("--refs-from", help="reuse the studies already in this folder as the references")
     parser.add_argument("--draft", help="a render of your own, compared against the videos on board.md")
     parser.add_argument("--draft-cuts", default="",
                         help="the draft's planned cut times in seconds, comma-separated; they replace detection")
@@ -318,9 +335,19 @@ def main(argv=None):
                         help="change per second (scene change times fps) below which the picture is still")
     parser.add_argument("--columns", type=int, default=6, help="contact sheet columns")
     args = parser.parse_args(argv)
-    studies = []
+    if not args.videos and not args.refs_from:
+        parser.error("give films to study, or --refs-from a folder of studies")
+    studies, used = [], set()
+    if args.refs_from:
+        for path in sorted(glob.glob(os.path.join(args.refs_from, "*", "study.json"))):
+            with open(path, encoding="utf-8") as handle:
+                studies.append(json.load(handle))
     for video in args.videos + ([args.draft] if args.draft else []):
-        folder = os.path.join(args.out, os.path.splitext(os.path.basename(video))[0])
+        stem, number = os.path.splitext(os.path.basename(video))[0], 1
+        while (stem if number == 1 else "%s-%d" % (stem, number)) in used:
+            number += 1
+        used.add(stem if number == 1 else "%s-%d" % (stem, number))
+        folder = os.path.join(args.out, stem if number == 1 else "%s-%d" % (stem, number))
         try:
             declared = [float(t) for t in args.draft_cuts.split(",") if t.strip()] or None
             studies.append(study(video, folder, args.threshold, args.spike_floor, args.still, args.columns,
