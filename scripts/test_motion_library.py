@@ -101,6 +101,18 @@ class MotionLibraryTest(unittest.TestCase):
         self.assertOk(self.cli("verify"))
         self.assertOk(self.cli("install"))
 
+    def test_index_lists_excluded_repos_with_reasons(self):
+        with open(self.manifest, encoding="utf-8") as handle:
+            manifest = json.load(handle)
+        manifest["excluded"] = [{"url": "https://example.com/risky", "reason": "teaches scraping around bot checks"}]
+        with open(self.manifest, "w", encoding="utf-8") as handle:
+            json.dump(manifest, handle)
+        self.assertOk(self.cli("install"))
+        index_md = read(os.path.join(self.home, "INDEX.md"))
+        self.assertIn("https://example.com/risky", index_md)
+        self.assertIn("teaches scraping around bot checks", index_md)
+        self.assertFalse(os.path.exists(os.path.join(self.home, "src", "risky")))
+
     def test_verify_fails_until_new_pin_is_installed(self):
         self.assertOk(self.cli("install"))
         write(self.up("skills/beta/SKILL.md"), "---\nname: beta\ndescription: Use when v2.\n---\n")
