@@ -10,17 +10,28 @@ Exit status: 0 nothing to look at, 1 findings listed, 2 the video could not be r
 """
 import argparse
 import json
+import re
 import subprocess
 import sys
+
+
+def parse_rate(text):
+    """Read the first 'num/den' fraction; ffprobe sometimes appends separators such as '30/1,'."""
+    match = re.search(r"(\d+)/(\d+)", text)
+    if not match or int(match.group(2)) == 0:
+        raise ValueError("no frame rate in %r" % text.strip())
+    return int(match.group(1)) / float(match.group(2))
 
 
 def probe_fps(path):
     done = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries",
                            "stream=r_frame_rate", "-of", "csv=p=0", path], capture_output=True, text=True)
-    if done.returncode != 0 or "/" not in done.stdout:
+    if done.returncode != 0:
         raise ValueError("cannot read %s: %s" % (path, done.stderr.strip() or "no video stream"))
-    num, den = done.stdout.strip().split("/")
-    return float(num) / float(den)
+    try:
+        return parse_rate(done.stdout)
+    except ValueError:
+        raise ValueError("cannot read a frame rate from %s" % path)
 
 
 def decode(path, width, height):
