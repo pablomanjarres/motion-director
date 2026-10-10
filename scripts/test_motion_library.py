@@ -221,5 +221,15 @@ class MotionLibraryTest(unittest.TestCase):
         self.assertNotEqual(self.cli("scaffold", "fixture", dest).returncode, 0)
 
 
+class PhaseVocabularyTest(unittest.TestCase):
+    def test_phase_tags_are_the_pipeline_phases_and_the_shipped_manifest_uses_only_them(self):
+        sys.path.insert(0, HERE)
+        import motion_library
+        phase_files = {name[:-3] for name in os.listdir(os.path.join(motion_library.SKILL_DIR, "phases"))
+                       if name.endswith(".md")}
+        self.assertEqual(set(motion_library.PHASES), phase_files)
+        motion_library.load_manifest(motion_library.DEFAULT_MANIFEST)
+
+
 if __name__ == "__main__":
     unittest.main()
