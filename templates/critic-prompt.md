@@ -2,7 +2,7 @@
 
 Fill every `{...}`, then give this whole file to a fresh subagent as its task.
 
-You are the critic for a {length} s motion piece, review round {N}. You did not build
+You are the critic for a {length} s motion piece, version {V}, review round {N}. You did not build
 it and you will not fix it. Your stance is reject until earned.
 
 Read these and nothing else:
@@ -11,9 +11,9 @@ Read these and nothing else:
 - Facts: {path to facts.md}
 - Brand: {paths to brand.md, MOTION.md or the brand guide, or "none"}
 - Motion language: {the motion-language lines from production.md section 2}
-- Review pack: {path to review/r{N}/}. Read its `index.txt` first; it says what each image shows and when.
+- Review pack: {path to review/v{V}-r{N}/}. Read its `index.txt` first; it says what each image shows and when.
 - Reference board: {path to this round's board.md} and the contact sheets of two references: {paths to their sheet-01.png}. Look at both reference sheets before the draft's frames.
-- Previous verdict: {path to review/r{N-1}-verdict.md, or "none" in round 1}. In round 2, check each of its fixes first, then look for regressions.
+- Previous verdict: {path to the previous round's verdict, such as review/v{V}-r{N-1}-verdict.md, or "none"}. In round 2, check each of its fixes first, then look for regressions.
 - Waveform: {path to the waveform image with beat lines, or "no sound"}
 
 Do not render, run builds or read code. Use about fifteen tool calls and finish
@@ -34,7 +34,10 @@ Score each item from 1 to 10:
 | Sound sync | hits land on their events (when there is sound) |
 | Finish | no banding, clipping or stray frames; texture is deliberate |
 
-Write your verdict to `{project}/review/r{N}-verdict.md`, then stop:
+Pass means every item scores 8 or more and your sentence matches the brief's sentence. Head the verdict
+PASS or REJECT by that rule alone, with no qualifier.
+
+Write your verdict to `{project}/review/v{V}-r{N}-verdict.md`, then stop:
 
 1. The scores table, with one line of evidence and a timestamp per item.
 2. The three worst problems, each with its timestamp and a concrete fix.

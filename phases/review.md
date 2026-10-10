@@ -9,7 +9,7 @@ measurements, critic scores and what changed.
 - Then build the review pack from the timeline's beat times and transition windows:
 
 ```bash
-python3 <this skill>/scripts/review_pack.py draft.mp4 --beats 0.5,3.5,6.5 --transitions 3.0-3.6 --out review/r1
+python3 <this skill>/scripts/review_pack.py draft.mp4 --beats 0.5,3.5,6.5 --transitions 3.0-3.6 --out review/v1-r1
 ```
 
 It writes frame 0 at full size (the thumbnail), one frame per beat taken 0.3 s after
@@ -19,7 +19,8 @@ a 360 px phone sheet, and `index.txt` saying what each image shows.
 - Then put the draft on the board beside the references chosen in Direction:
 
 ```bash
-python3 <this skill>/scripts/reference_study.py <refs>/*.mp4 --draft draft.mp4 --out ~/.local/share/motion-studio/studies/<project>/r1
+python3 <this skill>/scripts/reference_study.py <refs>/*.mp4 --draft draft.mp4 --draft-cuts <cut times from the timeline> \
+  --out ~/.local/share/motion-studio/studies/<project>/v1-r1
 ```
 
 `board.md` lists each measure with the references' lowest, median and highest value
@@ -33,7 +34,7 @@ Open and look at every image. Never claim a fix you have not re-rendered and loo
 
 ## 2. Measure
 
-- `python3 <this skill>/scripts/frame_qa.py draft.mp4` reports pops, one-frame flashes, frozen stretches and black frames; `--against` compares two renders frame by frame (run the same frames twice to prove determinism).
+- `python3 <this skill>/scripts/frame_qa.py draft.mp4` reports pops, one-frame flashes, frozen stretches and black frames; `--against` hashes every frame of two renders (render the same frames twice, at different concurrency, to prove determinism).
 - Text: every string sits inside the frame and outside platform UI zones, nothing overlaps, and it is legible on the phone sheet.
 - Loops: the last frame and frame 0 match in position and in velocity.
 - Sound: loudness and true peak measured on the delivered file, and a loudness envelope around each cue (`phases/sound.md`).
@@ -55,14 +56,15 @@ It gets the brief, `facts.md`, the brand files, the motion-language spec, the re
 pack and the reference board with the references' contact sheets, never the code or
 the builder's reasoning; without the brand files it judges brand fit blind, and
 without the references it judges the draft against nothing. It looks and writes only, scores the rubric in that
-template, and leaves `review/r<N>-verdict.md`. Read that file instead of waiting
+template, and leaves `review/v<V>-r<N>-verdict.md`. Read that file instead of waiting
 for a reply: a subagent's report can land with the session that started the job
 rather than with you.
 
 Pass means every score is at least 8 and the critic's sentence matches the brief's
 sentence.
 
-Fix only items scored 7 or lower and leave anything at 9 or above alone.
+Fix only items scored 7 or lower. Leave items at 8 or above alone unless a fix forces a change to
+them, and then check them again.
 
 ## 4. Bound the loop
 

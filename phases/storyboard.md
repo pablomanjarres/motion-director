@@ -38,6 +38,7 @@ cannot, fix the story; motion will not.
 - Shots shorten toward the climax. A drop to near silence comes right before the payoff, and the payoff is the single loudest moment.
 - The end echoes the opening, changed.
 - Text never moves while it has to be read. Holds follow the reading rule from the brief.
+- Montage-led pieces follow the board's still share, not klik-anim's 40-60% rest ratio: the measured montages hold still for 0% (Fable 5, Opus 5.5) to 35% (Haiku 5.5) of their runtime while the device itself stays in place.
 - Words come late. In the measured launch films the message line lands at 43 to 89 percent of the runtime, after the picture has made the point; a title card or a genre word may open a film, a slogan does not.
 - The end takes 20 to 30 percent of a short piece and holds at least 3 s. The picture never fades out; the sound leaves instead.
 
@@ -55,8 +56,10 @@ Starting templates (adjust to the clock). Launch templates come from `references
 ## 4. One timeline file
 
 Write the beats into one file (`timeline.json` or `src/timeline.ts`) as named
-times. Scenes, the sound cue sheet and the review script all read it; no component
-or cue hardcodes a start time. Retiming means editing that file, then re-rendering
+times. Scenes, the sound cue sheet and or the review script all read it; no component
+or cue hardcodes a start time. Write times as integer frames at the project fps (or exact
+frame / fps values) and compare in frames: seconds rounded to a few decimals put landings a
+frame late. Retiming means editing that file, then re-rendering
 picture and sound.
 
 - With voice-over: keep the word timings file next to it and anchor beats to words. Cue to the meaning word (the verb, not the noun); lead a reveal that must be read by 0.02 to 0.06 s; land hits exactly on the word.
@@ -69,7 +72,14 @@ the scaffolded project. This is the still-frame gate: a weak still will not be
 rescued by motion, so fix the look here. Put each look frame beside two reference
 contact sheets at the same size: a frame emptier, smaller or wordier than every
 reference frame (scale, density and words in `references/launch-films.md`) fails
-here. Then render one still per beat from the
+here. Build the gate sheet in one command, and send any look a critic round changes
+back through it:
+
+```bash
+ffmpeg -i look-01.png -i <studies>/<film-a>/sheet-01.png -i <studies>/<film-b>/sheet-01.png -filter_complex \
+  "[0]scale=1920:-2[a];[1]scale=1920:-2[b];[2]scale=1920:-2[c];[a][b][c]vstack=inputs=3" gate-01.png
+```
+ Then render one still per beat from the
 real scene code, so panels become the build instead of throwaway drawings. Three
 cheap check-ins happen before full animation: the story (beat table), the look
 (look frames) and the storyboard (panels). When the person is present, ask at each one with options and a

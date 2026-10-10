@@ -91,6 +91,7 @@ At 30 fps, frames = ms × 0.03 (300 ms is 9 frames).
 - No gradient-filled text (`background-clip: text` also vanishes in some captures).
 - Glow only on the single hero element. No rainbow or purple-to-blue backgrounds, emoji used as icons, lorem ipsum, generic particle bursts, or a centered title on a gradient as the opening. A logo sting is never the whole ending.
 - One accent color, and it means one thing for the whole piece.
+- When one device repeats across cuts, each shot completes its move before the cut so every repeat reads. Cut inside a move only when a camera move carries on in the next shot (Atlas).
 - Avoid the default look: set the brand typeface, avoid crowded vertical stacks, and never make "everything fades up" the only entrance.
 
 ## 5. Type, color, composition
