@@ -30,7 +30,8 @@ reading of the brief is usually one of the two you kill.
 `launch-film/product-launch-motion` (creative-direction reference) has the full dial set.
 
 Then name one **signature move**: a device you can say in one sentence that recurs
-two or three times and pays off late (around 80 to 95 percent of the runtime).
+two or three times and pays off on the last motion beat, before any held call to
+action (late in the motion, not at the end of the runtime).
 
 ## 3. Motion language
 

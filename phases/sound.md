@@ -14,8 +14,8 @@ measured on the delivered file.
 
 Accent changes of state, do not narrate motion: a click on selection, a blip when
 an element lands, a whoosh on the merge, a settle tone when the result rests.
-Continuous drifts stay silent. One riser per piece and it ends exactly on its hit;
-one impact per piece.
+Continuous drifts stay silent. One riser and one impact per piece; the riser leads
+into the payoff as described under dramaturgy.
 
 ## 3. Timing
 
@@ -37,8 +37,10 @@ rise toward the payoff.
 
 ## 5. Dramaturgy
 
-Drop to near silence (15 to 35 dB down for 0.5 to 4 s) right before the payoff,
-then make the payoff the loudest moment. The busiest stretch is not the loudest.
+Build, cut, pay off: the riser builds and then cuts into a short near silence (0.3
+to 1 s, or 15 to 35 dB down for up to 4 s in longer pieces), and the payoff hit
+breaks that silence as the loudest moment. Pieces under 10 s may skip the silence
+and land the riser straight on its hit. The busiest stretch is not the loudest.
 Sub-bass only on the thesis and the call to action.
 
 ## 6. When a song leads
