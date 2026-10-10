@@ -51,6 +51,11 @@ def has_audio(path):
     return bool(probe(path, "stream=index", "a:0"))
 
 
+def tile(columns, rows):
+    """The tile filter for contact sheets; unused cells are mid grey so they never read as black frames."""
+    return "tile=%dx%d:color=0x808080" % (columns, rows)
+
+
 def raw_frames(path, width, height, pix_fmt="gray", rate=None):
     """Decoded frames scaled to width x height, one bytes object each (gray: 1 byte a pixel, rgb24: 3)."""
     filters = ("fps=%s," % rate if rate else "") + "scale=%d:%d:flags=area,format=%s" % (width, height, pix_fmt)

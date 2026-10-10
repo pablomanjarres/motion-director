@@ -3,7 +3,9 @@
 
 For each video: hard cuts and shot lengths, still holds, a motion curve, loudness, colours,
 and contact sheets with one frame per shot (one every two seconds through long shots). Each
-film gets study.json, study.md and sheet-NN.png in its own folder under --out. study.md says
+film gets study.json, study.md and sheet-NN.png in its own folder under --out, which defaults
+to a studies folder beside the library, outside any project, because a study holds frames of
+the film. study.md says
 which moment each sheet cell shows, because many ffmpeg builds lack drawtext. With several
 films, or with --draft, board.md compares them, and marks each measure where the draft falls
 outside the references. Needs ffmpeg and ffprobe; Python stdlib only.
@@ -16,7 +18,8 @@ import statistics
 import sys
 
 from frame_qa import changes, spikes
-from media import MediaError, duration, ffmpeg, frame_size, has_audio, probe_fps, raw_frames, run
+from media import MediaError, duration, ffmpeg, frame_size, has_audio, probe_fps, raw_frames, run, tile
+from motion_library import default_home
 
 BARS = "▁▂▃▄▅▆▇█"
 SHEET_ROWS = 6
@@ -112,7 +115,7 @@ def write_sheets(video, picks, length, fps, out, columns):
             seen.add(frame)
             chosen.append((number, frame))
     select = "+".join("eq(n,%d)" % frame for _, frame in chosen)
-    ffmpeg("-i", video, "-vf", "select='%s',scale=320:-2,tile=%dx%d" % (select, columns, SHEET_ROWS),
+    ffmpeg("-i", video, "-vf", "select='%s',scale=320:-2," % select + tile(columns, SHEET_ROWS),
            "-fps_mode", "vfr", os.path.join(out, "sheet-%02d.png"))
     per_sheet = columns * SHEET_ROWS
     return ["sheet-%02d cell %2d  %7.2f s  shot %d" % (i // per_sheet + 1, i % per_sheet + 1, frame / fps, number)
@@ -180,7 +183,7 @@ def strongest(bins, total, top, near=40):
 
 def shot_stats(shots, length):
     lengths = [end - start for start, end in shots]
-    tenths = statistics.quantiles(lengths, n=10) if len(lengths) > 1 else [lengths[0]] * 9
+    tenths = statistics.quantiles(lengths, n=10, method="inclusive") if len(lengths) > 1 else [lengths[0]] * 9
     return {"count": len(lengths), "mean": round(statistics.mean(lengths), 2),
             "median": round(statistics.median(lengths), 2), "p10": round(tenths[0], 2),
             "p90": round(tenths[-1], 2), "cuts_per_minute": round((len(lengths) - 1) / length * 60, 1),
@@ -237,7 +240,10 @@ def show(value):
 def board(studies, draft):
     """One row per film; with a draft, its value per measure against the references' range."""
     head = ["film", "length s", "shots"] + [name for name, _ in MEASURES]
-    lines = ["# Reference board", "", "| " + " | ".join(head) + " |", "|" + " --- |" * len(head)]
+    lines = ["# Reference board", "",
+             "Median motion is how much of the whole frame changes each second: a small subject moving on an "
+             "empty ground reads low however lively it is, because most of the frame stands still.", "",
+             "| " + " | ".join(head) + " |", "|" + " --- |" * len(head)]
     for item in studies + ([draft] if draft else []):
         name = item["video"] + (" (draft)" if item is draft else "")
         cells = [name, show(item["duration"]), str(item["shots"]["count"])] + [show(get(item)) for _, get in MEASURES]
@@ -286,7 +292,8 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("videos", nargs="+")
     parser.add_argument("--draft", help="a render of your own, compared against the videos on board.md")
-    parser.add_argument("--out", default="refs/study", help="output folder (default refs/study)")
+    parser.add_argument("--out", default=os.path.join(default_home(), "studies"),
+                        help="output folder, outside the project (default: studies beside the library)")
     parser.add_argument("--threshold", type=float, default=0.3, help="scene change that is always a hard cut (0-1)")
     parser.add_argument("--spike-floor", type=float, default=0.2,
                         help="scene change that is a hard cut when the picture change also spikes for one frame")

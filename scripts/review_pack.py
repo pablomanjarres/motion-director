@@ -10,7 +10,7 @@ import math
 import os
 import sys
 
-from media import MediaError, duration, ffmpeg, probe_fps
+from media import MediaError, duration, ffmpeg, probe_fps, tile
 
 
 def numbers(text):
@@ -42,14 +42,14 @@ def build(video, beats, transitions, settle, out):
     if kept:
         columns = min(4, kept)
         ffmpeg("-start_number", "1", "-i", path("beat-%02d.png"), "-vf",
-               "tile=%dx%d" % (columns, math.ceil(kept / float(columns))), "-frames:v", "1", path("contact.png"))
+               tile(columns, math.ceil(kept / float(columns))), "-frames:v", "1", path("contact.png"))
         index.append("contact.png  the beat frames in order, %d per row" % columns)
     for number, (start, end) in enumerate(transitions, 1):
         rows = math.ceil((int(round((end - start) * fps)) + 1) / 8.0)
-        ffmpeg("-i", video, "-vf", "select='between(t,%.3f,%.3f)',scale=320:-1,tile=8x%d" % (start, end, rows),
+        ffmpeg("-i", video, "-vf", "select='between(t,%.3f,%.3f)',scale=320:-1," % (start, end) + tile(8, rows),
                "-frames:v", "1", path("strip-%02d.png" % number))
         index.append("strip-%02d.png  every frame from %.2f s to %.2f s, 8 per row" % (number, start, end))
-    ffmpeg("-i", video, "-vf", "fps=2,scale=360:-1,tile=6x%d" % max(1, math.ceil(length * 2 / 6.0)),
+    ffmpeg("-i", video, "-vf", "fps=2,scale=360:-1," + tile(6, max(1, math.ceil(length * 2 / 6.0))),
            "-frames:v", "1", path("phone.png"))
     index.append("phone.png  two frames per second at 360 px wide, 6 per row: judge readability here")
     with open(path("index.txt"), "w", encoding="utf-8") as handle:
