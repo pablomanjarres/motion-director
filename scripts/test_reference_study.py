@@ -7,11 +7,22 @@ import sys
 import tempfile
 import unittest
 
+from reference_study import find_shots
 from test_fixtures import encode, needs_ffmpeg
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SCRIPT = os.path.join(HERE, "reference_study.py")
 CREAM, INK, CLAY = (245, 243, 238), (23, 23, 26), (217, 119, 87)
+
+
+class CutRuleTest(unittest.TestCase):
+    def test_a_cut_needs_a_big_change_or_a_one_frame_spike_and_never_sits_in_a_flash(self):
+        fps, scores = 30.0, [(frame / 30.0, 0.01) for frame in range(90)]
+        for frame, score in ((10, 0.5), (11, 0.5), (20, 0.22), (30, 0.22), (40, 0.6), (50, 0.1)):
+            scores[frame] = (frame / fps, score)
+        cuts, shots = find_shots(scores, 3.0, fps, 0.3, 0.2, spiking={20, 40, 50}, flashed={40, 41})
+        self.assertEqual([int(round(cut * fps)) for cut in cuts], [10, 20])
+        self.assertEqual(len(shots), 3)
 
 
 def colour(rgb):
