@@ -45,8 +45,14 @@ Expect h264, the planned size and fps, the exact duration, `yuv420p`, `bt709` ta
 Spawn a separate subagent as the critic. Give it the brief section, `facts.md`,
 the brand files when they exist (`brand.md`, `MOTION.md` or the brand guide), the
 motion-language spec, the contact sheet, the strips, the phone sheet and this
-rubric. Without the brand files it judges brand fit blind. Do not give it the code or the builder's reasoning. Its stance is reject
-until earned.
+rubric. Without the brand files it judges brand fit blind. Do not give it the code
+or the builder's reasoning. Its stance is reject until earned.
+
+The critic only looks and writes: no rendering, no code, about a dozen tool calls.
+It writes its verdict to `review/r<N>-verdict.md` in the project (the scores
+table, the three worst problems with timestamps and fixes, the one sentence) and
+stops. Read that file instead of waiting for a reply; a subagent's report can land
+with the session that started the job rather than with you.
 
 It scores each item from 1 to 10:
 
