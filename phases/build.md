@@ -39,6 +39,7 @@ cues stay locked to words.
 - Texture: grain at roughly 0.05 to 0.12 opacity reseeded every two frames (every frame bloats the file), a vignette, a slow drift. A clean flat finish is a valid choice when made on purpose.
 - Motion blur only on fast moves (beyond about 30 px per frame): average 4 to 8 subframes across a 180 degree shutter, never across a hard cut, never on text meant to be read.
 - Type: masked reveals (words rise about 105 to 110 percent inside a padded mask); no per-letter twinkle as the main reveal; nothing moves while it is being read.
+- Numbers change with a masked swap to the next sourced value, never by counting through figures that are not in `facts.md` (the truth gate in `phases/brief.md`).
 
 ## 5. Drafts
 
