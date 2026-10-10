@@ -20,19 +20,48 @@ from media import MediaError, frame_hashes, probe_fps, raw_frames
 LINEAR = [level / 255.0 / 12.92 if level <= 10 else ((level / 255.0 + 0.055) / 1.055) ** 2.4 for level in range(256)]
 
 
-def general_flashes(frames, fps, area=0.25):
+def integral(flags, width):
+    """Summed-area table with a zero row and column in front."""
+    table = [0] * ((len(flags) // width + 1) * (width + 1))
+    for y in range(len(flags) // width):
+        running = 0
+        for x in range(width):
+            running += flags[y * width + x]
+            table[(y + 1) * (width + 1) + x + 1] = table[y * (width + 1) + x + 1] + running
+    return table
+
+
+def busiest_window(flags, width, area=0.25):
+    """Whether flagged pixels fill `area` of any window a third of the frame wide and high (the general flash rule's
+    10-degree field), testing windows every sixth of the frame."""
+    height = len(flags) // width
+    win_w, win_h = max(1, width // 3), max(1, height // 3)
+    table, row = integral(flags, width), width + 1
+    for top in range(0, height - win_h + 1, max(1, height // 6)):
+        for left in range(0, width - win_w + 1, max(1, width // 6)):
+            count = (table[(top + win_h) * row + left + win_w] - table[top * row + left + win_w]
+                     - table[(top + win_h) * row + left] + table[top * row + left])
+            if count >= area * win_w * win_h:
+                return True
+    return False
+
+
+def general_flashes(frames, fps, width):
     """The most general flashes in any one second, and the frame that second starts on. A transition is a frame
-    where at least `area` of the picture changes relative luminance by 0.1 or more in one direction, the darker
-    side below 0.8; a flash is a pair of opposite transitions."""
+    where a quarter of any window a third of the frame wide and high changes relative luminance by 0.1 or more
+    in one direction, the darker side below 0.8; a flash is a pair of opposite transitions."""
     transitions = []
     for i in range(1, len(frames)):
-        darker = brighter = 0
+        darker, brighter = [], []
         for x, y in zip(frames[i - 1], frames[i]):
             a, b = LINEAR[x], LINEAR[y]
-            if abs(b - a) >= 0.1 and min(a, b) < 0.8:
-                darker, brighter = (darker + 1, brighter) if b < a else (darker, brighter + 1)
-        if max(darker, brighter) >= area * len(frames[i]):
-            transitions.append((i, -1 if darker >= brighter else 1))
+            changed = abs(b - a) >= 0.1 and min(a, b) < 0.8
+            darker.append(1 if changed and b < a else 0)
+            brighter.append(1 if changed and b > a else 0)
+        if busiest_window(darker, width):
+            transitions.append((i, -1))
+        elif busiest_window(brighter, width):
+            transitions.append((i, 1))
     window, most, start = max(1, int(round(fps))), 0, 0
     for k, (first, _) in enumerate(transitions):
         signs = [sign for frame, sign in transitions[k:] if frame < first + window]
@@ -70,7 +99,7 @@ def spikes(frames, diffs, min_jump, ratio):
     return flashes, jumps, flashed
 
 
-def find_defects(frames, fps, cuts, min_jump, ratio, freeze_seconds, events=()):
+def find_defects(frames, fps, cuts, min_jump, ratio, freeze_seconds, events=(), width=160):
     findings, notes = [], []
     diffs = changes(frames)
     stamp = lambda i: "%.3f s (frame %d)" % (i / fps, i)
@@ -97,7 +126,7 @@ def find_defects(frames, fps, cuts, min_jump, ratio, freeze_seconds, events=()):
             elif length > freeze_seconds:
                 findings.append("frozen for %.2f s from %s" % (length, stamp(start)))
             start = None
-    most, start = general_flashes(frames, fps)
+    most, start = general_flashes(frames, fps, width)
     if most > 3:
         findings.append("%d general flashes in the second from %s (the photosensitivity limit is 3)"
                         % (most, stamp(start)))
@@ -108,17 +137,23 @@ def find_defects(frames, fps, cuts, min_jump, ratio, freeze_seconds, events=()):
     return findings, notes
 
 
-def compare(hashes, other_hashes, frames, other, fps):
-    """Frames whose full-resolution hashes differ, with the largest visible difference among them."""
+def compare(video, other_video, width, height, fps):
+    """Frames whose full-resolution hashes differ, with the largest visible difference among them; frames are
+    decoded for that only when the hashes disagree. Returns (findings, frame count)."""
+    hashes, other_hashes = frame_hashes(video), frame_hashes(other_video)
     if len(hashes) != len(other_hashes):
-        return ["frame counts differ: %d vs %d" % (len(hashes), len(other_hashes))]
+        return ["frame counts differ: %d vs %d" % (len(hashes), len(other_hashes))], len(hashes)
     differing = [i for i, (a, b) in enumerate(zip(hashes, other_hashes)) if a != b]
     if not differing:
-        return []
-    worst = max(differing, key=lambda i: change(frames[i], other[i]) if i < min(len(frames), len(other)) else 0.0)
-    return ["renders differ in %d of %d frames, first at frame %d (%.3f s); largest visible difference at frame "
-            "%d (%.1f)" % (len(differing), len(hashes), differing[0], differing[0] / fps, worst,
-                           change(frames[worst], other[worst]))]
+        return [], len(hashes)
+    line = "renders differ in %d of %d frames, first at frame %d (%.3f s)" % (
+        len(differing), len(hashes), differing[0], differing[0] / fps)
+    frames, other = raw_frames(video, width, height), raw_frames(other_video, width, height)
+    visible = [i for i in differing if i < len(frames) and i < len(other)]
+    if visible:
+        worst = max(visible, key=lambda i: change(frames[i], other[i]))
+        line += "; largest visible difference at frame %d (%.1f)" % (worst, change(frames[worst], other[worst]))
+    return [line], len(hashes)
 
 
 def main(argv=None):
@@ -140,20 +175,21 @@ def main(argv=None):
     events = [float(e) for e in args.events.split(",") if e.strip()]
     try:
         fps = probe_fps(args.video)
-        frames = raw_frames(args.video, width, height)
         if args.against:
-            other = raw_frames(args.against, width, height)
-            findings, notes = compare(frame_hashes(args.video), frame_hashes(args.against), frames, other, fps), []
+            (findings, count), notes = compare(args.video, args.against, width, height, fps), []
         else:
-            findings, notes = find_defects(frames, fps, cuts, args.min_jump, args.ratio, args.freeze_seconds, events)
+            frames = raw_frames(args.video, width, height)
+            count = len(frames)
+            findings, notes = find_defects(frames, fps, cuts, args.min_jump, args.ratio, args.freeze_seconds, events,
+                                           width)
     except MediaError as error:
         print(error, file=sys.stderr)
         return 2
     if args.json:
-        print(json.dumps({"video": args.video, "fps": fps, "frames": len(frames),
+        print(json.dumps({"video": args.video, "fps": fps, "frames": count,
                           "findings": findings, "notes": notes}, indent=1))
     else:
-        print("%s: %d frames at %.3f fps" % (args.video, len(frames), fps))
+        print("%s: %d frames at %.3f fps" % (args.video, count, fps))
         for line in findings:
             print("  finding: " + line)
         for line in notes:
