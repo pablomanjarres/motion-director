@@ -48,7 +48,7 @@ Every duration comes from one clock. Pick it now and write it in section 1.
 
 ## Truth gate
 
-- Every number, name, quote and claim that appears on screen is listed in `facts.md` with its source and date. No entry, no number on screen.
+- Every number, name, quote and claim that appears on screen is listed in `facts.md` (start from `templates/facts.md`) with its source and date. No entry, no number on screen.
 - Never round up, add "+", or turn a target into a result. Keep measured results, targets and sample data apart.
 - A count-up or ticker puts every number it passes through on screen. Swap or mask to the sourced value instead of counting through figures that are not in `facts.md`.
 - Figures shown together must agree: totals add up, and a balance shown beside a set-aside amount already subtracts it.

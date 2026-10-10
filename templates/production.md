@@ -66,6 +66,7 @@ Master measured on the delivered file: {LUFS integrated} / {dBTP true peak}.
 | round | critic scores | worst three issues (timestamp) | fixed in |
 |---|---|---|---|
 
+Verdict files: {review/r1-verdict.md, review/r2-verdict.md}. Review packs: {review/r1/, review/r2/}.
 Silent one-sentence test: {what a fresh reader said the film is about}.
 Measurements: ffprobe {pass/fail}, determinism {hash match}, text check {pass/fail}.
 
@@ -85,5 +86,7 @@ done until it has its rows (film track: at least two per phase from Direction on
 |---|---|---|
 
 ## Decisions and open questions
+
+Check-ins: story {asked and answered | decided while away}, look {...}, storyboard {...}.
 
 - {date}: {decision} ({alternatives considered})
