@@ -20,7 +20,7 @@ closest to the piece, then match their numbers on the reference board
 | Claude Fable 5 safeguards (2026-06) | interview explainer | 113 s | 55 | lower thirds | 4.2 s | -13.6, 2.3 |
 | Claude Dashboards and Motion (2026-10) | product launch | 81.6 s | one canvas | 10.3 s (13%) | 4.6 s | -15.9, 3.7 |
 | ChatGPT Atlas (2025-10) | product launch | 97.8 s | 32 | typed title at 3.5 s | 11.3 s | -15.4, 11.3 |
-| GPT-6 Intelligent UI (2026-10) | product launch | 70.2 s | 37 | 58.2 s (83%) | 4.5 s | -15.2, 5.6 |
+| GPT-6 Intelligent UI (2026-10) | product launch | 70.2 s | 40 | 58.2 s (83%) | 4.5 s | -15.2, 5.6 |
 | dots (2026-09) | product launch | 148 s | 72 | title lockup at 0 s | 6.8 s | -16.4, 6.9 |
 | Keep thinking (2025-09) | brand spot | 90 s | 98 | 70.9 s (79%) | 4.4 s | -14.1, 4.2 |
 | Ads are coming to AI (2026-02) | brand spot | 60.1 s | 11 | 48.6 s (81%) | 3.0 s | -15.4, 7.3 |
@@ -60,7 +60,7 @@ a film is listed as such.
 - **Scale ladder.** A whole window or phone is texture (body text 0.65-1.6%). Before a line must be read, cut or push to a macro so that line reads at 2.1-3.4%, or lift the one message out onto plain ground. Statements at 4.8-6.5%. The closing mark is the largest object in the film.
 - **Framing.** A window on a soft two-colour gradient over white (Atlas); one canvas the camera travels across (Dashboards); flat white cards composited into locked-off live action, tracking the action (Intelligent UI); real screens inside lit sets (dots); the product's output shown inside the world rather than its chrome (Keep thinking).
 - **Time budget, not typing speed.** A typed request takes 0.9-1.6 s whatever its length (17-160 characters a second). An answer lands whole, resolves in about 0.5 s, or streams fast enough to finish within 1.9 s. Nothing streams at reading speed.
-- **Entrances.** Elements land in 7-13 frames with half the travel in the first 15-33%. Intelligent UI's card grows from the top to 98% in 8 frames (29, 59, 74, 84, 90, 94, 97, 99%). Messages rise 20-32 px while fading in over 4-5 frames. No overshoot, except reply cards that settle 4-15 px within 5-7 frames.
+- **Entrances.** Elements land in 7-13 frames with half the travel in the first 15-33%. Intelligent UI's card grows from the top to 98% in 8 frames (29, 59, 74, 84, 90, 94, 97, 99%). Messages rise 20-32 px while fading in over 4-5 frames. No overshoot, except in the Dashboards film: reply cards overshoot 4-15 px, a comment pin grows to 103%, and the logo slides 9 px past its rest, each settling within about 4-7 frames.
 - **Moves.** Camera and scroll moves are S-curves of 0.4-1.7 s, with the velocity peak at about 40%. A state change accelerates for about 5 frames, swaps on one frame and settles over 19-25. A cut inside a move continues the same direction and settles in 0.4-0.8 s.
 - **Directing attention.** Fade everything but the subject over about 10 frames, magnify, or cut from the screen to the face watching it (inserts 1.5-2.1 s, faces about 1.3 s).
 - **Cursor.** Visible and clicking in interface-only films; an agent gets its own labelled cursor; live-action films show none.
@@ -68,8 +68,8 @@ a film is listed as such.
 
 ## Edit and motion
 
-- **Cut rate by kind.** Short launch montages run 111-188 cuts a minute (median shot 0.13-0.32 s); product films 19-31; brand spots 10-65; one-canvas and one-shot films none.
-- **Pace by section.** The problem goes fast (Keep thinking 108 cuts a minute; Intelligent UI 1.5 s shots), the answer slower (2.4 s, then 3.0 s; Keep thinking halves its cut rate), the payoff fast again (90 a minute), and one still shot ends it.
+- **Cut rate by kind.** Short launch montages run 111-188 cuts a minute (median shot 0.13-0.32 s); product films 19-33; brand spots 10-65; one-canvas and one-shot films none.
+- **Pace by section.** The problem goes fast (Keep thinking 108 cuts a minute; Intelligent UI 1.35 s shots), the answer slower (2.4 s, then 3.0 s; Keep thinking halves its cut rate), the payoff fast again (90 a minute), and one still shot ends it.
 - **A hinge between problem and answer.** 2-2.5 s of an almost empty frame with the sound near silent (Keep thinking), a foreground object closing the frame to black for 2-3 frames (Intelligent UI), or 3 black frames and a 1.75 s fade up at the midpoint (dots).
 - **Camera.** Spend the one move on the opening (Opus 5.5: a 13% push-in over 1.24 s). A pull-back that speeds up per frame as shots shorten makes many cuts read as one move (Fable 5: 3.5-10% a shot). In interface films the camera is the transition: Dashboards has about 10 hard switches in 82 s, and every other change is a camera move.
 - **Steps for a handmade feel.** Fable 5 animates on twos inside 24 fps, Haiku 5.5 runs at 12 fps with a line that boils on twos, and the safeguards film moves its paper graphics in 2-6 frame holds. Interface moves stay on ones.
