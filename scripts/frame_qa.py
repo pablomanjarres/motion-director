@@ -10,40 +10,9 @@ Exit status: 0 nothing to look at, 1 findings listed, 2 the video could not be r
 """
 import argparse
 import json
-import re
-import subprocess
 import sys
 
-
-def parse_rate(text):
-    """Read the first 'num/den' fraction; ffprobe sometimes appends separators such as '30/1,'."""
-    match = re.search(r"(\d+)/(\d+)", text)
-    if not match or int(match.group(2)) == 0:
-        raise ValueError("no frame rate in %r" % text.strip())
-    return int(match.group(1)) / float(match.group(2))
-
-
-def probe_fps(path):
-    done = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries",
-                           "stream=r_frame_rate", "-of", "csv=p=0", path], capture_output=True, text=True)
-    if done.returncode != 0:
-        raise ValueError("cannot read %s: %s" % (path, done.stderr.strip() or "no video stream"))
-    try:
-        return parse_rate(done.stdout)
-    except ValueError:
-        raise ValueError("cannot read a frame rate from %s" % path)
-
-
-def decode(path, width, height):
-    """Every frame as a bytes object of width*height grey samples."""
-    done = subprocess.run(["ffmpeg", "-v", "error", "-i", path, "-vf",
-                           "scale=%d:%d:flags=area,format=gray" % (width, height),
-                           "-f", "rawvideo", "-"], capture_output=True)
-    if done.returncode != 0:
-        raise ValueError("cannot decode %s: %s" % (path, done.stderr.decode(errors="replace").strip()))
-    size = width * height
-    data = done.stdout
-    return [data[i:i + size] for i in range(0, len(data) - size + 1, size)]
+from media import MediaError, probe_fps, raw_frames
 
 
 def change(a, b):
@@ -117,12 +86,12 @@ def main(argv=None):
     cuts = [float(c) for c in args.cuts.split(",") if c.strip()]
     try:
         fps = probe_fps(args.video)
-        frames = decode(args.video, width, height)
+        frames = raw_frames(args.video, width, height)
         if args.against:
-            findings, notes = compare(frames, decode(args.against, width, height), fps), []
+            findings, notes = compare(frames, raw_frames(args.against, width, height), fps), []
         else:
             findings, notes = find_defects(frames, fps, cuts, args.min_jump, args.ratio, args.freeze_seconds)
-    except ValueError as error:
+    except MediaError as error:
         print(error, file=sys.stderr)
         return 2
     if args.json:

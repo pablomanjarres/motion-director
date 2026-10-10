@@ -8,26 +8,9 @@ nothing is labelled inside the images. Needs ffmpeg and ffprobe; Python stdlib o
 import argparse
 import math
 import os
-import subprocess
 import sys
 
-from frame_qa import probe_fps
-
-
-def run(args):
-    done = subprocess.run(args, capture_output=True, text=True)
-    if done.returncode != 0:
-        raise RuntimeError("%s failed: %s" % (args[0], done.stderr.strip()[-300:]))
-    return done.stdout
-
-
-def ffmpeg(*args):
-    run(["ffmpeg", "-v", "error", "-y"] + list(args))
-
-
-def duration(video):
-    return float(run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0",
-                      video]).strip())
+from media import MediaError, duration, ffmpeg, probe_fps
 
 
 def numbers(text):
@@ -84,7 +67,7 @@ def main(argv=None):
     args = parser.parse_args(argv)
     try:
         index = build(args.video, numbers(args.beats), windows(args.transitions), args.settle, args.out)
-    except (RuntimeError, ValueError) as error:
+    except (MediaError, ValueError) as error:
         print(error, file=sys.stderr)
         return 1
     print("\n".join(index))
